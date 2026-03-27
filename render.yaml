@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: gc-web-pos-pc-server
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm ci --build-from-source
+    startCommand: npm run start
+    autoDeploy: true
+    envVars:
+      NODE_ENV: production
+    healthCheckPath: /api/health
+    healthCheckInterval: 10
+    healthCheckTimeout: 5
+    resources:
+      cpu: 1
+      disk: 512
+      memory: 512
