@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PC Controller</title>
+  <style>
+    body { margin: 0; font-family: sans-serif; background: #081a2b; color: #fff; }
+    .container { padding: 20px; }
+    .badge { background: #0f6aaf; color: white; padding: 6px 12px; border-radius: 10px; margin-right: 6px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PC Controller</h1>
+    <p>Este proceso se debe ejecutar en modo oculta pero permite emparejar y ver estado.</p>
+
+    <div class="block">
+      <label>Servidor API:</label>
+      <input id="serverUrl" type="text" placeholder="http://localhost:3000" />
+    </div>
+    <div class="block">
+      <label>Identificación de PC:</label>
+      <input id="pcId" type="text" placeholder="pc-1" />
+    </div>
+
+    <button id="btnSave">Guardar configuración</button>
+
+    <div class="row">
+      <button id="btnConnect">Conectar PC (un clic)</button>
+      <button id="btnRefreshStatus">Refrescar estado</button>
+    </div>
+
+    <div class="row">
+      <button id="btnLockPC">Bloquear PC</button>
+      <button id="btnUnlockPC">Desbloquear PC</button>
+    </div>
+
+    <div class="block">Estado: <strong id="statusText">inicializando...</strong></div>
+    <div class="block">Token agente: <strong id="agentToken">(pendiente)</strong></div>
+    <div id="state"></div>
+  </div>
+
+  <script>
+    const serverUrlInput = document.getElementById('serverUrl');
+    const pcIdInput = document.getElementById('pcId');
+    const agentTokenEl = document.getElementById('agentToken');
+    const statusText = document.getElementById('statusText');
+
+    document.getElementById('btnSave').addEventListener('click', async () => {
+      const serverUrl = serverUrlInput.value.trim();
+      const pcId = pcIdInput.value.trim();
+      const result = await window.pcController.saveSettings(serverUrl, pcId);
+      statusText.innerText = `Configuración guardada: ${result.serverUrl} / ${result.pcId}`;
+    });
+
+    document.getElementById('btnConnect').addEventListener('click', async () => {
+      const serverUrl = serverUrlInput.value.trim();
+      const pcId = pcIdInput.value.trim();
+      await window.pcController.saveSettings(serverUrl, pcId);
+
+      const pairOk = await window.pcController.requestPairCode(serverUrl, pcId);
+      if (!pairOk) {
+        statusText.innerText = 'Error: no se pudo iniciar emparejamiento en el servidor.';
+        return;
+      }
+
+      const result = await window.pcController.requestRegister(pcId);
+      if (result.success) {
+        agentTokenEl.innerText = result.agentToken || '✅';
+        statusText.innerText = 'PC emparejada y registrada con éxito. Conexión activa.';
+      } else {
+        agentTokenEl.innerText = '(sin token)';
+        statusText.innerText = `Error registro: ${result.error || 'revisar servidor'}`;
+      }
+    });
+
+    document.getElementById('btnRefreshStatus').addEventListener('click', () => {
+      statusText.innerText = 'Refrescando estado...';
+      // Se actualiza desde el evento onStatusUpdate del main
+    });
+
+    document.getElementById('btnLockPC').addEventListener('click', async () => {
+      const resultado = await window.pcController.sendCommand('lock', { message: 'Bloqueo manual desde el agente' });
+      statusText.innerText = resultado.success ? 'Comando lock enviado' : `Error lock: ${resultado.error}`;
+    });
+
+    document.getElementById('btnUnlockPC').addEventListener('click', async () => {
+      const resultado = await window.pcController.sendCommand('unlock', { message: 'Desbloqueo manual desde el agente' });
+      statusText.innerText = resultado.success ? 'Comando unlock enviado' : `Error unlock: ${resultado.error}`;
+    });
+
+    window.pcController.onStatusUpdate((data) => {
+      serverUrlInput.value = data.serverUrl;
+      pcIdInput.value = data.pcId;
+      agentTokenEl.innerText = data.agentToken ? '✅' : '(sin token)';
+      statusText.innerText = data.connectionMessage || `Conectado a ${data.serverUrl} como ${data.pcId}`;
+
+      if (data.connection === 'connected') {
+        document.body.style.background = '#0a2f0f';
+      } else {
+        document.body.style.background = '#2f0a0a';
+      }
+    });
+  </script>
+</body>
+</html>
