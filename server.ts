@@ -31,6 +31,16 @@ CREATE TABLE IF NOT EXISTS pc_agents (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   expires_at DATETIME
 );
+
+CREATE TABLE IF NOT EXISTS pc_commands (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  pc_id TEXT,
+  command TEXT,
+  payload TEXT,
+  status TEXT DEFAULT 'pending',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  delivered_at DATETIME
+);
 `;
 
 db.exec(SCHEMA_SQL);
@@ -117,8 +127,38 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
   if (!agent) return res.status(404).json({ success: false, error: 'pc not found' });
   if (agent.token !== token) return res.status(403).json({ success: false, error: 'invalid token' });
 
-  db.prepare('UPDATE pc_agents SET last_seen = ?, status = ?, updated_at = ? WHERE pc_id = ?').run(new Date().toISOString(), status || 'paired', new Date().toISOString(), pc_id);
-  res.json({ success: true });
+  const now = new Date().toISOString();
+  db.prepare('UPDATE pc_agents SET last_seen = ?, status = ?, updated_at = ? WHERE pc_id = ?').run(now, status || 'paired', now, pc_id);
+
+  const command = db.prepare('SELECT * FROM pc_commands WHERE pc_id = ? AND status = ? ORDER BY id ASC LIMIT 1').get(pc_id, 'pending');
+  let action = null;
+  if (command) {
+    action = {
+      type: command.command,
+      payload: command.payload ? JSON.parse(command.payload) : null
+    };
+    db.prepare('UPDATE pc_commands SET status = ?, delivered_at = ? WHERE id = ?').run('delivered', now, command.id);
+  }
+
+  res.json({ success: true, action });
+});
+
+app.post('/api/pc/:id/command', (req, res) => {
+  const pc_id = req.params.id;
+  const { command, payload } = req.body;
+  if (!command) return res.status(400).json({ success: false, error: 'command required' });
+
+  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
+  if (!agent) return res.status(404).json({ success: false, error: 'pc not found' });
+
+  db.prepare('INSERT INTO pc_commands (pc_id, command, payload) VALUES (?, ?, ?)').run(pc_id, command, payload ? JSON.stringify(payload) : null);
+  res.json({ success: true, message: `Comando '${command}' encolado para ${pc_id}` });
+});
+
+app.get('/api/pc/:id/commands', (req, res) => {
+  const pc_id = req.params.id;
+  const commands = db.prepare('SELECT id, command, payload, created_at FROM pc_commands WHERE pc_id = ? AND status = ? ORDER BY id ASC').all(pc_id, 'pending');
+  res.json({ success: true, commands });
 });
 
 app.get('/api/pc/:id/status', (req, res) => {
