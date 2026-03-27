@@ -4,17 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "tsx server.ts",
-    "dev": "tsx server.ts --watch"
+    "build": "tsc --project tsconfig.json",
+    "start": "npx tsx server.ts",
+    "dev": "npx tsx server.ts --watch"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
-    "node-fetch": "^3.3.2"
-  },
-  "devDependencies": {
+    "node-fetch": "^3.3.2",
     "tsx": "^4.21.0"
   }
 }
