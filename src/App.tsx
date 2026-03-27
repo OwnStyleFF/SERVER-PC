@@ -639,11 +639,13 @@ export default function App() {
       if (carrier) carrierSet.add(carrier);
     });
 
+    const keys = Object.keys(counts) as Array<keyof typeof counts>;
+
     return {
       bolsas: 0,
-      categorias: Object.keys(counts).filter(k => counts[k] > 0).length,
+      categorias: keys.filter(k => counts[k] > 0).length,
       carriers: carrierSet.size,
-      productos: Object.values(counts).reduce((sum, value) => sum + value, 0),
+      productos: keys.reduce((sum, key) => sum + counts[key], 0),
       productosUnicos: uniqueProducts.size,
       byGroup: counts
     };
@@ -858,12 +860,12 @@ export default function App() {
 
         const derivedStats = computeTaecelCatalogStats(products);
         setTaecelCatalogCount({
+          ...derivedStats,
           bolsas: serverStats.bolsas ?? 0,
           categorias: derivedStats.categorias || serverStats.categorias || 0,
           carriers: serverStats.carriers ?? derivedStats.carriers ?? carriers.length ?? 0,
           productos: derivedStats.productos,
-          productosUnicos: derivedStats.productosUnicos,
-          ...derivedStats
+          productosUnicos: derivedStats.productosUnicos
         });
 
       } catch (err: any) {
@@ -1768,7 +1770,7 @@ export default function App() {
                     const carrierMeta = getCarrierByProduct(productMeta);
                     const validation = validateTaecelProductFields(productMeta, carrierMeta, referencia, amount);
                     if (!validation.valid) {
-                      showNotification(validation.message, 'error');
+                      showNotification(validation.message || 'Error de validación', 'error');
                       return;
                     }
 
@@ -5140,7 +5142,7 @@ const renderWarningModal = () => {
                           {summary?.topProducts?.map((p, i) => (
                             <div key={i} className="flex justify-between items-center">
                               <span className="text-sm font-bold text-gray-600">{p.name}</span>
-                              <span className="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-black">x{p.total_qty}</span>
+                              <span className="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-black">x{p.count}</span>
                             </div>
                           ))}
                           {(!summary?.topProducts || summary.topProducts.length === 0) && (

@@ -117,7 +117,7 @@ app.post('/api/pc/claim', (req, res) => {
   const { pc_id } = req.body;
   if (!pc_id) return res.status(400).json({ success: false, error: 'pc_id required' });
 
-  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
+  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id) as any;
   if (!agent) return res.status(404).json({ success: false, error: 'pc not paired' });
   if (agent.status !== 'paired') return res.status(409).json({ success: false, error: 'pc is not in registration state' });
 
@@ -128,8 +128,9 @@ app.post('/api/pc/claim', (req, res) => {
     const info = db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, "PC", "available", 0, ?)').run(pc_id, pc_id);
     db.prepare('UPDATE pc_agents SET status = "paired", updated_at = ? WHERE pc_id = ?').run(new Date().toISOString(), pc_id);
     res.json({ success: true, equipmentId: info.lastInsertRowid });
-  } catch (error) {
-    return res.status(500).json({ success: false, error: 'claim failed', details: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'unknown error';
+    return res.status(500).json({ success: false, error: 'claim failed', details: message });
   }
 });
 
@@ -139,18 +140,18 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
 
   if (!token) return res.status(400).json({ success: false, error: 'token required' });
 
-  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
+  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id) as any;
   if (!agent) return res.status(404).json({ success: false, error: 'pc not found' });
   if (agent.token !== token) return res.status(403).json({ success: false, error: 'invalid token' });
 
-  const equipment = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
+  const equipment = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id) as any;
   if (!equipment) return res.status(403).json({ success: false, error: 'pc not assigned to inventory' });
 
   const now = new Date().toISOString();
   db.prepare('UPDATE pc_agents SET last_seen = ?, status = ?, updated_at = ? WHERE pc_id = ?').run(now, status || 'paired', now, pc_id);
 
-  const command = db.prepare('SELECT * FROM pc_commands WHERE pc_id = ? AND status = ? ORDER BY id ASC LIMIT 1').get(pc_id, 'pending');
-  let action = null;
+  const command = db.prepare('SELECT * FROM pc_commands WHERE pc_id = ? AND status = ? ORDER BY id ASC LIMIT 1').get(pc_id, 'pending') as any;
+  let action: any = null;
   if (command) {
     action = {
       type: command.command,
