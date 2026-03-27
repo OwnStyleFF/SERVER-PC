@@ -65,11 +65,29 @@ CREATE TABLE IF NOT EXISTS peripherals (
 CREATE TABLE IF NOT EXISTS rentals (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   equipment_id INTEGER,
+  type TEXT DEFAULT 'PC',
   identifier TEXT,
   start_time DATETIME,
+  end_time DATETIME,
   limit_minutes INTEGER DEFAULT 0,
+  advance_payment REAL DEFAULT 0,
+  total_price REAL DEFAULT 0,
+  is_frozen INTEGER DEFAULT 0,
+  frozen_at DATETIME,
   status TEXT DEFAULT 'active',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS rental_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  rental_id INTEGER NOT NULL,
+  product_id INTEGER,
+  name TEXT,
+  quantity INTEGER DEFAULT 1,
+  price_at_time REAL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(rental_id) REFERENCES rentals(id),
+  FOREIGN KEY(product_id) REFERENCES products(id)
 );
 
 CREATE TABLE IF NOT EXISTS expenses (
@@ -94,6 +112,22 @@ CREATE TABLE IF NOT EXISTS sales (
 `;
 
 db.exec(SCHEMA_SQL);
+
+// Migrate rentals table for older databases
+const rentalColumns: any[] = db.prepare("PRAGMA table_info('rentals')").all();
+const rentalColumnNames = new Set(rentalColumns.map(c => c.name));
+const ensureRentalColumn = (name: string, definition: string) => {
+  if (!rentalColumnNames.has(name)) {
+    db.prepare(`ALTER TABLE rentals ADD COLUMN ${name} ${definition}`).run();
+  }
+};
+
+ensureRentalColumn('type', "TEXT DEFAULT 'PC'");
+ensureRentalColumn('end_time', 'DATETIME');
+ensureRentalColumn('advance_payment', 'REAL DEFAULT 0');
+ensureRentalColumn('total_price', 'REAL DEFAULT 0');
+ensureRentalColumn('is_frozen', 'INTEGER DEFAULT 0');
+ensureRentalColumn('frozen_at', 'DATETIME');
 
 const app = express();
 const PORT = Number(process.env.PORT || 4000);
@@ -296,7 +330,17 @@ app.get('/api/pc/:id/status', (req, res) => {
   if (!agent) return res.status(404).json({ success: false, error: 'not found' });
   res.json({ success: true, agent });
 });
+app.get('/api/taecel/status', (req, res) => {
+  res.json({ success: true, status: 'ok', lastCacheTimestamp: Date.now(), lastBackupTimestamp: Date.now() });
+});
 
+app.get('/api/taecel/admin/getProductsCount', (req, res) => {
+  res.json({ success: true, items: { productos: 0, carriers: 0, categorias: 0, bolsas: 0, productosUnicos: 0 } });
+});
+
+app.post('/api/taecel/admin/getProducts', (req, res) => {
+  res.json({ success: true, data: { productos: [], carriers: [] } });
+});
 app.get('/api/products', (req, res) => {
   const products = db.prepare('SELECT * FROM products ORDER BY id DESC').all();
   res.json({ success: true, data: products });
@@ -339,6 +383,174 @@ app.post('/api/peripherals', (req, res) => {
 app.get('/api/rentals/active', (req, res) => {
   const rentals = db.prepare("SELECT r.*, e.name AS equipment_name FROM rentals r LEFT JOIN equipment e ON e.id = r.equipment_id WHERE r.status='active' ORDER BY r.id DESC").all();
   res.json({ success: true, data: rentals });
+});
+
+app.post('/api/rentals/start', (req, res) => {
+  const { type = 'PC', identifier, advance_payment = 0, limit_minutes = 0, peripheral_ids = [], equipment_id = null } = req.body;
+  if (!identifier) return res.status(400).json({ success: false, error: 'identifier required' });
+
+  const now = new Date().toISOString();
+  const info = db.prepare('INSERT INTO rentals (equipment_id, type, identifier, start_time, limit_minutes, advance_payment, total_price, is_frozen, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .run(equipment_id, type, identifier, now, limit_minutes, advance_payment, 0, 0, 'active', now);
+
+  if (equipment_id) {
+    db.prepare('UPDATE equipment SET status = ? WHERE id = ?').run('rented', equipment_id);
+  }
+
+  const rental = db.prepare('SELECT * FROM rentals WHERE id = ?').get(info.lastInsertRowid);
+  res.json({ success: true, data: rental });
+});
+
+app.post('/api/rentals/:id/complete', (req, res) => {
+  const id = Number(req.params.id);
+  const { total_price = 0 } = req.body;
+  const rental = db.prepare('SELECT * FROM rentals WHERE id = ?').get(id) as any;
+  if (!rental) return res.status(404).json({ success: false, error: 'rental not found' });
+
+  const now = new Date().toISOString();
+  db.prepare('UPDATE rentals SET status = ?, total_price = ?, end_time = ?, is_frozen = 0 WHERE id = ?')
+    .run('completed', total_price, now, id);
+
+  if (rental.equipment_id) {
+    db.prepare('UPDATE equipment SET status = ? WHERE id = ?').run('available', rental.equipment_id);
+  }
+
+  res.json({ success: true, data: { id } });
+});
+
+app.post('/api/rentals/:id/timeout', (req, res) => {
+  const id = Number(req.params.id);
+  const rental = db.prepare('SELECT * FROM rentals WHERE id = ?').get(id) as any;
+  if (!rental) return res.status(404).json({ success: false, error: 'rental not found' });
+
+  const now = new Date().toISOString();
+  db.prepare('UPDATE rentals SET status = ?, end_time = ? WHERE id = ?').run('timed_out', now, id);
+
+  if (rental.equipment_id) {
+    db.prepare('UPDATE equipment SET status = ? WHERE id = ?').run('available', rental.equipment_id);
+  }
+
+  res.json({ success: true, data: { id } });
+});
+
+app.post('/api/rentals/:id/freeze', (req, res) => {
+  const id = Number(req.params.id);
+  const { is_frozen } = req.body;
+  const rental = db.prepare('SELECT * FROM rentals WHERE id = ?').get(id) as any;
+  if (!rental) return res.status(404).json({ success: false, error: 'rental not found' });
+
+  const frozen = is_frozen ? 1 : 0;
+  const frozenAt = is_frozen ? new Date().toISOString() : null;
+  db.prepare('UPDATE rentals SET is_frozen = ?, frozen_at = ? WHERE id = ?').run(frozen, frozenAt, id);
+
+  res.json({ success: true, data: { id, is_frozen: Boolean(frozen) } });
+});
+
+app.post('/api/rentals/:id/add-time', (req, res) => {
+  const id = Number(req.params.id);
+  const { minutes } = req.body;
+  if (typeof minutes !== 'number' || isNaN(minutes)) return res.status(400).json({ success: false, error: 'minutes required' });
+
+  const rental = db.prepare('SELECT * FROM rentals WHERE id = ?').get(id) as any;
+  if (!rental) return res.status(404).json({ success: false, error: 'rental not found' });
+
+  db.prepare('UPDATE rentals SET limit_minutes = limit_minutes + ? WHERE id = ?').run(minutes, id);
+  res.json({ success: true, data: { id, limit_minutes: rental.limit_minutes + minutes } });
+});
+
+app.post('/api/rentals/:id/reduce-time', (req, res) => {
+  const id = Number(req.params.id);
+  const { minutes } = req.body;
+  if (typeof minutes !== 'number' || isNaN(minutes)) return res.status(400).json({ success: false, error: 'minutes required' });
+
+  const rental = db.prepare('SELECT * FROM rentals WHERE id = ?').get(id) as any;
+  if (!rental) return res.status(404).json({ success: false, error: 'rental not found' });
+
+  const newLimit = Math.max(0, (rental.limit_minutes || 0) - minutes);
+  db.prepare('UPDATE rentals SET limit_minutes = ? WHERE id = ?').run(newLimit, id);
+  res.json({ success: true, data: { id, limit_minutes: newLimit } });
+});
+
+app.post('/api/rentals/:id/cancel', (req, res) => {
+  const id = Number(req.params.id);
+  const rental = db.prepare('SELECT * FROM rentals WHERE id = ?').get(id) as any;
+  if (!rental) return res.status(404).json({ success: false, error: 'rental not found' });
+
+  db.prepare('UPDATE rentals SET status = ?, end_time = ? WHERE id = ?').run('cancelled', new Date().toISOString(), id);
+  if (rental.equipment_id) {
+    db.prepare('UPDATE equipment SET status = ? WHERE id = ?').run('available', rental.equipment_id);
+  }
+
+  res.json({ success: true, data: { id } });
+});
+
+app.put('/api/rentals/:id/limit', (req, res) => {
+  const id = Number(req.params.id);
+  const { limit_minutes } = req.body;
+  if (typeof limit_minutes !== 'number' || isNaN(limit_minutes)) return res.status(400).json({ success: false, error: 'limit_minutes required' });
+
+  const rental = db.prepare('SELECT * FROM rentals WHERE id = ?').get(id);
+  if (!rental) return res.status(404).json({ success: false, error: 'rental not found' });
+
+  db.prepare('UPDATE rentals SET limit_minutes = ? WHERE id = ?').run(limit_minutes, id);
+  res.json({ success: true, data: { id, limit_minutes } });
+});
+
+app.get('/api/rentals/:id/items', (req, res) => {
+  const id = Number(req.params.id);
+  const items = db.prepare('SELECT * FROM rental_items WHERE rental_id = ? ORDER BY id ASC').all(id);
+  res.json({ success: true, data: items });
+});
+
+app.post('/api/rentals/:id/add-item', (req, res) => {
+  const id = Number(req.params.id);
+  const { product_id, quantity = 1, price } = req.body;
+  if (!product_id || typeof quantity !== 'number' || isNaN(quantity)) return res.status(400).json({ success: false, error: 'product_id and quantity required' });
+
+  const product = db.prepare('SELECT * FROM products WHERE id = ?').get(product_id) as any;
+  const name = product ? product.name : 'N/A';
+  const priceAtTime = typeof price === 'number' && !isNaN(price) ? price : (product ? product.price : 0);
+
+  const existing = db.prepare('SELECT * FROM rental_items WHERE rental_id = ? AND product_id = ?').get(id, product_id) as any;
+  if (existing) {
+    db.prepare('UPDATE rental_items SET quantity = quantity + ?, price_at_time = ? WHERE id = ?').run(quantity, priceAtTime, existing.id);
+    return res.json({ success: true, data: db.prepare('SELECT * FROM rental_items WHERE id = ?').get(existing.id) });
+  }
+
+  const info = db.prepare('INSERT INTO rental_items (rental_id, product_id, name, quantity, price_at_time) VALUES (?, ?, ?, ?, ?)')
+    .run(id, product_id, name, quantity, priceAtTime);
+  const item = db.prepare('SELECT * FROM rental_items WHERE id = ?').get(info.lastInsertRowid);
+  res.json({ success: true, data: item });
+});
+
+app.patch('/api/rentals/items/:itemId', (req, res) => {
+  const itemId = Number(req.params.itemId);
+  const { quantity } = req.body;
+  if (typeof quantity !== 'number' || isNaN(quantity)) return res.status(400).json({ success: false, error: 'quantity required' });
+
+  const item = db.prepare('SELECT * FROM rental_items WHERE id = ?').get(itemId);
+  if (!item) return res.status(404).json({ success: false, error: 'item not found' });
+
+  db.prepare('UPDATE rental_items SET quantity = ? WHERE id = ?').run(quantity, itemId);
+  res.json({ success: true, data: db.prepare('SELECT * FROM rental_items WHERE id = ?').get(itemId) });
+});
+
+app.delete('/api/rentals/items/:itemId', (req, res) => {
+  const itemId = Number(req.params.itemId);
+  const item = db.prepare('SELECT * FROM rental_items WHERE id = ?').get(itemId);
+  if (!item) return res.status(404).json({ success: false, error: 'item not found' });
+
+  db.prepare('DELETE FROM rental_items WHERE id = ?').run(itemId);
+  res.json({ success: true });
+});
+
+app.post('/api/equipment/:id/unblock', (req, res) => {
+  const id = Number(req.params.id);
+  const equipment = db.prepare('SELECT * FROM equipment WHERE id = ?').get(id);
+  if (!equipment) return res.status(404).json({ success: false, error: 'equipment not found' });
+
+  db.prepare('UPDATE equipment SET status = ? WHERE id = ?').run('available', id);
+  res.json({ success: true, data: { id } });
 });
 
 app.get('/api/expenses', (req, res) => {
