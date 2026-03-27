@@ -391,8 +391,29 @@ export default function App() {
   const [showPcLiveView, setShowPcLiveView] = useState(false);
   const blockedScreenImageUrl = process.env.REACT_APP_PC_BLOCKED_IMAGE || '/pc-blocked.png';
 
+  const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const fetchWithRetry = async (url: string, options: RequestInit = {}, retries = 5, delayMs = 500) => {
+    for (let i = 0; i <= retries; i++) {
+      try {
+        const res = await fetch(url, options);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res;
+      } catch (err) {
+        if (i === retries) throw err;
+        await wait(delayMs);
+      }
+    }
+    throw new Error('fetchWithRetry failed');
+  };
+
   useEffect(() => {
-    fetchData();
+    const start = async () => {
+      await wait(400); // asegúrate de que el servidor tenga un arranque mínimo
+      await fetchData();
+    };
+
+    start().catch(console.warn);
     const interval = setInterval(fetchData, 3000); // Actualiza cada 3 segundos para refresco casi en tiempo real
     return () => clearInterval(interval);
   }, []);
@@ -514,14 +535,14 @@ export default function App() {
   const fetchData = async () => {
     try {
       const [prodRes, equipRes, periRes, rentRes, expRes, summaryRes, lossRes, salesRes] = await Promise.all([
-        fetch('/api/products'),
-        fetch('/api/equipment'),
-        fetch('/api/peripherals'),
-        fetch('/api/rentals/active'),
-        fetch('/api/expenses'),
-        fetch('/api/analytics/summary'),
-        fetch('/api/losses'),
-        fetch('/api/sales')
+        fetchWithRetry('/api/products'),
+        fetchWithRetry('/api/equipment'),
+        fetchWithRetry('/api/peripherals'),
+        fetchWithRetry('/api/rentals/active'),
+        fetchWithRetry('/api/expenses'),
+        fetchWithRetry('/api/analytics/summary'),
+        fetchWithRetry('/api/losses'),
+        fetchWithRetry('/api/sales')
       ]);
       
       if (prodRes.ok) {
