@@ -1,0 +1,18 @@
+==> consultarSaldo: POST /api/taecel/admin/consultarSaldo
+   status=500 ❌
+==> getSales: POST /api/taecel/admin/getSales
+   status=400 ❌
+==> getReports: POST /api/taecel/admin/getReports
+   status=200 ✅
+==> getBancosCte: POST /api/taecel/admin/getBancosCte
+   status=500 ❌
+==> urlReporteCompra: POST /api/taecel/admin/urlReporteCompra
+   status=500 ❌
+==> RequestTXN: POST /api/taecel/admin/RequestTXN
+   status=404 ❌
+==> StatusTXN: POST /api/taecel/admin/StatusTXN
+   status=500 ❌
+==> ProgRequestTXN: POST /api/taecel/admin/ProgRequestTXN
+   status=500 ❌
+==> traspasoPago: POST /api/taecel/admin/traspasoPago
+   status=400 ❌

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PC Bloqueada</title>
+  <style>
+    body, html { margin:0; padding:0; width:100%; height:100%; background:black; color:white; overflow:hidden; }
+    .background { position:absolute; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; filter: brightness(0.3); z-index:0; }
+    .fullscreen { position:relative; display:flex; align-items:center; justify-content:center; flex-direction:column; width:100%; height:100%; text-align:center; z-index:1; }
+    .title { font-size:2.5rem; font-weight:900; margin-bottom:1rem; }
+    .message { font-size:1.2rem; }
+    .top-right { position:absolute; top:12px; right:12px; font-size:1.5rem; font-weight:800; z-index:2; color:#00ff00; }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  <div class="top-right" id="countdown"></div>
+  <div class="fullscreen">
+    <div class="title">PC BLOQUEADA</div>
+    <div id="message" class="message">Tiempo agotado</div>
+  </div>
+  <script>
+    function getQueryParams() {
+      const query = new URLSearchParams(window.location.search);
+      return {
+        message: query.get('message') || 'PC bloqueada',
+        image: query.get('image') || 'image/AOD.png',
+        countdown: query.get('countdown') || ''
+      };
+    }
+
+    function setLockScreen(message, image, countdownSec) {
+      document.getElementById('message').innerText = message;
+      document.querySelector('.background').style.backgroundImage = `url(${image})`;
+
+      const countdownEl = document.getElementById('countdown');
+      if (countdownSec && !isNaN(Number(countdownSec)) && Number(countdownSec) > 0) {
+        let value = Number(countdownSec);
+        countdownEl.innerText = `Terminando en ${value}s`;
+        const timer = setInterval(() => {
+          value -= 1;
+          if (value <= 0) {
+            countdownEl.innerText = '00s';
+            clearInterval(timer);
+            return;
+          }
+          countdownEl.innerText = `Terminando en ${value}s`;
+        }, 1000);
+      } else {
+        countdownEl.innerText = '';
+      }
+    }
+
+    window.updateLockScreen = (message, image, countdown) => {
+      setLockScreen(message, image, countdown);
+    };
+
+    const params = getQueryParams();
+    setLockScreen(params.message, params.image, params.countdown);
+
+    window.addEventListener('keydown', e => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, { capture: true });
+  </script>
+</body>
+</html>

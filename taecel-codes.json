@@ -1,0 +1,2206 @@
+{
+  "source": "cache",
+  "count": 220,
+  "codes": [
+    {
+      "idProducto": "S_CFE",
+      "codigo": "S_CFE",
+      "nombre": "Pago de CFE",
+      "carrier": "CFE",
+      "carrierId": "101",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_TELMEX",
+      "codigo": "S_TELMEX",
+      "nombre": "Pago de Telmex",
+      "carrier": "Telmex",
+      "carrierId": "102",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_SKY",
+      "codigo": "S_SKY",
+      "nombre": "Pago de Sky",
+      "carrier": "Sky",
+      "carrierId": "103",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_IZZI",
+      "codigo": "S_IZZI",
+      "nombre": "Pago de Izzi",
+      "carrier": "Izzi",
+      "carrierId": "104",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_DISH",
+      "codigo": "S_DISH",
+      "nombre": "Pago de Dish",
+      "carrier": "Dish",
+      "carrierId": "105",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_NATURGY",
+      "codigo": "S_NATURGY",
+      "nombre": "Pago de Naturgy",
+      "carrier": "Naturgy",
+      "carrierId": "106",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_TOTALPLAY",
+      "codigo": "S_TOTALPLAY",
+      "nombre": "Pago de Totalplay",
+      "carrier": "Totalplay",
+      "carrierId": "107",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_INFONAVIT",
+      "codigo": "S_INFONAVIT",
+      "nombre": "Pago de Infonavit",
+      "carrier": "Infonavit",
+      "carrierId": "108",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_SACMEX",
+      "codigo": "S_SACMEX",
+      "nombre": "Pago de SACMEX",
+      "carrier": "SACMEX",
+      "carrierId": "109",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_TELEVIA",
+      "codigo": "S_TELEVIA",
+      "nombre": "Pago de TeleVia",
+      "carrier": "TeleVia",
+      "carrierId": "110",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_AGUAKAN",
+      "codigo": "S_AGUAKAN",
+      "nombre": "Pago de Aguakan",
+      "carrier": "Aguakan",
+      "carrierId": "111",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_TELNOR",
+      "codigo": "S_TELNOR",
+      "nombre": "Pago de Telnor",
+      "carrier": "Telnor",
+      "carrierId": "112",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_AXTEL",
+      "codigo": "S_AXTEL",
+      "nombre": "Pago de Axtel",
+      "carrier": "Axtel",
+      "carrierId": "113",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_MAXIGAS",
+      "codigo": "S_MAXIGAS",
+      "nombre": "Pago de Maxigas",
+      "carrier": "Maxigas",
+      "carrierId": "114",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_PREDIAL",
+      "codigo": "S_PREDIAL",
+      "nombre": "Pago de Predial",
+      "carrier": "Predial",
+      "carrierId": "115",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "S_PASE",
+      "codigo": "S_PASE",
+      "nombre": "Pago de Pase Urbano",
+      "carrier": "Pase Urbano",
+      "carrierId": "116",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_AVON",
+      "codigo": "C_AVON",
+      "nombre": "Pago Avon",
+      "carrier": "Avon",
+      "carrierId": "301",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_MARYKAY",
+      "codigo": "C_MARYKAY",
+      "nombre": "Pago Mary Kay",
+      "carrier": "Mary Kay",
+      "carrierId": "302",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_STANHOME",
+      "codigo": "C_STANHOME",
+      "nombre": "Pago Stanhome",
+      "carrier": "Stanhome",
+      "carrierId": "303",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_TUPPERWARE",
+      "codigo": "C_TUPPERWARE",
+      "nombre": "Pago Tupperware",
+      "carrier": "Tupperware",
+      "carrierId": "304",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_ARABELA",
+      "codigo": "C_ARABELA",
+      "nombre": "Pago Arabela",
+      "carrier": "Arabela",
+      "carrierId": "305",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_FULLER",
+      "codigo": "C_FULLER",
+      "nombre": "Pago Fuller",
+      "carrier": "Fuller",
+      "carrierId": "306",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_NATURA",
+      "codigo": "C_NATURA",
+      "nombre": "Pago Natura",
+      "carrier": "Natura",
+      "carrierId": "307",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_JAFRA",
+      "codigo": "C_JAFRA",
+      "nombre": "Pago Jafra",
+      "carrier": "Jafra",
+      "carrierId": "308",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_ILUSION",
+      "codigo": "C_ILUSION",
+      "nombre": "Pago Ilusión",
+      "carrier": "Ilusión",
+      "carrierId": "309",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_CUIDAD_CON_EL_PERRO",
+      "codigo": "C_CUIDAD_CON_EL_PERRO",
+      "nombre": "Pago Cuidado con el Perro",
+      "carrier": "Cuidado con el Perro",
+      "carrierId": "310",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_BETTERWARE",
+      "codigo": "C_BETTERWARE",
+      "nombre": "Pago Betterware",
+      "carrier": "Betterware",
+      "carrierId": "311",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_HERBALIFE",
+      "codigo": "C_HERBALIFE",
+      "nombre": "Pago Herbalife",
+      "carrier": "Herbalife",
+      "carrierId": "312",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_BELCORP",
+      "codigo": "C_BELCORP",
+      "nombre": "Pago Belcorp",
+      "carrier": "Belcorp",
+      "carrierId": "313",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_ORIFLAME",
+      "codigo": "C_ORIFLAME",
+      "nombre": "Pago Oriflame",
+      "carrier": "Oriflame",
+      "carrierId": "314",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_TERRAMAR",
+      "codigo": "C_TERRAMAR",
+      "nombre": "Pago Terramar",
+      "carrier": "Terramar",
+      "carrierId": "315",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_SHELO_NABEL",
+      "codigo": "C_SHELO_NABEL",
+      "nombre": "Pago Shelo Nabel",
+      "carrier": "Shelo Nabel",
+      "carrierId": "316",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_ANDREA",
+      "codigo": "C_ANDREA",
+      "nombre": "Pago Andrea",
+      "carrier": "Andrea",
+      "carrierId": "317",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_CKLASS",
+      "codigo": "C_CKLASS",
+      "nombre": "Pago Cklass",
+      "carrier": "Cklass",
+      "carrierId": "318",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "C_PRICE_SHOES",
+      "codigo": "C_PRICE_SHOES",
+      "nombre": "Pago Price Shoes",
+      "carrier": "Price Shoes",
+      "carrierId": "319",
+      "categoria": null,
+      "monto": null,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_NETFLIX_150",
+      "codigo": "G_NETFLIX_150",
+      "nombre": "Netflix $150",
+      "carrier": "Netflix",
+      "carrierId": "201",
+      "categoria": null,
+      "monto": 150,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_NETFLIX_300",
+      "codigo": "G_NETFLIX_300",
+      "nombre": "Netflix $300",
+      "carrier": "Netflix",
+      "carrierId": "201",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_NETFLIX_500",
+      "codigo": "G_NETFLIX_500",
+      "nombre": "Netflix $500",
+      "carrier": "Netflix",
+      "carrierId": "201",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_SPOTIFY_115",
+      "codigo": "G_SPOTIFY_115",
+      "nombre": "Spotify $115",
+      "carrier": "Spotify",
+      "carrierId": "202",
+      "categoria": null,
+      "monto": 115,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_SPOTIFY_200",
+      "codigo": "G_SPOTIFY_200",
+      "nombre": "Spotify $200",
+      "carrier": "Spotify",
+      "carrierId": "202",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_SPOTIFY_300",
+      "codigo": "G_SPOTIFY_300",
+      "nombre": "Spotify $300",
+      "carrier": "Spotify",
+      "carrierId": "202",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_SPOTIFY_600",
+      "codigo": "G_SPOTIFY_600",
+      "nombre": "Spotify $600",
+      "carrier": "Spotify",
+      "carrierId": "202",
+      "categoria": null,
+      "monto": 600,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_AMAZON_100",
+      "codigo": "G_AMAZON_100",
+      "nombre": "Amazon $100",
+      "carrier": "Amazon",
+      "carrierId": "203",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_AMAZON_200",
+      "codigo": "G_AMAZON_200",
+      "nombre": "Amazon $200",
+      "carrier": "Amazon",
+      "carrierId": "203",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_AMAZON_300",
+      "codigo": "G_AMAZON_300",
+      "nombre": "Amazon $300",
+      "carrier": "Amazon",
+      "carrierId": "203",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_AMAZON_500",
+      "codigo": "G_AMAZON_500",
+      "nombre": "Amazon $500",
+      "carrier": "Amazon",
+      "carrierId": "203",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_AMAZON_1000",
+      "codigo": "G_AMAZON_1000",
+      "nombre": "Amazon $1000",
+      "carrier": "Amazon",
+      "carrierId": "203",
+      "categoria": null,
+      "monto": 1000,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_GOOGLE_100",
+      "codigo": "G_GOOGLE_100",
+      "nombre": "Google Play $100",
+      "carrier": "Google Play",
+      "carrierId": "204",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_GOOGLE_200",
+      "codigo": "G_GOOGLE_200",
+      "nombre": "Google Play $200",
+      "carrier": "Google Play",
+      "carrierId": "204",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_GOOGLE_300",
+      "codigo": "G_GOOGLE_300",
+      "nombre": "Google Play $300",
+      "carrier": "Google Play",
+      "carrierId": "204",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_GOOGLE_500",
+      "codigo": "G_GOOGLE_500",
+      "nombre": "Google Play $500",
+      "carrier": "Google Play",
+      "carrierId": "204",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_GOOGLE_1000",
+      "codigo": "G_GOOGLE_1000",
+      "nombre": "Google Play $1000",
+      "carrier": "Google Play",
+      "carrierId": "204",
+      "categoria": null,
+      "monto": 1000,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_XBOX_200",
+      "codigo": "G_XBOX_200",
+      "nombre": "Xbox $200",
+      "carrier": "Xbox",
+      "carrierId": "205",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_XBOX_300",
+      "codigo": "G_XBOX_300",
+      "nombre": "Xbox $300",
+      "carrier": "Xbox",
+      "carrierId": "205",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_XBOX_500",
+      "codigo": "G_XBOX_500",
+      "nombre": "Xbox $500",
+      "carrier": "Xbox",
+      "carrierId": "205",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_XBOX_600",
+      "codigo": "G_XBOX_600",
+      "nombre": "Xbox $600",
+      "carrier": "Xbox",
+      "carrierId": "205",
+      "categoria": null,
+      "monto": 600,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_XBOX_1000",
+      "codigo": "G_XBOX_1000",
+      "nombre": "Xbox $1000",
+      "carrier": "Xbox",
+      "carrierId": "205",
+      "categoria": null,
+      "monto": 1000,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_PLAYSTATION_10",
+      "codigo": "G_PLAYSTATION_10",
+      "nombre": "PlayStation $10 USD",
+      "carrier": "PlayStation",
+      "carrierId": "206",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_PLAYSTATION_20",
+      "codigo": "G_PLAYSTATION_20",
+      "nombre": "PlayStation $20 USD",
+      "carrier": "PlayStation",
+      "carrierId": "206",
+      "categoria": null,
+      "monto": 400,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_PLAYSTATION_50",
+      "codigo": "G_PLAYSTATION_50",
+      "nombre": "PlayStation $50 USD",
+      "carrier": "PlayStation",
+      "carrierId": "206",
+      "categoria": null,
+      "monto": 1000,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_NINTENDO_200",
+      "codigo": "G_NINTENDO_200",
+      "nombre": "Nintendo eShop $200",
+      "carrier": "Nintendo",
+      "carrierId": "207",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_NINTENDO_500",
+      "codigo": "G_NINTENDO_500",
+      "nombre": "Nintendo eShop $500",
+      "carrier": "Nintendo",
+      "carrierId": "207",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_STEAM_100",
+      "codigo": "G_STEAM_100",
+      "nombre": "Steam $100",
+      "carrier": "Steam",
+      "carrierId": "208",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_STEAM_200",
+      "codigo": "G_STEAM_200",
+      "nombre": "Steam $200",
+      "carrier": "Steam",
+      "carrierId": "208",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_STEAM_300",
+      "codigo": "G_STEAM_300",
+      "nombre": "Steam $300",
+      "carrier": "Steam",
+      "carrierId": "208",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_STEAM_500",
+      "codigo": "G_STEAM_500",
+      "nombre": "Steam $500",
+      "carrier": "Steam",
+      "carrierId": "208",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_STEAM_1000",
+      "codigo": "G_STEAM_1000",
+      "nombre": "Steam $1000",
+      "carrier": "Steam",
+      "carrierId": "208",
+      "categoria": null,
+      "monto": 1000,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_ROBLOX_100",
+      "codigo": "G_ROBLOX_100",
+      "nombre": "Roblox $100",
+      "carrier": "Roblox",
+      "carrierId": "209",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_ROBLOX_200",
+      "codigo": "G_ROBLOX_200",
+      "nombre": "Roblox $200",
+      "carrier": "Roblox",
+      "carrierId": "209",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_ROBLOX_400",
+      "codigo": "G_ROBLOX_400",
+      "nombre": "Roblox $400",
+      "carrier": "Roblox",
+      "carrierId": "209",
+      "categoria": null,
+      "monto": 400,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_ROBLOX_800",
+      "codigo": "G_ROBLOX_800",
+      "nombre": "Roblox $800",
+      "carrier": "Roblox",
+      "carrierId": "209",
+      "categoria": null,
+      "monto": 800,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_UBER_150",
+      "codigo": "G_UBER_150",
+      "nombre": "Uber $150",
+      "carrier": "Uber",
+      "carrierId": "210",
+      "categoria": null,
+      "monto": 150,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_UBER_200",
+      "codigo": "G_UBER_200",
+      "nombre": "Uber $200",
+      "carrier": "Uber",
+      "carrierId": "210",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_UBER_300",
+      "codigo": "G_UBER_300",
+      "nombre": "Uber $300",
+      "carrier": "Uber",
+      "carrierId": "210",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_UBER_500",
+      "codigo": "G_UBER_500",
+      "nombre": "Uber $500",
+      "carrier": "Uber",
+      "carrierId": "210",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_DIDIFOOD_150",
+      "codigo": "G_DIDIFOOD_150",
+      "nombre": "Didi Food $150",
+      "carrier": "Didi Food",
+      "carrierId": "211",
+      "categoria": null,
+      "monto": 150,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_DIDIFOOD_200",
+      "codigo": "G_DIDIFOOD_200",
+      "nombre": "Didi Food $200",
+      "carrier": "Didi Food",
+      "carrierId": "211",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_DIDIFOOD_300",
+      "codigo": "G_DIDIFOOD_300",
+      "nombre": "Didi Food $300",
+      "carrier": "Didi Food",
+      "carrierId": "211",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_DIDIFOOD_500",
+      "codigo": "G_DIDIFOOD_500",
+      "nombre": "Didi Food $500",
+      "carrier": "Didi Food",
+      "carrierId": "211",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_APPLE_100",
+      "codigo": "G_APPLE_100",
+      "nombre": "Apple $100",
+      "carrier": "Apple",
+      "carrierId": "212",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_APPLE_200",
+      "codigo": "G_APPLE_200",
+      "nombre": "Apple $200",
+      "carrier": "Apple",
+      "carrierId": "212",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_APPLE_500",
+      "codigo": "G_APPLE_500",
+      "nombre": "Apple $500",
+      "carrier": "Apple",
+      "carrierId": "212",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_CRUNCHY_100",
+      "codigo": "G_CRUNCHY_100",
+      "nombre": "Crunchyroll $100",
+      "carrier": "Crunchyroll",
+      "carrierId": "213",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_CRUNCHY_300",
+      "codigo": "G_CRUNCHY_300",
+      "nombre": "Crunchyroll $300",
+      "carrier": "Crunchyroll",
+      "carrierId": "213",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_PARAMOUNT_100",
+      "codigo": "G_PARAMOUNT_100",
+      "nombre": "Paramount+ $100",
+      "carrier": "Paramount+",
+      "carrierId": "214",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_PARAMOUNT_300",
+      "codigo": "G_PARAMOUNT_300",
+      "nombre": "Paramount+ $300",
+      "carrier": "Paramount+",
+      "carrierId": "214",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_HBO_100",
+      "codigo": "G_HBO_100",
+      "nombre": "HBO Max $100",
+      "carrier": "HBO Max",
+      "carrierId": "215",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_HBO_300",
+      "codigo": "G_HBO_300",
+      "nombre": "HBO Max $300",
+      "carrier": "HBO Max",
+      "carrierId": "215",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_DISNEY_100",
+      "codigo": "G_DISNEY_100",
+      "nombre": "Disney+ $100",
+      "carrier": "Disney+",
+      "carrierId": "216",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_DISNEY_300",
+      "codigo": "G_DISNEY_300",
+      "nombre": "Disney+ $300",
+      "carrier": "Disney+",
+      "carrierId": "216",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_CINEPOLIS_100",
+      "codigo": "G_CINEPOLIS_100",
+      "nombre": "Cinepolis $100",
+      "carrier": "Cinepolis",
+      "carrierId": "217",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_CINEPOLIS_250",
+      "codigo": "G_CINEPOLIS_250",
+      "nombre": "Cinepolis $250",
+      "carrier": "Cinepolis",
+      "carrierId": "217",
+      "categoria": null,
+      "monto": 250,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_CINEPOLIS_500",
+      "codigo": "G_CINEPOLIS_500",
+      "nombre": "Cinepolis $500",
+      "carrier": "Cinepolis",
+      "carrierId": "217",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_CINEMEX_100",
+      "codigo": "G_CINEMEX_100",
+      "nombre": "Cinemex $100",
+      "carrier": "Cinemex",
+      "carrierId": "218",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_CINEMEX_200",
+      "codigo": "G_CINEMEX_200",
+      "nombre": "Cinemex $200",
+      "carrier": "Cinemex",
+      "carrierId": "218",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_CINEMEX_500",
+      "codigo": "G_CINEMEX_500",
+      "nombre": "Cinemex $500",
+      "carrier": "Cinemex",
+      "carrierId": "218",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_RAPPI_100",
+      "codigo": "G_RAPPI_100",
+      "nombre": "Rappi $100",
+      "carrier": "Rappi",
+      "carrierId": "219",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_RAPPI_250",
+      "codigo": "G_RAPPI_250",
+      "nombre": "Rappi $250",
+      "carrier": "Rappi",
+      "carrierId": "219",
+      "categoria": null,
+      "monto": 250,
+      "descripcion": null
+    },
+    {
+      "idProducto": "G_RAPPI_500",
+      "codigo": "G_RAPPI_500",
+      "nombre": "Rappi $500",
+      "carrier": "Rappi",
+      "carrierId": "219",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "T10",
+      "codigo": "T10",
+      "nombre": "Telcel $10",
+      "carrier": "Telcel",
+      "carrierId": "1",
+      "categoria": null,
+      "monto": 10,
+      "descripcion": null
+    },
+    {
+      "idProducto": "T20",
+      "codigo": "T20",
+      "nombre": "Telcel $20",
+      "carrier": "Telcel",
+      "carrierId": "1",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "T30",
+      "codigo": "T30",
+      "nombre": "Telcel $30",
+      "carrier": "Telcel",
+      "carrierId": "1",
+      "categoria": null,
+      "monto": 30,
+      "descripcion": null
+    },
+    {
+      "idProducto": "T50",
+      "codigo": "T50",
+      "nombre": "Telcel $50",
+      "carrier": "Telcel",
+      "carrierId": "1",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "T80",
+      "codigo": "T80",
+      "nombre": "Telcel $80",
+      "carrier": "Telcel",
+      "carrierId": "1",
+      "categoria": null,
+      "monto": 80,
+      "descripcion": null
+    },
+    {
+      "idProducto": "T100",
+      "codigo": "T100",
+      "nombre": "Telcel $100",
+      "carrier": "Telcel",
+      "carrierId": "1",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "T150",
+      "codigo": "T150",
+      "nombre": "Telcel $150",
+      "carrier": "Telcel",
+      "carrierId": "1",
+      "categoria": null,
+      "monto": 150,
+      "descripcion": null
+    },
+    {
+      "idProducto": "T200",
+      "codigo": "T200",
+      "nombre": "Telcel $200",
+      "carrier": "Telcel",
+      "carrierId": "1",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "T300",
+      "codigo": "T300",
+      "nombre": "Telcel $300",
+      "carrier": "Telcel",
+      "carrierId": "1",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "T500",
+      "codigo": "T500",
+      "nombre": "Telcel $500",
+      "carrier": "Telcel",
+      "carrierId": "1",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M10",
+      "codigo": "M10",
+      "nombre": "Movistar $10",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 10,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M20",
+      "codigo": "M20",
+      "nombre": "Movistar $20",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M30",
+      "codigo": "M30",
+      "nombre": "Movistar $30",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 30,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M40",
+      "codigo": "M40",
+      "nombre": "Movistar $40",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 40,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M50",
+      "codigo": "M50",
+      "nombre": "Movistar $50",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M60",
+      "codigo": "M60",
+      "nombre": "Movistar $60",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 60,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M70",
+      "codigo": "M70",
+      "nombre": "Movistar $70",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 70,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M80",
+      "codigo": "M80",
+      "nombre": "Movistar $80",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 80,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M100",
+      "codigo": "M100",
+      "nombre": "Movistar $100",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M120",
+      "codigo": "M120",
+      "nombre": "Movistar $120",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 120,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M150",
+      "codigo": "M150",
+      "nombre": "Movistar $150",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 150,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M200",
+      "codigo": "M200",
+      "nombre": "Movistar $200",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M300",
+      "codigo": "M300",
+      "nombre": "Movistar $300",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "M500",
+      "codigo": "M500",
+      "nombre": "Movistar $500",
+      "carrier": "Movistar",
+      "carrierId": "2",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A10",
+      "codigo": "A10",
+      "nombre": "AT&T $10",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 10,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A20",
+      "codigo": "A20",
+      "nombre": "AT&T $20",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A30",
+      "codigo": "A30",
+      "nombre": "AT&T $30",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 30,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A40",
+      "codigo": "A40",
+      "nombre": "AT&T $40",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 40,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A50",
+      "codigo": "A50",
+      "nombre": "AT&T $50",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A60",
+      "codigo": "A60",
+      "nombre": "AT&T $60",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 60,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A70",
+      "codigo": "A70",
+      "nombre": "AT&T $70",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 70,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A80",
+      "codigo": "A80",
+      "nombre": "AT&T $80",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 80,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A100",
+      "codigo": "A100",
+      "nombre": "AT&T $100",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A120",
+      "codigo": "A120",
+      "nombre": "AT&T $120",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 120,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A150",
+      "codigo": "A150",
+      "nombre": "AT&T $150",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 150,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A200",
+      "codigo": "A200",
+      "nombre": "AT&T $200",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A300",
+      "codigo": "A300",
+      "nombre": "AT&T $300",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "A500",
+      "codigo": "A500",
+      "nombre": "AT&T $500",
+      "carrier": "AT&T",
+      "carrierId": "3",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B10",
+      "codigo": "B10",
+      "nombre": "Bait $10",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 10,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B20",
+      "codigo": "B20",
+      "nombre": "Bait $20",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B30",
+      "codigo": "B30",
+      "nombre": "Bait $30",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 30,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B50",
+      "codigo": "B50",
+      "nombre": "Bait $50",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B65",
+      "codigo": "B65",
+      "nombre": "Bait $65",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 65,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B100",
+      "codigo": "B100",
+      "nombre": "Bait $100",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B125",
+      "codigo": "B125",
+      "nombre": "Bait $125",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 125,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B150",
+      "codigo": "B150",
+      "nombre": "Bait $150",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 150,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B200",
+      "codigo": "B200",
+      "nombre": "Bait $200",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B300",
+      "codigo": "B300",
+      "nombre": "Bait $300",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "B500",
+      "codigo": "B500",
+      "nombre": "Bait $500",
+      "carrier": "Bait",
+      "carrierId": "4",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U10",
+      "codigo": "U10",
+      "nombre": "Unefon $10",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 10,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U20",
+      "codigo": "U20",
+      "nombre": "Unefon $20",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U30",
+      "codigo": "U30",
+      "nombre": "Unefon $30",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 30,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U40",
+      "codigo": "U40",
+      "nombre": "Unefon $40",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 40,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U50",
+      "codigo": "U50",
+      "nombre": "Unefon $50",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U60",
+      "codigo": "U60",
+      "nombre": "Unefon $60",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 60,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U70",
+      "codigo": "U70",
+      "nombre": "Unefon $70",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 70,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U80",
+      "codigo": "U80",
+      "nombre": "Unefon $80",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 80,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U100",
+      "codigo": "U100",
+      "nombre": "Unefon $100",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U150",
+      "codigo": "U150",
+      "nombre": "Unefon $150",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 150,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U200",
+      "codigo": "U200",
+      "nombre": "Unefon $200",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U300",
+      "codigo": "U300",
+      "nombre": "Unefon $300",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "U500",
+      "codigo": "U500",
+      "nombre": "Unefon $500",
+      "carrier": "Unefon",
+      "carrierId": "5",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "V20",
+      "codigo": "V20",
+      "nombre": "Virgin $20",
+      "carrier": "Virgin Mobile",
+      "carrierId": "6",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "V30",
+      "codigo": "V30",
+      "nombre": "Virgin $30",
+      "carrier": "Virgin Mobile",
+      "carrierId": "6",
+      "categoria": null,
+      "monto": 30,
+      "descripcion": null
+    },
+    {
+      "idProducto": "V50",
+      "codigo": "V50",
+      "nombre": "Virgin $50",
+      "carrier": "Virgin Mobile",
+      "carrierId": "6",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "V100",
+      "codigo": "V100",
+      "nombre": "Virgin $100",
+      "carrier": "Virgin Mobile",
+      "carrierId": "6",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "V150",
+      "codigo": "V150",
+      "nombre": "Virgin $150",
+      "carrier": "Virgin Mobile",
+      "carrierId": "6",
+      "categoria": null,
+      "monto": 150,
+      "descripcion": null
+    },
+    {
+      "idProducto": "V200",
+      "codigo": "V200",
+      "nombre": "Virgin $200",
+      "carrier": "Virgin Mobile",
+      "carrierId": "6",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "V300",
+      "codigo": "V300",
+      "nombre": "Virgin $300",
+      "carrier": "Virgin Mobile",
+      "carrierId": "6",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "V500",
+      "codigo": "V500",
+      "nombre": "Virgin $500",
+      "carrier": "Virgin Mobile",
+      "carrierId": "6",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "P50",
+      "codigo": "P50",
+      "nombre": "Pillofon $50",
+      "carrier": "Pillofon",
+      "carrierId": "7",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "P100",
+      "codigo": "P100",
+      "nombre": "Pillofon $100",
+      "carrier": "Pillofon",
+      "carrierId": "7",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "P149",
+      "codigo": "P149",
+      "nombre": "Pillofon $149",
+      "carrier": "Pillofon",
+      "carrierId": "7",
+      "categoria": null,
+      "monto": 149,
+      "descripcion": null
+    },
+    {
+      "idProducto": "P199",
+      "codigo": "P199",
+      "nombre": "Pillofon $199",
+      "carrier": "Pillofon",
+      "carrierId": "7",
+      "categoria": null,
+      "monto": 199,
+      "descripcion": null
+    },
+    {
+      "idProducto": "P299",
+      "codigo": "P299",
+      "nombre": "Pillofon $299",
+      "carrier": "Pillofon",
+      "carrierId": "7",
+      "categoria": null,
+      "monto": 299,
+      "descripcion": null
+    },
+    {
+      "idProducto": "P499",
+      "codigo": "P499",
+      "nombre": "Pillofon $499",
+      "carrier": "Pillofon",
+      "carrierId": "7",
+      "categoria": null,
+      "monto": 499,
+      "descripcion": null
+    },
+    {
+      "idProducto": "F30",
+      "codigo": "F30",
+      "nombre": "FreedomPop $30",
+      "carrier": "FreedomPop",
+      "carrierId": "8",
+      "categoria": null,
+      "monto": 30,
+      "descripcion": null
+    },
+    {
+      "idProducto": "F50",
+      "codigo": "F50",
+      "nombre": "FreedomPop $50",
+      "carrier": "FreedomPop",
+      "carrierId": "8",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "F100",
+      "codigo": "F100",
+      "nombre": "FreedomPop $100",
+      "carrier": "FreedomPop",
+      "carrierId": "8",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "F200",
+      "codigo": "F200",
+      "nombre": "FreedomPop $200",
+      "carrier": "FreedomPop",
+      "carrierId": "8",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "F300",
+      "codigo": "F300",
+      "nombre": "FreedomPop $300",
+      "carrier": "FreedomPop",
+      "carrierId": "8",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "F500",
+      "codigo": "F500",
+      "nombre": "FreedomPop $500",
+      "carrier": "FreedomPop",
+      "carrierId": "8",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "W10",
+      "codigo": "W10",
+      "nombre": "Weex $10",
+      "carrier": "Weex",
+      "carrierId": "9",
+      "categoria": null,
+      "monto": 10,
+      "descripcion": null
+    },
+    {
+      "idProducto": "W20",
+      "codigo": "W20",
+      "nombre": "Weex $20",
+      "carrier": "Weex",
+      "carrierId": "9",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "W30",
+      "codigo": "W30",
+      "nombre": "Weex $30",
+      "carrier": "Weex",
+      "carrierId": "9",
+      "categoria": null,
+      "monto": 30,
+      "descripcion": null
+    },
+    {
+      "idProducto": "W50",
+      "codigo": "W50",
+      "nombre": "Weex $50",
+      "carrier": "Weex",
+      "carrierId": "9",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "W100",
+      "codigo": "W100",
+      "nombre": "Weex $100",
+      "carrier": "Weex",
+      "carrierId": "9",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "W200",
+      "codigo": "W200",
+      "nombre": "Weex $200",
+      "carrier": "Weex",
+      "carrierId": "9",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "W500",
+      "codigo": "W500",
+      "nombre": "Weex $500",
+      "carrier": "Weex",
+      "carrierId": "9",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "FL50",
+      "codigo": "FL50",
+      "nombre": "Flash Mobile $50",
+      "carrier": "Flash Mobile",
+      "carrierId": "10",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "FL100",
+      "codigo": "FL100",
+      "nombre": "Flash Mobile $100",
+      "carrier": "Flash Mobile",
+      "carrierId": "10",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "FL200",
+      "codigo": "FL200",
+      "nombre": "Flash Mobile $200",
+      "carrier": "Flash Mobile",
+      "carrierId": "10",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "FL300",
+      "codigo": "FL300",
+      "nombre": "Flash Mobile $300",
+      "carrier": "Flash Mobile",
+      "carrierId": "10",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "FL500",
+      "codigo": "FL500",
+      "nombre": "Flash Mobile $500",
+      "carrier": "Flash Mobile",
+      "carrierId": "10",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "ALO10",
+      "codigo": "ALO10",
+      "nombre": "Alo $10",
+      "carrier": "Alo",
+      "carrierId": "11",
+      "categoria": null,
+      "monto": 10,
+      "descripcion": null
+    },
+    {
+      "idProducto": "ALO20",
+      "codigo": "ALO20",
+      "nombre": "Alo $20",
+      "carrier": "Alo",
+      "carrierId": "11",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "MAZ30",
+      "codigo": "MAZ30",
+      "nombre": "Maz Tiempo $30",
+      "carrier": "Maz Tiempo",
+      "carrierId": "12",
+      "categoria": null,
+      "monto": 30,
+      "descripcion": null
+    },
+    {
+      "idProducto": "MAZ50",
+      "codigo": "MAZ50",
+      "nombre": "Maz Tiempo $50",
+      "carrier": "Maz Tiempo",
+      "carrierId": "12",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "OXXO20",
+      "codigo": "OXXO20",
+      "nombre": "Oxxo Cel $20",
+      "carrier": "Oxxo Cel",
+      "carrierId": "13",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "OXXO50",
+      "codigo": "OXXO50",
+      "nombre": "Oxxo Cel $50",
+      "carrier": "Oxxo Cel",
+      "carrierId": "13",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "OXXO100",
+      "codigo": "OXXO100",
+      "nombre": "Oxxo Cel $100",
+      "carrier": "Oxxo Cel",
+      "carrierId": "13",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "CIE20",
+      "codigo": "CIE20",
+      "nombre": "Cierto $20",
+      "carrier": "Cierto",
+      "carrierId": "14",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "CIE50",
+      "codigo": "CIE50",
+      "nombre": "Cierto $50",
+      "carrier": "Cierto",
+      "carrierId": "14",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "CIE100",
+      "codigo": "CIE100",
+      "nombre": "Cierto $100",
+      "carrier": "Cierto",
+      "carrierId": "14",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "OUI20",
+      "codigo": "OUI20",
+      "nombre": "Oui $20",
+      "carrier": "Oui",
+      "carrierId": "15",
+      "categoria": null,
+      "monto": 20,
+      "descripcion": null
+    },
+    {
+      "idProducto": "OUI50",
+      "codigo": "OUI50",
+      "nombre": "Oui $50",
+      "carrier": "Oui",
+      "carrierId": "15",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "OUI100",
+      "codigo": "OUI100",
+      "nombre": "Oui $100",
+      "carrier": "Oui",
+      "carrierId": "15",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "DIRI50",
+      "codigo": "DIRI50",
+      "nombre": "Diri $50",
+      "carrier": "Diri",
+      "carrierId": "16",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "DIRI100",
+      "codigo": "DIRI100",
+      "nombre": "Diri $100",
+      "carrier": "Diri",
+      "carrierId": "16",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "DIRI200",
+      "codigo": "DIRI200",
+      "nombre": "Diri $200",
+      "carrier": "Diri",
+      "carrierId": "16",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "DIRI300",
+      "codigo": "DIRI300",
+      "nombre": "Diri $300",
+      "carrier": "Diri",
+      "carrierId": "16",
+      "categoria": null,
+      "monto": 300,
+      "descripcion": null
+    },
+    {
+      "idProducto": "DIRI500",
+      "codigo": "DIRI500",
+      "nombre": "Diri $500",
+      "carrier": "Diri",
+      "carrierId": "16",
+      "categoria": null,
+      "monto": 500,
+      "descripcion": null
+    },
+    {
+      "idProducto": "GUGU50",
+      "codigo": "GUGU50",
+      "nombre": "Gugú $50",
+      "carrier": "Gugú Móvil",
+      "carrierId": "17",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "GUGU100",
+      "codigo": "GUGU100",
+      "nombre": "Gugú $100",
+      "carrier": "Gugú Móvil",
+      "carrierId": "17",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "GUGU200",
+      "codigo": "GUGU200",
+      "nombre": "Gugú $200",
+      "carrier": "Gugú Móvil",
+      "carrierId": "17",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "IZZI50",
+      "codigo": "IZZI50",
+      "nombre": "Izzi Móvil $50",
+      "carrier": "Izzi Móvil",
+      "carrierId": "18",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "IZZI100",
+      "codigo": "IZZI100",
+      "nombre": "Izzi Móvil $100",
+      "carrier": "Izzi Móvil",
+      "carrierId": "18",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "IZZI200",
+      "codigo": "IZZI200",
+      "nombre": "Izzi Móvil $200",
+      "carrier": "Izzi Móvil",
+      "carrierId": "18",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    },
+    {
+      "idProducto": "MEGA50",
+      "codigo": "MEGA50",
+      "nombre": "Megamóvil $50",
+      "carrier": "Megamóvil",
+      "carrierId": "19",
+      "categoria": null,
+      "monto": 50,
+      "descripcion": null
+    },
+    {
+      "idProducto": "MEGA100",
+      "codigo": "MEGA100",
+      "nombre": "Megamóvil $100",
+      "carrier": "Megamóvil",
+      "carrierId": "19",
+      "categoria": null,
+      "monto": 100,
+      "descripcion": null
+    },
+    {
+      "idProducto": "MEGA200",
+      "codigo": "MEGA200",
+      "nombre": "Megamóvil $200",
+      "carrier": "Megamóvil",
+      "carrierId": "19",
+      "categoria": null,
+      "monto": 200,
+      "descripcion": null
+    }
+  ]
+}

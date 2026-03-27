@@ -78,8 +78,7 @@ app.post('/api/pc/register', (req, res) => {
 
   db.prepare('UPDATE pc_agents SET token = ?, status = ?, updated_at = ?, last_seen = ? WHERE pc_id = ?').run(token, 'paired', now, now, pc_id);
 
-  db.prepare('INSERT OR IGNORE INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, 0, ?)').run(pc_id, 'PC', 'available', pc_id);
-
+  // No registrar automáticamente en equipment, para poder ver la PC desde POS aun sin inventario.
   res.json({ success: true, pc_id, token });
 });
 
@@ -94,13 +93,25 @@ app.get('/api/pc/discovered', (req, res) => {
   const cutoff = new Date(Date.now() - freshnessMinutes * 60 * 1000).toISOString();
 
   const rows = db.prepare(`
-    SELECT a.pc_id, a.pc_name, a.status, a.last_seen, a.created_at
+    SELECT a.pc_id, a.pc_name, a.status, a.last_seen, a.created_at,
+           e.id AS equipment_id, e.name AS equipment_name
     FROM pc_agents a
-    JOIN equipment e ON e.pc_id = a.pc_id
-    WHERE a.last_seen >= ?
+    LEFT JOIN equipment e ON e.pc_id = a.pc_id
+    WHERE a.last_seen >= ? OR a.last_seen IS NULL
     ORDER BY a.last_seen DESC
   `).all(cutoff);
-  res.json({ success: true, data: rows });
+
+  const enriched = rows.map((r: any) => ({
+    pc_id: r.pc_id,
+    pc_name: r.pc_name || r.pc_id,
+    status: r.status,
+    last_seen: r.last_seen,
+    created_at: r.created_at,
+    assigned: Boolean(r.equipment_id),
+    equipment_name: r.equipment_name || null
+  }));
+
+  res.json({ success: true, data: enriched });
 });
 
 app.get('/api/pc/unassigned', (req, res) => {
@@ -145,18 +156,54 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
   if (agent.token !== token) return res.status(403).json({ success: false, error: 'invalid token' });
 
   const equipment = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id) as any;
-  if (!equipment) return res.status(403).json({ success: false, error: 'pc not assigned to inventory' });
+  const isAssigned = Boolean(equipment);
 
   const now = new Date().toISOString();
   db.prepare('UPDATE pc_agents SET last_seen = ?, status = ?, updated_at = ? WHERE pc_id = ?').run(now, status || 'paired', now, pc_id);
 
   const command = db.prepare('SELECT * FROM pc_commands WHERE pc_id = ? AND status = ? ORDER BY id ASC LIMIT 1').get(pc_id, 'pending') as any;
+
+  let isMaintenance = agent.status === 'maintenance';
+  let normalMode = false;
+  let countdown: number | null = null;
+
+  if (!isAssigned) {
+    normalMode = true;
+  } else {
+    let rental: any = null;
+    try {
+      rental = db.prepare('SELECT * FROM rentals WHERE equipment_id = ? AND status = ?').get(equipment.id, 'active');
+    } catch (e) {
+      rental = null;
+    }
+
+    if (isMaintenance) {
+      normalMode = false;
+    } else if (rental) {
+      normalMode = true;
+      const start = rental.start_time ? new Date(String(rental.start_time).replace(' ', 'T')).getTime() : null;
+      if (start && rental.limit_minutes > 0) {
+        const remaining = Math.max(0, Math.floor((start + rental.limit_minutes * 60 * 1000 - Date.now()) / 1000));
+        if (remaining <= 30) countdown = remaining;
+      }
+    }
+  }
+
   let action: any = null;
+
+  if (isMaintenance) {
+    action = { type: 'maintenance', message: 'Modo mantenimiento activo. Técnico autorizado.' };
+  } else if (!normalMode) {
+    action = { type: 'aod', image: '/image/AOD.png', message: 'PC bloqueada, esperando renta.' };
+  }
+
+  if (countdown !== null) {
+    action = { type: 'countdown', seconds: countdown };
+  }
+
   if (command) {
-    action = {
-      type: command.command,
-      payload: command.payload ? JSON.parse(command.payload) : null
-    };
+    action = action || {};
+    action.command = { type: command.command, payload: command.payload ? JSON.parse(command.payload) : null };
     db.prepare('UPDATE pc_commands SET status = ?, delivered_at = ? WHERE id = ?').run('delivered', now, command.id);
   }
 

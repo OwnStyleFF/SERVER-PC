@@ -14,6 +14,22 @@ let lockWindow;
 let isPosConnected = false;
 let connectionMessage = 'Iniciando, conectando a servidor...';
 
+const logLines = [];
+const maxLogs = 200;
+
+function addLog(message) {
+  const line = `[${new Date().toISOString()}] ${message}`;
+  logLines.push(line);
+  if (logLines.length > maxLogs) {
+    logLines.shift();
+  }
+  sendUIStatus();
+}
+
+function getLogs() {
+  return [...logLines];
+}
+
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 900,
@@ -62,7 +78,8 @@ function sendUIStatus() {
     pcId: PC_ID,
     agentToken: AGENT_TOKEN,
     connection: isPosConnected ? 'connected' : 'disconnected',
-    connectionMessage
+    connectionMessage,
+    logs: getLogs()
   });
 }
 
@@ -113,18 +130,22 @@ async function registerAgent() {
       AGENT_TOKEN = response.data.token;
       store.set('agentToken', AGENT_TOKEN);
       connectionMessage = 'Agente registrado exitosamente con PC ID.';
+      addLog(`Registro exitoso: ${PC_ID}`);
       pushStatus();
       return true;
     }
 
     connectionMessage = `Registro no exitoso: ${response.data?.error || 'sin detalles'}`;
+    addLog(`Registro no exitoso: ${JSON.stringify(response.data)}`);
     sendUIStatus();
     console.warn('Registro no exitoso:', response.data?.error || response.data);
     return false;
   } catch (error) {
-    connectionMessage = `Error registro agente: ${error.response?.data?.error || error.message || error}`;
+    const details = error.response?.data || error.message || error;
+    connectionMessage = `Error registro agente: ${error.response?.status || '?'} ${error.response?.statusText || ''} -- ${JSON.stringify(details)}`;
+    addLog(`Error registro agente: ${connectionMessage}`);
     sendUIStatus();
-    console.error('Register agent error', error.response?.data || error.message || error);
+    console.error('Register agent error', details);
     return false;
   }
 }
@@ -137,19 +158,23 @@ async function requestPairCode() {
 
     if (response.data && response.data.success) {
       connectionMessage = `PC ${PC_ID} en estado pending para emparejar.`;
+      addLog(`Emparejamiento iniciado: ${PC_ID}`);
       isPosConnected = false;
       pushStatus();
       return true;
     }
 
     connectionMessage = `No se pudo iniciar emparejamiento: ${response.data?.error || 'sin detalles'}`;
+    addLog(`Emparejamiento falló: ${JSON.stringify(response.data)}`);
     pushStatus();
     console.warn('No se pudo emparejar:', response.data);
     return false;
   } catch (error) {
-    connectionMessage = `Error emparejamiento: ${error.message || error}`;
+    const details = error.response?.data || error.message || error;
+    connectionMessage = `Error emparejamiento: ${error.response?.status || '?'} ${error.response?.statusText || ''} -- ${JSON.stringify(details)}`;
+    addLog(`Error emparejamiento: ${connectionMessage}`);
     sendUIStatus();
-    console.error('Pair error', error.message || error);
+    console.error('Pair error', details);
     return false;
   }
 }
@@ -159,7 +184,10 @@ function pushStatus() {
     mainWindow.webContents.send('pc-controller-status', {
       serverUrl: SERVER_URL,
       pcId: PC_ID,
-      agentToken: AGENT_TOKEN
+      agentToken: AGENT_TOKEN,
+      connection: isPosConnected ? 'connected' : 'disconnected',
+      connectionMessage,
+      logs: getLogs()
     });
   }
 }
@@ -189,11 +217,13 @@ async function reportStatus() {
     if (response.status === 200 && response.data && response.data.success) {
       isPosConnected = true;
       connectionMessage = 'Conectado con POS correctamente.';
+      addLog(`Heartbeat OK para ${PC_ID}`);
       sendUIStatus();
       hideMainWindowAfterConnected();
     } else {
       isPosConnected = false;
-      connectionMessage = 'No se recibió confirmación de POS.';
+      connectionMessage = `No se recibió confirmación de POS: ${response.status} ${response.statusText}`;
+      addLog(`Heartbeat no OK: ${response.status} ${JSON.stringify(response.data)}`);
       sendUIStatus();
       showMainWindow();
     }
@@ -201,7 +231,10 @@ async function reportStatus() {
     if (response.data && response.data.action) {
       const action = response.data.action;
       if (action.type === 'lock' || action.type === 'aod') {
-        showLockScreen(action.message || 'PC no rentada', action.image || 'image/AOD.png');
+        showLockScreen(action.message || 'PC no autorizada aún', action.image || 'image/AOD.png');
+      } else if (action.type === 'unassigned') {
+        addLog('PC no inventariada: estado normal bloqueado no aplicado, espera inventario.');
+        hideLockScreen();
       } else if (action.type === 'countdown') {
         showLockScreen(`Tiempo restante: ${action.seconds}s`, action.image || 'image/AOD.png', action.seconds);
       } else if (action.type === 'maintenance') {
@@ -216,9 +249,11 @@ async function reportStatus() {
     }
   } catch (error) {
     isPosConnected = false;
-    connectionMessage = `Error conexión POS: ${error.message || error}`;
+    const details = error.response?.data || error.message || error;
+    connectionMessage = `Error conexión POS: ${error.response?.status || '?'} ${error.response?.statusText || ''} - ${JSON.stringify(details)}`;
+    addLog(`Heartbeat error: ${connectionMessage}`);
     sendUIStatus();
-    console.error('Heartbeat error', error.message || error);
+    console.error('Heartbeat error', details);
     showMainWindow();
   }
 }

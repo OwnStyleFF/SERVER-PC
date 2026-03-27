@@ -1,0 +1,5 @@
+{
+  "name": "GC Web - Gestión de Cibercafé",
+  "description": "Sistema integral para la gestión de ventas, rentas de consolas/PC, recargas, pagos de servicios y contabilidad para GC Web.",
+  "requestFramePermissions": []
+}

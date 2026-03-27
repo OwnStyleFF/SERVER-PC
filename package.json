@@ -6,23 +6,32 @@
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "start": "node node_modules/tsx/dist/cli.mjs server.ts",
-    "dev": "node node_modules/tsx/dist/cli.mjs server.ts --watch"
+    "dev": "concurrently \"node node_modules/tsx/dist/cli.mjs server.ts --watch\" \"vite\"",
+    "client": "vite"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
+    "lucide-react": "^1.7.0",
+    "motion": "^12.38.0",
     "node-fetch": "^3.3.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "tsx": "^4.21.0"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.2.2",
     "@types/better-sqlite3": "^7.6.13",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "typescript": "^6.0.2"
+    "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^9.2.1",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3"
   }
 }

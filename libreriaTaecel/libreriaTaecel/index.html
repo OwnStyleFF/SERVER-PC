@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Taelcel Web Service</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<section class="Material-contact-section section-padding section-dark">
+      <div class="container">
+          <div class="row">
+              <!-- Section Titile -->
+              <div class="col-md-12 wow animated fadeInLeft" data-wow-delay=".2s" style="text-align: center; margin-bottom: 50px;">
+                  <h1 class="section-title">Taecel REST - API</h1>
+              </div>
+          </div>
+          <div class="row">
+              <!-- Section Titile -->
+              <div class="col-md-6 mt-3 contact-widget-section2 wow animated fadeInLeft" data-wow-delay=".2s" style="border-right: 1px solid #d2d2d2;">
+                <p id="descripcion"></p>
+				<br><br><br><br>
+                <div class="find-widget">
+                 Taecel:  <a href="https://taecel.mx" target="_blank">Comercio Móvil S. de R.L. de C.V.</a>
+                </div>
+                <div class="find-widget">
+                 Dirección: <a href="#">Loma de Pinal de Amoles #346, segundo piso,<br> Vista Dorada, 76060 Santiago de Querétaro, Qro.</a>
+                </div>
+                <div class="find-widget">
+                  Teléfonos:  <a href="#">(442) 248 3892, (442) 213 4138</a>
+                </div>
+                <div class="find-widget">
+                  Correo: <a href="mailto:cc@taecel.com">cc@taecel.com</a>
+                </div>
+                <div class="find-widget">
+                  Sitio Web:  <a href="https://taecel.mx" target="_blank">https://taecel.mx</a>
+                </div>
+                <div class="find-widget">
+                   Horario: <a href="#">Lun - Vie: 09:00 AM - 7:00 PM</a>
+                </div>
+              </div>
+              <!-- contact form -->
+              <div class="col-md-6 wow animated fadeInRight" data-wow-delay=".2s">
+                	<!--KEY-->
+                    <div class="form-group label-floating">
+                      <label class="control-label" for="key">Key</label>
+                      <input class="form-control" id="key" type="text" name="key" placeholder="Agrega Key">
+                    </div>
+                    <!--NIP-->
+                    <div class="form-group label-floating">
+                      <label class="control-label" for="nip">Nip</label>
+                      <input class="form-control" id="nip" type="text" name="nip" placeholder="Agrega Nip">
+                    </div>
+                	<!-- Funciones -->
+                    <div class="form-group label-floating">
+                      <label class="control-label" for="name">Métodos Disponibles</label>
+                      <select name="funciones" class="form-control" id="funciones">
+                      	<option value="0">Selecciona un método</option>
+                      	<option value="1">getBalance</option>
+                      	<option value="2">RequestTXN</option>
+                      	<option value="3">StatusTXN</option>
+                      	<option value="4">ProgRequestTXN</option>
+                      	<option value="5">CancelProgRequestTXN</option>
+                      	<option value="6">getProducts</option>
+                      	<option value="7">getSales</option>
+                      	<option value="8">RegistroCuenta</option>
+                      	<option value="9">urlReporteCompra</option>
+                        <option value="10">getBancosCte</option>
+                        <option value="11">getReports</option>
+                        <option value="12">traspasoPago</option>
+                        <option value="13">CreaUsuario</option>
+                      </select>
+                      <div class="help-block with-errors"></div>
+                    </div>
+                    <div id="campos"></div>
+                    <!-- Form Submit -->
+                    <div class="form-submit mt-5">
+                        <button class="btn btn-secondary" id="submit"><i class="material-icons mdi mdi-message-outline"></i> Enviar</button>
+                        <div id="msgSubmit" class="h3 text-center hidden"></div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <br>
+                    <div id="cargando" style="display: none;">
+                    <div class="loader"></div> Cargando...
+                    </div>
+              </div>
+          </div>
+      </div>
+    </section>
+    <section class="Material-contact-section section-padding section-dark">
+      <div class="container">
+        <h2>Resultados</h2>
+        <br>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist" id="tab">
+        </ul>     
+
+        <!-- Tab panes -->
+        <div class="tab-content" id="tabcontent">
+        </div>
+      </div>
+    </section>
+    <script type="text/javascript">
+    	var consultas = 0;
+    	$('#funciones').on('change', function (){
+    		valor = $(this).val();
+    		texto = $( "#funciones option:selected" ).text();
+    		if(valor == 1){
+    			$('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Con este metodo se obtienen el saldo de todas las bolsas de la cuenta.');
+    			$('#campos').html('');
+    		}
+    		else if (valor == 2){
+    			$('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Con este metodo se realiza la solicitud de cualquier transacción de Tiempo Aire o Pago de Servicios, retorna un TransID que se envia en el método StatusTXN para consultar el status del proceso de la transacción.<br><br><table class="table table-hover"><thead><tr><th>Parametro</th><th>Tipo de Dato</th><th style="text-align: center;">Requerido</th> <th>Minimo</th> <th>Maximo</th> <th>Descripcion</th> </tr> </thead> <tbody> <tr> <td>producto</td> <td>alpha_numeric</td> <td style="text-align: center;">SI</td> <td>3</td> <td>10</td> <td>Codigo de Producto Obtenido desde el metodo getProducts</td> </tr><tr> <td>referencia</td> <td>numeric</td> <td style="text-align: center;">SI</td> <td>10</td> <td>32</td> <td>Numero telefonico o referencia de pago de acuerdo al tipo de operacion a realizar</td> </tr> </tbody> </table>');
+    			$('#campos').html('');
+    			$('#campos').html('<div class="form-group label-floating"> <label class="control-label" for="producto">Producto</label> <input class="form-control" id="producto" type="text" name="producto"></div><div class="form-group label-floating"> <label class="control-label" for="referencia">Referencia</label> <input class="form-control" id="referencia" type="text" name="referencia"></div>');
+    		}
+    		else if (valor == 3){
+    			$('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Con este metodo se obtiene el status de la transaccion solicitada.<br><br><table class="table table-hover"> <thead> <tr> <th>Parametro</th> <th>Tipo de Dato</th> <th style="text-align: center;">Requerido</th> <th>Minimo</th> <th>Maximo</th> <th>Descripcion</th> </tr> </thead> <tbody> <tr> <td>transID</td> <td>numeric</td> <td style="text-align: center;">SI</td> <td>12</td> <td>12</td> <td>Dato obtenido desde el metodo RequestTXN</td> </tr> </tbody> </table>');
+    			$('#campos').html('');
+    			$('#campos').html('<div class="form-group label-floating"> <label class="control-label" for="transid">TransID</label> <input class="form-control" id="transid" type="text" name="transid"></div>');
+    		}
+    		else if (valor == 4){
+    			$('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Con este metodo se realiza la programación futura de cualquier transacción de Tiempo Aire, una ves programada puede consultar su estado con el metodo StatusTXN, en donde el status de programada sera igual a 5.<br><br><table class="table table-hover"> <thead> <tr> <th>Parametro</th> <th>Tipo de Dato</th> <th style="text-align: center;">Requerido</th> <th>Minimo</th> <th>Maximo</th> <th>Descripcion</th> </tr> </thead> <tbody> <tr> <td>producto</td> <td>alpha_numeric</td> <td style="text-align: center;">SI</td> <td>3</td> <td>10</td> <td>Codigo de Producto Obtenido desde el metodo getProducts</td> </tr><tr> <td>referencia</td> <td>numeric</td> <td style="text-align: center;">SI</td> <td>10</td> <td>32</td> <td>Numero telefonico o referencia de pago de acuerdo al tipo de operacion a realizar</td> </tr><tr> <td>fecha</td> <td>alpha_numeric</td> <td style="text-align: center;">SI</td> <td>10</td> <td>32</td> <td>Fecha en que se desea que se realice la transacción en formato YYYY-MM-DD HH:MM:SS, no debe de ser menor a la fecha y hora actual y solo se pueden programar en el mes corriente</td> </tr> </tbody> </table>');
+    			$('#campos').html('');
+    			$('#campos').html('<div class="form-group label-floating"> <label class="control-label" for="producto">Producto</label> <input class="form-control" id="producto" type="text" name="producto"></div><div class="form-group label-floating"> <label class="control-label" for="referencia">Referencia</label> <input class="form-control" id="referencia" type="text" name="referencia"></div><div class="form-group label-floating"> <label class="control-label" for="fecha">Fecha</label> <input class="form-control" id="fecha" type="text" name="fecha"></div>');
+    		}
+    		else if (valor == 5){
+    			$('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Con este método se Cancela una recarga programada exclusivamente con el metodo ProgRequestTXN, una recarga ya procesada no sera posible cancelarla, este metodo NO es para cancelar ninguna recarga realizada por cualquier otra via.<br><br><table class="table table-hover"> <thead> <tr> <th>Parametro</th> <th>Tipo de Dato</th> <th style="text-align: center;">Requerido</th> <th>Minimo</th> <th>Maximo</th> <th>Descripcion</th> </tr> </thead> <tbody> <tr> <td>transID</td> <td>numeric</td> <td style="text-align: center;">SI</td> <td>12</td> <td>12</td> <td>Dato obtenido desde el metodo ProgRequestTXN</td> </tr> </tbody> </table>');
+    			$('#campos').html('');
+    			$('#campos').html('<div class="form-group label-floating"> <label class="control-label" for="transid">TransID</label> <input class="form-control" id="transid" type="text" name="transid"></div>');
+    		}
+    		else if (valor == 6){
+    			$('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Metodo para obtener la lista de productos disponibles.');
+    			$('#campos').html('');
+    		}
+    		else if (valor == 7){
+    			$('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Método para obtener las ventas por dia, se envia el parámetro fecha y retornara la relación de transacciones realizadas en la fecha indicada.<br><br><table class="table table-hover"> <thead> <tr> <th>Parametro</th> <th>Tipo de Dato</th> <th style="text-align: center;">Requerido</th> <th>Minimo</th> <th>Maximo</th> <th>Descripcion</th> </tr> </thead> <tbody> <tr> <td>fecha</td> <td>string</td> <td style="text-align: center;">SI</td> <td>10</td> <td>10</td> <td>Fecha de consulta, este parametro debe de venir en formato YYYY-MM-DD</td> </tr><tr> <td>bolsa</td> <td>numerico</td> <td style="text-align: center;">NO</td> <td></td> <td>1</td> <td>Si se quiere consultar las ventas de las Recargas, el valor a tomar seria 1; Si se desea consultar las ventas de los Servicios el valor seria 2, en caso de no ingresar ningun valor, el valor por defecto seria 1, es decir, consulta de recargas</td> </tr> </tbody> </table>');
+				$('#campos').html('');
+				$('#campos').html('<div class="form-group label-floating"> <label class="control-label" for="fecha">Fecha</label> <input class="form-control" id="fecha" type="text" name="fecha"></div><div class="form-group label-floating"> <label class="control-label" for="bolsas">Bolsas Disponibles</label> <select name="bolsas" class="form-control" id="bolsas"> <option value="1" selected="true">Recargas</option> <option value="2">Servicios</option> </select> <div class="help-block with-errors"></div></div>');
+
+    		}
+    		else if (valor == 8){
+    			$('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Método para Registrar una nueva cuenta dentro de la red del distribuidor que invoca esta función, para este método es necesario que el distribuidor tenga configurado dentro de su cuenta el Rol por default y la comisión por default que el sistema les asignara a las cuentas creadas por esta función.<br><br><table class="table table-hover"> <thead> <tr> <th>Parametro</th> <th>Tipo de Dato</th> <th style="text-align: center;">Requerido</th> <th>Minimo</th> <th>Maximo</th> <th>Descripcion</th> </tr> </thead> <tbody> <tr> <td>nombre</td> <td>alpha_numeric</td> <td style="text-align: center;">SI</td> <td>5</td> <td>100</td> <td>Nombre del titular de la cuenta</td> </tr><tr> <td>apellidos</td> <td>alpha_numeric</td> <td style="text-align: center;">SI</td> <td>5</td> <td>100</td> <td>Apellidos del titular de la cuenta</td> </tr><tr> <td>correo</td> <td>email</td> <td style="text-align: center;">SI</td> <td>5</td> <td>100</td> <td>Correo del titular de la cuenta, a este correo el sistema le enviara el codigo de activacion, en caso de enviar el parametro [forzarActivacion = 1] el sistema enviara directamente el correo con los datos de acceso de la cuenta ya activada.</td> </tr><tr> <td>telefono</td> <td>numeric</td> <td style="text-align: center;">SI</td> <td>10</td> <td>10</td> <td>Telefono del titular de la cuenta. Este parametro se utiliza para crear el numero de cuenta del cliente, si el numero telefonico ya se encuentra registrado, el sistema retornara el error correspondiente.</td> </tr><tr> <td>nomComercial</td> <td>alpha_numeric</td> <td style="text-align: center;">NO</td> <td>5</td> <td>150</td> <td>Nombre Comercial del Negocio (opcional)</td> </tr><tr> <td>forzarActivacion</td> <td>bool</td> <td style="text-align: center;">NO</td> <td>1</td> <td>1</td> <td>Con esta opcion se forza la Activacion de la cuenta creada, el sistema solo enviara el correo con los datos de acceso, si no se envia esta opción el sistema crea la cuenta y envia un correo para que el titular de la cuenta confirme su cuenta</td> </tr> </tbody> </table>');
+    			$('#campos').html('');
+    			$('#campos').html('<div class="form-group label-floating"> <label class="control-label" for="nombre">Nombre</label> <input class="form-control" id="nombre" type="text" name="nombre"></div><div class="form-group label-floating"> <label class="control-label" for="apellidos">Apellidos</label> <input class="form-control" id="apellidos" type="text" name="apellidos"></div><div class="form-group label-floating"> <label class="control-label" for="correo">Correo</label> <input class="form-control" id="correo" type="text" name="correo"></div><div class="form-group label-floating"> <label class="control-label" for="telefono">Teléfono</label> <input class="form-control" id="telefono" type="text" name="telefono"></div><div class="form-group label-floating"> <label class="control-label" for="nomcom">Nombre Comercial (Opcional)</label> <input class="form-control" id="nomcom" type="text" name="nomcom"></div><div class="form-group label-floating"> <label class="control-label" for="forzar">Forzar Activación?</label> <select name="forzar" class="form-control" id="forzar"> <option value="1" selected="true">Si</option> <option value="0">No</option> </select> <div class="help-block with-errors"></div></div>');
+    		}
+    		else if (valor == 9){
+    			$('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Con este metodo se obtienen la URL directa del formulario de Reporte de Compra y la referencia de Compra del cliente en sesión, la URL se puede incrustar dentro de cualquier página o aplicación de escritorio.');
+    			$('#campos').html('');
+    		}
+        else if (valor == 11) {
+            $('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Con este metodo se realiza la solicitud de consulta de reporte de compras <br><br><table class="table table-hover"><thead><tr><th>Parametro</th><th>Tipo de Dato</th><th style="text-align: center;">Requerido</th> <th>Minimo</th> <th>Maximo</th> <th>Descripcion</th> </tr> </thead> <tbody> <tr> <td>fecha</td> <td>Date</td><td style="text-align: center;">NO</td> <td>10</td> <td>10</td> <td>Fecha YYYY-MM-DD</td> </tr><tr> <td>lastId</td> <td>numeric</td><td style="text-align: center;">NO</td> <td>1</td> <td>20</td> <td>ID del movimiento</td> </tr> </tbody> </table>.');
+            $('#campos').html('');
+            $('#campos').html('<div class="form-group label-floating"> <label class="control-label" for="fecha">Fecha</label> <input class="form-control f16" id="fecha" type="date" name="fecha"></div><div class="form-group label-floating"> <label class="control-label" for="lastid">lastId</label> <input class="form-control" id="lastid" type="text" name="lastid"></div>');
+        } else if (valor == 12) {
+            $('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Con este metodo se realiza la solicitud de consulta de reporte de compras <br><br> <table class="table table-hover"><thead><tr><th>Parametro</th><th>Tipo de Dato</th> <th style="text-align: center;">Requerido</th> <th>Minimo</th> <th>Maximo</th> <th>Descripcion</th> </tr> </thead>  <tbody> <tr> <td>tipo_bolsa</td> <td>numeric</td><td style="text-align: center;">SI</td> <td>1</td> <td>1</td> <td>Tipo de bolsa a la cuan se realizara el traspaso de saldo 1= timepo aire, 2= Servicios</td> </tr><tr> <td>tipo</td> <td>numeric</td><td style="text-align: center;">SI</td> <td>1</td> <td>20</td> <td>  tipo de traspaso 1= abono, 2=retiro,3=transacion,4=comision,5=cortesia</td> </tr> <tr> <td>folio</td> <td>numeric</td><td style="text-align: center;">SI</td> <td>1</td> <td>20</td> <td> Folio de transferencia</td> </tr> <tr> <td>monto</td> <td>numeric</td><td style="text-align: center;">SI</td> <td>1</td> <td>20</td> <td>Cantidad la cual sera transferida</td> </tr> <tr> <td>nota</td> <td>numeric</td><td style="text-align: center;">SI</td> <td>1</td> <td>20</td> <td>Nota motivo del transpaso</td> </tr> <tr> <td>clienteID</td> <td>numeric</td><td style="text-align: center;">SI</td> <td>1</td> <td>20</td> <td>Id de la cuenta la cual se le realizara el traspaso</td> </tr></tbody> </table>');
+            $('#campos').html('');
+            $('#campos').html('<div class="form-group label-floating"> <label class="control-label" for="tipo_bolsa">Tipo bolsa</label> <input class="form-control f16" id="tipo_bolsa" type="text" name="tipo_bolsa"></div><div class="form-group label-floating"> <label class="control-label" for="tipo">tipo</label> <input class="form-control" id="tipo" type="text" name="tipo"></div><div class="form-group label-floating"> <label class="control-label" for="folio">Folio</label> <input class="form-control f16" id="folio" type="text" name="folio"></div><div class="form-group label-floating"> <label class="control-label" for="monto">Monto</label> <input class="form-control" id="monto" type="text" name="monto"></div><div class="form-group label-floating"> <label class="control-label" for="nota">Nota</label> <input class="form-control f16" id="nota" type="text" name="nota"></div><div class="form-group label-floating"> <label class="control-label" for="clienteID">clienteID</label> <input class="form-control" id="clienteID" type="text" name="clienteID"></div>');
+        }else if (valor == 13) {
+          $('#descripcion').html('<span style="font-size:18px; font-weight:700">' + texto + '</span><br><br> Con este metodo se realiza la solicitud de registro de un nuevo usuarios <br><br><table class="table table-hover"><thead><tr><th>Parametro</th><th>Tipo de Dato</th><th style="text-align: center;">Requerido</th><th>Minimo</th><th>Maximo</th><th>Descripcion</th></tr></thead><tbody><tr><td>userName</td><td>alpha_numeric</td><td style="text-align: center;">SI</td><td>5</td><td>45</td><td>Usuario, sin espacios</td></tr><tr><td>nombres</td><td>alpha_numeric</td><td style="text-align: center;">SI</td><td>2</td><td>45</td><td>Nombre del usuario</td></tr><tr><td>apellidos</td><td>alpha_numeric</td><td style="text-align: center;">SI</td><td>5</td><td>45</td><td>Apellidos del usuario</td></tr><tr><td>correo</td><td>email</td><td style="text-align: center;">NO</td><td>5</td><td>45</td><td>Correo del usuario</td></tr><tr><td>password</td><td>alpha_numeric</td><td style="text-align: center;">SI</td><td>5</td><td>45</td><td>Contraseña ingreso password</td></tr><tr><td>idRol</td><td>numeric</td><td style="text-align: center;">SI</td><td>1</td><td>8</td><td>rol que se le asignara al usuario</td> </tr><tr><td>telefono</td><td>numeric</td><td style="text-align: center;">NO</td><td></td><td></td><td>Telefono del usuario</td>       </tr>       </tbody>      </table>');
+          $('#campos').html('');
+          $('#campos').html('<div class="form-group label-floating"><label class="control-label" for="userName">userName</label><input class="form-control f16" id="userName" type="text" name="userName"></div><div class="form-group label-floating"><label class="control-label" for="nombres">nombres</label><input class="form-control" id="nombres" type="text" name="nombres"></div><div class="form-group label-floating"><label class="control-label" for="apellidos">apellidos</label><input class="form-control f16" id="apellidos" type="text" name="apellidos"></div><div class="form-group label-floating"><label class="control-label" for="correo">correo</label><input class="form-control" id="correo" type="text" name="correo"></div><div class="form-group label-floating"><label class="control-label" for="password">password</label><input class="form-control" id="password" type="text" name="password"></div><div class="form-group label-floating"><label class="control-label" for="idRol">idRol</label><input class="form-control" id="idRol" type="numeric" name="idRol"></div><div class="form-group label-floating"><label class="control-label" for="telefono">telefono</label><input class="form-control" id="telefono" type="text" name="telefono"></div>');
+        }
+    		else{
+    			$('#descripcion').html('');
+    			$('#campos').html('');
+    		}
+    	});
+		$('#submit').on('click', function(){
+			$('#cargando').show();
+			var formData = new FormData();
+			key = $('#key').val();
+			nip = $('#nip').val();
+			sle = $('#funciones').val();
+			formData.append("key", key);
+			formData.append("nip", nip);
+			if(sle != 0){
+				funcion = $( "#funciones option:selected" ).text();
+				formData.append("funcion", funcion);
+				if(sle == 1 || sle == 6 || sle == 9){}
+				else if(sle == 2){
+					formData.append("producto", $('#producto').val());
+					formData.append("referencia", $('#referencia').val());
+				}
+				else if(sle == 3){
+					formData.append("transid", $('#transid').val());
+				}
+				else if (sle == 4){
+					formData.append("producto", $('#producto').val());
+					formData.append("referencia", $('#referencia').val());
+					formData.append("fecha", $('#fecha').val());
+				}
+				else if(sle == 5){
+					formData.append("transid", $('#transid').val());
+				}
+				else if(sle == 7){
+					formData.append("fecha", $('#fecha').val());
+					formData.append("bolsa", $('#bolsas').val());
+				}else if(sle == 8){
+					formData.append("nombre", $('#nombre').val());
+					formData.append("apellidos", $('#apellidos').val());
+					formData.append("correo", $('#correo').val());
+					formData.append("telefono", $('#telefono').val());
+					formData.append("nomcom", $('#nomcom').val());
+					formData.append("forzar", $('#forzar').val());
+				}
+        else if (sle == 11) {
+          formData.append("fecha", $('#fecha').val());
+          formData.append("lastid", $('#lastid').val());
+        } else if (sle == 12) {
+          formData.append("tipo_bolsa", $('#tipo_bolsa').val());
+          formData.append("tipo", $('#tipo').val());
+          formData.append("folio", $('#folio').val());
+          formData.append("monto", $('#monto').val());
+          formData.append("nota", $('#nota').val());
+          formData.append("clienteID", $('#clienteID').val());
+        } else if (sle == 13) {
+         formData.append("userName", $('#userName').val());
+         formData.append("nombres", $('#nombres').val());
+         formData.append("apellidos", $('#apellidos').val());
+         formData.append("correo", $('#correo').val());
+         formData.append("password", $('#password').val());
+         formData.append("idRol", $('#idRol').val());
+         formData.append("telefono", $('#telefono').val());
+        }
+        else{}
+				$.ajax({
+			      url: 'TaecelREST.php',
+			      type: 'POST',
+				  contentType: false,
+				  data: formData,
+				  processData: false,
+				  cache: false,
+				  success: function (response) {
+				  	$('#cargando').hide();
+				  	consultas++;
+				    //AQUI AGREGAR CODIGO PARA MANIPULAR LOS DATOS RECIBIDOS
+            if(sle == 1 || sle == 6 || sle == 9){
+              datos = '<p>Key: '+key+'</p><p>Nip: '+nip+'</p><p>Método: '+funcion+'</p>';
+            }
+            else if(sle == 2){
+             datos = '<p>Key: '+key+'</p><p>Nip: '+nip+'</p><p>Método: '+funcion+'</p><p>Producto: '+$('#producto').val()+'</p><p>Referencia: '+$('#referencia').val()+'</p>'; 
+            }
+            else if(sle == 3){
+             datos = '<p>Key: '+key+'</p><p>Nip: '+nip+'</p><p>Método: '+funcion+'</p><p>TransID: '+$('#transid').val()+'</p>';  
+            }
+            else if(sle == 4){
+              datos = '<p>Key: '+key+'</p><p>Nip: '+nip+'</p><p>Método: '+funcion+'</p><p>Producto: '+$('#producto').val()+'</p><p>Referencia: '+$('#referencia').val()+'</p><p>Fecha: '+$('#fecha').val()+'</p>';  
+            }
+            else if(sle == 5){
+             datos = '<p>Key: '+key+'</p><p>Nip: '+nip+'</p><p>Método: '+funcion+'</p><p>TransID: '+$('#transid').val()+'</p>';   
+            }
+            else if(sle == 7){
+             bolsa = $( "#bolsas option:selected" ).text();
+             datos = '<p>Key: '+key+'</p><p>Nip: '+nip+'</p><p>Método: '+funcion+'</p><p>Fecha: '+$('#fecha').val()+'</p><p>Bolsa: '+bolsa+'</p>';
+            }
+            else if(sle == 8){
+              factiv = $( "#forzar option:selected" ).text();
+             datos = '<p>Key: '+key+'</p><p>Nip: '+nip+'</p><p>Método: '+funcion+'</p><p>Nombre: '+$('#nombre').val()+'</p><p>Apellidos: '+$('#apellidos').val()+'</p><p>Correo: '+$('#correo').val()+'</p><p>Teléfono: '+$('#telefono').val()+'</p><p>Nombre Comercial: '+$('#nomcom').val()+'</p><p>Forzar Activación: '+factiv+'</p>'; 
+            }else if (sle == 11) {
+              datos = '<p><b>Key:</b> ' + key + '</p><p><b>Nip:</b> ' + nip + '</p><p><b>Método:</b> ' + funcion + '</p><p><b>fecha:</b> ' + $('#fecha').val() + '</p><p><b>lastid:</b> ' + $('#lastid').val() + '</p>';
+            } else if (sle == 12) {
+              datos = '<p><b>Key:</b> ' + key + '</p><p><b>Nip:</b> ' + nip + '</p><p><b>Método:</b> ' + funcion + '</p><p><b>tipo_bolsa:</b> ' + $('#tipo_bolsa').val() + '</p><p><b>tipo:</b> ' + $('#tipo').val() + '</p><p><b>folio:</b> ' + $('#folio').val() + '</p><p><b>monto:</b> ' + $('#monto').val() + '</p><p><b>nota:</b> ' + $('#nota').val() + '</p><p><b>clienteID:</b> ' + $('#clienteID').val() + '</p>';
+            }else if(sle == 13){
+               datos = '<p><b>Key:</b> ' + key + '</p><p><b>Nip:</b> ' + nip + '</p><p><b>Método:</b> ' + funcion + '</p><p><b>userName:</b> ' + $('#userName').val() + '</p><p><b>nombres:</b> ' + $('#nombres').val() + '</p><p><b>apellidos:</b> ' + $('#apellidos').val() + '</p><p><b>correo:</b> ' + $('#correo').val() + '</p><p><b>password:</b> ' + $('#password').val() + '</p><p><b>idRol:</b> ' + $('#idRol').val() + '</p><p><b>telefono:</b> ' + $('#telefono').val() + '</p>';
+
+            }else{}
+  
+            $("#tab li a").removeClass("active");
+            $(".tab-pane").removeClass("active");
+            $('#tab').append('<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#peticion'+consultas+'">'+consultas+' '+funcion+'</a></li>');
+            $('#tabcontent').append('<div id="peticion'+consultas+'" class="container tab-pane active"><br><h3><b>'+funcion.toUpperCase()+'</b> (Petición No. '+consultas+')</h3><br><div class="box1"><h4>Request</h4><p>Tipo: POST</p><p>Url: https://taecel.com/app/api/'+funcion+'</p>'+datos+'</div><br><div class="box1"><h4>Response</h4><pre>'+JSON.stringify(JSON.parse(response),null,'\t')+'</pre></div></div>');
+
+				  }
+				});
+
+
+			}else{
+        $('#cargando').hide();
+				alert('Selecciona un Método y llena el formulario si es necesario');
+			}
+		});
+    </script>
+</body>
+</html>

@@ -1,0 +1,1780 @@
+{
+  "syncResult": {
+    "success": true,
+    "status": "ERROR_IGNORE_BLOCK",
+    "count": 220,
+    "isVerified": false,
+    "fromBackup": false
+  },
+  "productsResult": {
+    "success": true,
+    "isFallback": true,
+    "isVerified": false,
+    "status": "BLOCKED_FALLBACK",
+    "blockedUntil": 0,
+    "data": [
+      {
+        "idProducto": "S_CFE",
+        "producto": "Pago de CFE",
+        "precio": 0,
+        "idOperador": "101",
+        "operador": "CFE",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Logo_de_la_CFE.svg/1200px-Logo_de_la_CFE.svg.png"
+      },
+      {
+        "idProducto": "S_TELMEX",
+        "producto": "Pago de Telmex",
+        "precio": 0,
+        "idOperador": "102",
+        "operador": "Telmex",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Telmex_logo.svg/1200px-Telmex_logo.svg.png"
+      },
+      {
+        "idProducto": "S_SKY",
+        "producto": "Pago de Sky",
+        "precio": 0,
+        "idOperador": "103",
+        "operador": "Sky",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Sky_logo_2020.svg/1200px-Sky_logo_2020.svg.png"
+      },
+      {
+        "idProducto": "S_IZZI",
+        "producto": "Pago de Izzi",
+        "precio": 0,
+        "idOperador": "104",
+        "operador": "Izzi",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Izzi_logo.svg/1200px-Izzi_logo.svg.png"
+      },
+      {
+        "idProducto": "S_DISH",
+        "producto": "Pago de Dish",
+        "precio": 0,
+        "idOperador": "105",
+        "operador": "Dish",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Dish_Network_logo.svg/1200px-Dish_Network_logo.svg.png"
+      },
+      {
+        "idProducto": "S_NATURGY",
+        "producto": "Pago de Naturgy",
+        "precio": 0,
+        "idOperador": "106",
+        "operador": "Naturgy",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Naturgy_logo.svg/1200px-Naturgy_logo.svg.png"
+      },
+      {
+        "idProducto": "S_TOTALPLAY",
+        "producto": "Pago de Totalplay",
+        "precio": 0,
+        "idOperador": "107",
+        "operador": "Totalplay",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Totalplay_logo.svg/1200px-Totalplay_logo.svg.png"
+      },
+      {
+        "idProducto": "S_INFONAVIT",
+        "producto": "Pago de Infonavit",
+        "precio": 0,
+        "idOperador": "108",
+        "operador": "Infonavit",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_Infonavit.svg/1200px-Logo_Infonavit.svg.png"
+      },
+      {
+        "idProducto": "S_SACMEX",
+        "producto": "Pago de SACMEX",
+        "precio": 0,
+        "idOperador": "109",
+        "operador": "SACMEX",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_Infonavit.svg/1200px-Logo_Infonavit.svg.png"
+      },
+      {
+        "idProducto": "S_TELEVIA",
+        "producto": "Pago de TeleVia",
+        "precio": 0,
+        "idOperador": "110",
+        "operador": "TeleVia",
+        "logotipo": "https://www.televia.com.mx/img/logo-televia.png"
+      },
+      {
+        "idProducto": "S_AGUAKAN",
+        "producto": "Pago de Aguakan",
+        "precio": 0,
+        "idOperador": "111",
+        "operador": "Aguakan",
+        "logotipo": "https://www.aguakan.com/wp-content/uploads/2019/03/logo-aguakan.png"
+      },
+      {
+        "idProducto": "S_TELNOR",
+        "producto": "Pago de Telnor",
+        "precio": 0,
+        "idOperador": "112",
+        "operador": "Telnor",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Telmex_logo.svg/1200px-Telmex_logo.svg.png"
+      },
+      {
+        "idProducto": "S_AXTEL",
+        "producto": "Pago de Axtel",
+        "precio": 0,
+        "idOperador": "113",
+        "operador": "Axtel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Axtel_logo.svg/1200px-Axtel_logo.svg.png"
+      },
+      {
+        "idProducto": "S_MAXIGAS",
+        "producto": "Pago de Maxigas",
+        "precio": 0,
+        "idOperador": "114",
+        "operador": "Maxigas",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Naturgy_logo.svg/1200px-Naturgy_logo.svg.png"
+      },
+      {
+        "idProducto": "S_PREDIAL",
+        "producto": "Pago de Predial",
+        "precio": 0,
+        "idOperador": "115",
+        "operador": "Predial",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Logo_de_la_CFE.svg/1200px-Logo_de_la_CFE.svg.png"
+      },
+      {
+        "idProducto": "S_PASE",
+        "producto": "Pago de Pase Urbano",
+        "precio": 0,
+        "idOperador": "116",
+        "operador": "Pase Urbano",
+        "logotipo": "https://www.pase.com.mx/img/logo-pase.png"
+      },
+      {
+        "idProducto": "C_AVON",
+        "producto": "Pago Avon",
+        "precio": 0,
+        "idOperador": "301",
+        "operador": "Avon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Avon_logo.svg/1200px-Avon_logo.svg.png"
+      },
+      {
+        "idProducto": "C_MARYKAY",
+        "producto": "Pago Mary Kay",
+        "precio": 0,
+        "idOperador": "302",
+        "operador": "Mary Kay",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Mary_Kay_logo.svg/1200px-Mary_Kay_logo.svg.png"
+      },
+      {
+        "idProducto": "C_STANHOME",
+        "producto": "Pago Stanhome",
+        "precio": 0,
+        "idOperador": "303",
+        "operador": "Stanhome",
+        "logotipo": "https://www.stanhome.com.mx/img/logo.png"
+      },
+      {
+        "idProducto": "C_TUPPERWARE",
+        "producto": "Pago Tupperware",
+        "precio": 0,
+        "idOperador": "304",
+        "operador": "Tupperware",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Tupperware_logo.svg/1200px-Tupperware_logo.svg.png"
+      },
+      {
+        "idProducto": "C_ARABELA",
+        "producto": "Pago Arabela",
+        "precio": 0,
+        "idOperador": "305",
+        "operador": "Arabela",
+        "logotipo": "https://www.arabela.com/img/logo.png"
+      },
+      {
+        "idProducto": "C_FULLER",
+        "producto": "Pago Fuller",
+        "precio": 0,
+        "idOperador": "306",
+        "operador": "Fuller",
+        "logotipo": "https://www.fuller.com.mx/img/logo.png"
+      },
+      {
+        "idProducto": "C_NATURA",
+        "producto": "Pago Natura",
+        "precio": 0,
+        "idOperador": "307",
+        "operador": "Natura",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Natura_logo.svg/1200px-Natura_logo.svg.png"
+      },
+      {
+        "idProducto": "C_JAFRA",
+        "producto": "Pago Jafra",
+        "precio": 0,
+        "idOperador": "308",
+        "operador": "Jafra",
+        "logotipo": "https://www.jafra.com.mx/img/logo.png"
+      },
+      {
+        "idProducto": "C_ILUSION",
+        "producto": "Pago Ilusión",
+        "precio": 0,
+        "idOperador": "309",
+        "operador": "Ilusión",
+        "logotipo": "https://www.ilusion.com/img/logo.png"
+      },
+      {
+        "idProducto": "C_CUIDAD_CON_EL_PERRO",
+        "producto": "Pago Cuidado con el Perro",
+        "precio": 0,
+        "idOperador": "310",
+        "operador": "Cuidado con el Perro",
+        "logotipo": "https://www.cuidadoconelperro.com.mx/img/logo.png"
+      },
+      {
+        "idProducto": "C_BETTERWARE",
+        "producto": "Pago Betterware",
+        "precio": 0,
+        "idOperador": "311",
+        "operador": "Betterware",
+        "logotipo": "https://www.betterware.com.mx/img/logo.png"
+      },
+      {
+        "idProducto": "C_HERBALIFE",
+        "producto": "Pago Herbalife",
+        "precio": 0,
+        "idOperador": "312",
+        "operador": "Herbalife",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Herbalife_Nutrition_logo.svg/1200px-Herbalife_Nutrition_logo.svg.png"
+      },
+      {
+        "idProducto": "C_BELCORP",
+        "producto": "Pago Belcorp",
+        "precio": 0,
+        "idOperador": "313",
+        "operador": "Belcorp",
+        "logotipo": "https://www.belcorp.biz/img/logo.png"
+      },
+      {
+        "idProducto": "C_ORIFLAME",
+        "producto": "Pago Oriflame",
+        "precio": 0,
+        "idOperador": "314",
+        "operador": "Oriflame",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Oriflame_logo.svg/1200px-Oriflame_logo.svg.png"
+      },
+      {
+        "idProducto": "C_TERRAMAR",
+        "producto": "Pago Terramar",
+        "precio": 0,
+        "idOperador": "315",
+        "operador": "Terramar",
+        "logotipo": "https://www.terramarbrands.com.mx/img/logo.png"
+      },
+      {
+        "idProducto": "C_SHELO_NABEL",
+        "producto": "Pago Shelo Nabel",
+        "precio": 0,
+        "idOperador": "316",
+        "operador": "Shelo Nabel",
+        "logotipo": "https://www.shelonabel.com/img/logo.png"
+      },
+      {
+        "idProducto": "C_ANDREA",
+        "producto": "Pago Andrea",
+        "precio": 0,
+        "idOperador": "317",
+        "operador": "Andrea",
+        "logotipo": "https://www.andrea.com/img/logo.png"
+      },
+      {
+        "idProducto": "C_CKLASS",
+        "producto": "Pago Cklass",
+        "precio": 0,
+        "idOperador": "318",
+        "operador": "Cklass",
+        "logotipo": "https://www.cklass.com/img/logo.png"
+      },
+      {
+        "idProducto": "C_PRICE_SHOES",
+        "producto": "Pago Price Shoes",
+        "precio": 0,
+        "idOperador": "319",
+        "operador": "Price Shoes",
+        "logotipo": "https://www.priceshoes.com/img/logo.png"
+      },
+      {
+        "idProducto": "G_NETFLIX_150",
+        "producto": "Netflix $150",
+        "precio": 150,
+        "idOperador": "201",
+        "operador": "Netflix",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1200px-Netflix_2015_logo.svg.png"
+      },
+      {
+        "idProducto": "G_NETFLIX_300",
+        "producto": "Netflix $300",
+        "precio": 300,
+        "idOperador": "201",
+        "operador": "Netflix",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1200px-Netflix_2015_logo.svg.png"
+      },
+      {
+        "idProducto": "G_NETFLIX_500",
+        "producto": "Netflix $500",
+        "precio": 500,
+        "idOperador": "201",
+        "operador": "Netflix",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1200px-Netflix_2015_logo.svg.png"
+      },
+      {
+        "idProducto": "G_SPOTIFY_115",
+        "producto": "Spotify $115",
+        "precio": 115,
+        "idOperador": "202",
+        "operador": "Spotify",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_with_text.svg/1200px-Spotify_logo_with_text.svg.png"
+      },
+      {
+        "idProducto": "G_SPOTIFY_200",
+        "producto": "Spotify $200",
+        "precio": 200,
+        "idOperador": "202",
+        "operador": "Spotify",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_with_text.svg/1200px-Spotify_logo_with_text.svg.png"
+      },
+      {
+        "idProducto": "G_SPOTIFY_300",
+        "producto": "Spotify $300",
+        "precio": 300,
+        "idOperador": "202",
+        "operador": "Spotify",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_with_text.svg/1200px-Spotify_logo_with_text.svg.png"
+      },
+      {
+        "idProducto": "G_SPOTIFY_600",
+        "producto": "Spotify $600",
+        "precio": 600,
+        "idOperador": "202",
+        "operador": "Spotify",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_with_text.svg/1200px-Spotify_logo_with_text.svg.png"
+      },
+      {
+        "idProducto": "G_AMAZON_100",
+        "producto": "Amazon $100",
+        "precio": 100,
+        "idOperador": "203",
+        "operador": "Amazon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1200px-Amazon_logo.svg.png"
+      },
+      {
+        "idProducto": "G_AMAZON_200",
+        "producto": "Amazon $200",
+        "precio": 200,
+        "idOperador": "203",
+        "operador": "Amazon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1200px-Amazon_logo.svg.png"
+      },
+      {
+        "idProducto": "G_AMAZON_300",
+        "producto": "Amazon $300",
+        "precio": 300,
+        "idOperador": "203",
+        "operador": "Amazon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1200px-Amazon_logo.svg.png"
+      },
+      {
+        "idProducto": "G_AMAZON_500",
+        "producto": "Amazon $500",
+        "precio": 500,
+        "idOperador": "203",
+        "operador": "Amazon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1200px-Amazon_logo.svg.png"
+      },
+      {
+        "idProducto": "G_AMAZON_1000",
+        "producto": "Amazon $1000",
+        "precio": 1000,
+        "idOperador": "203",
+        "operador": "Amazon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1200px-Amazon_logo.svg.png"
+      },
+      {
+        "idProducto": "G_GOOGLE_100",
+        "producto": "Google Play $100",
+        "precio": 100,
+        "idOperador": "204",
+        "operador": "Google Play",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Google_Play_Arrow_logo.svg/1200px-Google_Play_Arrow_logo.svg.png"
+      },
+      {
+        "idProducto": "G_GOOGLE_200",
+        "producto": "Google Play $200",
+        "precio": 200,
+        "idOperador": "204",
+        "operador": "Google Play",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Google_Play_Arrow_logo.svg/1200px-Google_Play_Arrow_logo.svg.png"
+      },
+      {
+        "idProducto": "G_GOOGLE_300",
+        "producto": "Google Play $300",
+        "precio": 300,
+        "idOperador": "204",
+        "operador": "Google Play",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Google_Play_Arrow_logo.svg/1200px-Google_Play_Arrow_logo.svg.png"
+      },
+      {
+        "idProducto": "G_GOOGLE_500",
+        "producto": "Google Play $500",
+        "precio": 500,
+        "idOperador": "204",
+        "operador": "Google Play",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Google_Play_Arrow_logo.svg/1200px-Google_Play_Arrow_logo.svg.png"
+      },
+      {
+        "idProducto": "G_GOOGLE_1000",
+        "producto": "Google Play $1000",
+        "precio": 1000,
+        "idOperador": "204",
+        "operador": "Google Play",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Google_Play_Arrow_logo.svg/1200px-Google_Play_Arrow_logo.svg.png"
+      },
+      {
+        "idProducto": "G_XBOX_200",
+        "producto": "Xbox $200",
+        "precio": 200,
+        "idOperador": "205",
+        "operador": "Xbox",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Xbox_one_logo.svg/1200px-Xbox_one_logo.svg.png"
+      },
+      {
+        "idProducto": "G_XBOX_300",
+        "producto": "Xbox $300",
+        "precio": 300,
+        "idOperador": "205",
+        "operador": "Xbox",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Xbox_one_logo.svg/1200px-Xbox_one_logo.svg.png"
+      },
+      {
+        "idProducto": "G_XBOX_500",
+        "producto": "Xbox $500",
+        "precio": 500,
+        "idOperador": "205",
+        "operador": "Xbox",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Xbox_one_logo.svg/1200px-Xbox_one_logo.svg.png"
+      },
+      {
+        "idProducto": "G_XBOX_600",
+        "producto": "Xbox $600",
+        "precio": 600,
+        "idOperador": "205",
+        "operador": "Xbox",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Xbox_one_logo.svg/1200px-Xbox_one_logo.svg.png"
+      },
+      {
+        "idProducto": "G_XBOX_1000",
+        "producto": "Xbox $1000",
+        "precio": 1000,
+        "idOperador": "205",
+        "operador": "Xbox",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Xbox_one_logo.svg/1200px-Xbox_one_logo.svg.png"
+      },
+      {
+        "idProducto": "G_PLAYSTATION_10",
+        "producto": "PlayStation $10 USD",
+        "precio": 200,
+        "idOperador": "206",
+        "operador": "PlayStation",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/PlayStation_logo.svg/1200px-PlayStation_logo.svg.png"
+      },
+      {
+        "idProducto": "G_PLAYSTATION_20",
+        "producto": "PlayStation $20 USD",
+        "precio": 400,
+        "idOperador": "206",
+        "operador": "PlayStation",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/PlayStation_logo.svg/1200px-PlayStation_logo.svg.png"
+      },
+      {
+        "idProducto": "G_PLAYSTATION_50",
+        "producto": "PlayStation $50 USD",
+        "precio": 1000,
+        "idOperador": "206",
+        "operador": "PlayStation",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/PlayStation_logo.svg/1200px-PlayStation_logo.svg.png"
+      },
+      {
+        "idProducto": "G_NINTENDO_200",
+        "producto": "Nintendo eShop $200",
+        "precio": 200,
+        "idOperador": "207",
+        "operador": "Nintendo",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Nintendo.svg/1200px-Nintendo.svg.png"
+      },
+      {
+        "idProducto": "G_NINTENDO_500",
+        "producto": "Nintendo eShop $500",
+        "precio": 500,
+        "idOperador": "207",
+        "operador": "Nintendo",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Nintendo.svg/1200px-Nintendo.svg.png"
+      },
+      {
+        "idProducto": "G_STEAM_100",
+        "producto": "Steam $100",
+        "precio": 100,
+        "idOperador": "208",
+        "operador": "Steam",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/1200px-Steam_icon_logo.svg.png"
+      },
+      {
+        "idProducto": "G_STEAM_200",
+        "producto": "Steam $200",
+        "precio": 200,
+        "idOperador": "208",
+        "operador": "Steam",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/1200px-Steam_icon_logo.svg.png"
+      },
+      {
+        "idProducto": "G_STEAM_300",
+        "producto": "Steam $300",
+        "precio": 300,
+        "idOperador": "208",
+        "operador": "Steam",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/1200px-Steam_icon_logo.svg.png"
+      },
+      {
+        "idProducto": "G_STEAM_500",
+        "producto": "Steam $500",
+        "precio": 500,
+        "idOperador": "208",
+        "operador": "Steam",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/1200px-Steam_icon_logo.svg.png"
+      },
+      {
+        "idProducto": "G_STEAM_1000",
+        "producto": "Steam $1000",
+        "precio": 1000,
+        "idOperador": "208",
+        "operador": "Steam",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/1200px-Steam_icon_logo.svg.png"
+      },
+      {
+        "idProducto": "G_ROBLOX_100",
+        "producto": "Roblox $100",
+        "precio": 100,
+        "idOperador": "209",
+        "operador": "Roblox",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Roblox_player_icon_black.svg/1200px-Roblox_player_icon_black.svg.png"
+      },
+      {
+        "idProducto": "G_ROBLOX_200",
+        "producto": "Roblox $200",
+        "precio": 200,
+        "idOperador": "209",
+        "operador": "Roblox",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Roblox_player_icon_black.svg/1200px-Roblox_player_icon_black.svg.png"
+      },
+      {
+        "idProducto": "G_ROBLOX_400",
+        "producto": "Roblox $400",
+        "precio": 400,
+        "idOperador": "209",
+        "operador": "Roblox",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Roblox_player_icon_black.svg/1200px-Roblox_player_icon_black.svg.png"
+      },
+      {
+        "idProducto": "G_ROBLOX_800",
+        "producto": "Roblox $800",
+        "precio": 800,
+        "idOperador": "209",
+        "operador": "Roblox",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Roblox_player_icon_black.svg/1200px-Roblox_player_icon_black.svg.png"
+      },
+      {
+        "idProducto": "G_UBER_150",
+        "producto": "Uber $150",
+        "precio": 150,
+        "idOperador": "210",
+        "operador": "Uber",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Uber_logo_2018.svg/1200px-Uber_logo_2018.svg.png"
+      },
+      {
+        "idProducto": "G_UBER_200",
+        "producto": "Uber $200",
+        "precio": 200,
+        "idOperador": "210",
+        "operador": "Uber",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Uber_logo_2018.svg/1200px-Uber_logo_2018.svg.png"
+      },
+      {
+        "idProducto": "G_UBER_300",
+        "producto": "Uber $300",
+        "precio": 300,
+        "idOperador": "210",
+        "operador": "Uber",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Uber_logo_2018.svg/1200px-Uber_logo_2018.svg.png"
+      },
+      {
+        "idProducto": "G_UBER_500",
+        "producto": "Uber $500",
+        "precio": 500,
+        "idOperador": "210",
+        "operador": "Uber",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Uber_logo_2018.svg/1200px-Uber_logo_2018.svg.png"
+      },
+      {
+        "idProducto": "G_DIDIFOOD_150",
+        "producto": "Didi Food $150",
+        "precio": 150,
+        "idOperador": "211",
+        "operador": "Didi Food",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/DiDi_logo.svg/1200px-DiDi_logo.svg.png"
+      },
+      {
+        "idProducto": "G_DIDIFOOD_200",
+        "producto": "Didi Food $200",
+        "precio": 200,
+        "idOperador": "211",
+        "operador": "Didi Food",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/DiDi_logo.svg/1200px-DiDi_logo.svg.png"
+      },
+      {
+        "idProducto": "G_DIDIFOOD_300",
+        "producto": "Didi Food $300",
+        "precio": 300,
+        "idOperador": "211",
+        "operador": "Didi Food",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/DiDi_logo.svg/1200px-DiDi_logo.svg.png"
+      },
+      {
+        "idProducto": "G_DIDIFOOD_500",
+        "producto": "Didi Food $500",
+        "precio": 500,
+        "idOperador": "211",
+        "operador": "Didi Food",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/DiDi_logo.svg/1200px-DiDi_logo.svg.png"
+      },
+      {
+        "idProducto": "G_APPLE_100",
+        "producto": "Apple $100",
+        "precio": 100,
+        "idOperador": "212",
+        "operador": "Apple",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1200px-Apple_logo_black.svg.png"
+      },
+      {
+        "idProducto": "G_APPLE_200",
+        "producto": "Apple $200",
+        "precio": 200,
+        "idOperador": "212",
+        "operador": "Apple",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1200px-Apple_logo_black.svg.png"
+      },
+      {
+        "idProducto": "G_APPLE_500",
+        "producto": "Apple $500",
+        "precio": 500,
+        "idOperador": "212",
+        "operador": "Apple",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1200px-Apple_logo_black.svg.png"
+      },
+      {
+        "idProducto": "G_CRUNCHY_100",
+        "producto": "Crunchyroll $100",
+        "precio": 100,
+        "idOperador": "213",
+        "operador": "Crunchyroll",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Crunchyroll_Logo.svg/1200px-Crunchyroll_Logo.svg.png"
+      },
+      {
+        "idProducto": "G_CRUNCHY_300",
+        "producto": "Crunchyroll $300",
+        "precio": 300,
+        "idOperador": "213",
+        "operador": "Crunchyroll",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Crunchyroll_Logo.svg/1200px-Crunchyroll_Logo.svg.png"
+      },
+      {
+        "idProducto": "G_PARAMOUNT_100",
+        "producto": "Paramount+ $100",
+        "precio": 100,
+        "idOperador": "214",
+        "operador": "Paramount+",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus_logo.svg/1200px-Paramount_Plus_logo.svg.png"
+      },
+      {
+        "idProducto": "G_PARAMOUNT_300",
+        "producto": "Paramount+ $300",
+        "precio": 300,
+        "idOperador": "214",
+        "operador": "Paramount+",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus_logo.svg/1200px-Paramount_Plus_logo.svg.png"
+      },
+      {
+        "idProducto": "G_HBO_100",
+        "producto": "HBO Max $100",
+        "precio": 100,
+        "idOperador": "215",
+        "operador": "HBO Max",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/HBO_Max_Logo.svg/1200px-HBO_Max_Logo.svg.png"
+      },
+      {
+        "idProducto": "G_HBO_300",
+        "producto": "HBO Max $300",
+        "precio": 300,
+        "idOperador": "215",
+        "operador": "HBO Max",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/HBO_Max_Logo.svg/1200px-HBO_Max_Logo.svg.png"
+      },
+      {
+        "idProducto": "G_DISNEY_100",
+        "producto": "Disney+ $100",
+        "precio": 100,
+        "idOperador": "216",
+        "operador": "Disney+",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Disney%2B_logo.svg/1200px-Disney%2B_logo.svg.png"
+      },
+      {
+        "idProducto": "G_DISNEY_300",
+        "producto": "Disney+ $300",
+        "precio": 300,
+        "idOperador": "216",
+        "operador": "Disney+",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Disney%2B_logo.svg/1200px-Disney%2B_logo.svg.png"
+      },
+      {
+        "idProducto": "G_CINEPOLIS_100",
+        "producto": "Cinepolis $100",
+        "precio": 100,
+        "idOperador": "217",
+        "operador": "Cinepolis",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Cinepolis_logo.svg/1200px-Cinepolis_logo.svg.png"
+      },
+      {
+        "idProducto": "G_CINEPOLIS_250",
+        "producto": "Cinepolis $250",
+        "precio": 250,
+        "idOperador": "217",
+        "operador": "Cinepolis",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Cinepolis_logo.svg/1200px-Cinepolis_logo.svg.png"
+      },
+      {
+        "idProducto": "G_CINEPOLIS_500",
+        "producto": "Cinepolis $500",
+        "precio": 500,
+        "idOperador": "217",
+        "operador": "Cinepolis",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Cinepolis_logo.svg/1200px-Cinepolis_logo.svg.png"
+      },
+      {
+        "idProducto": "G_CINEMEX_100",
+        "producto": "Cinemex $100",
+        "precio": 100,
+        "idOperador": "218",
+        "operador": "Cinemex",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Cinemex_logo.svg/1200px-Cinemex_logo.svg.png"
+      },
+      {
+        "idProducto": "G_CINEMEX_200",
+        "producto": "Cinemex $200",
+        "precio": 200,
+        "idOperador": "218",
+        "operador": "Cinemex",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Cinemex_logo.svg/1200px-Cinemex_logo.svg.png"
+      },
+      {
+        "idProducto": "G_CINEMEX_500",
+        "producto": "Cinemex $500",
+        "precio": 500,
+        "idOperador": "218",
+        "operador": "Cinemex",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Cinemex_logo.svg/1200px-Cinemex_logo.svg.png"
+      },
+      {
+        "idProducto": "G_RAPPI_100",
+        "producto": "Rappi $100",
+        "precio": 100,
+        "idOperador": "219",
+        "operador": "Rappi",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Rappi_logo.svg/1200px-Rappi_logo.svg.png"
+      },
+      {
+        "idProducto": "G_RAPPI_250",
+        "producto": "Rappi $250",
+        "precio": 250,
+        "idOperador": "219",
+        "operador": "Rappi",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Rappi_logo.svg/1200px-Rappi_logo.svg.png"
+      },
+      {
+        "idProducto": "G_RAPPI_500",
+        "producto": "Rappi $500",
+        "precio": 500,
+        "idOperador": "219",
+        "operador": "Rappi",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Rappi_logo.svg/1200px-Rappi_logo.svg.png"
+      },
+      {
+        "idProducto": "T10",
+        "producto": "Telcel $10",
+        "precio": 10,
+        "idOperador": "1",
+        "operador": "Telcel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telcel_logo.svg/1200px-Telcel_logo.svg.png"
+      },
+      {
+        "idProducto": "T20",
+        "producto": "Telcel $20",
+        "precio": 20,
+        "idOperador": "1",
+        "operador": "Telcel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telcel_logo.svg/1200px-Telcel_logo.svg.png"
+      },
+      {
+        "idProducto": "T30",
+        "producto": "Telcel $30",
+        "precio": 30,
+        "idOperador": "1",
+        "operador": "Telcel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telcel_logo.svg/1200px-Telcel_logo.svg.png"
+      },
+      {
+        "idProducto": "T50",
+        "producto": "Telcel $50",
+        "precio": 50,
+        "idOperador": "1",
+        "operador": "Telcel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telcel_logo.svg/1200px-Telcel_logo.svg.png"
+      },
+      {
+        "idProducto": "T80",
+        "producto": "Telcel $80",
+        "precio": 80,
+        "idOperador": "1",
+        "operador": "Telcel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telcel_logo.svg/1200px-Telcel_logo.svg.png"
+      },
+      {
+        "idProducto": "T100",
+        "producto": "Telcel $100",
+        "precio": 100,
+        "idOperador": "1",
+        "operador": "Telcel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telcel_logo.svg/1200px-Telcel_logo.svg.png"
+      },
+      {
+        "idProducto": "T150",
+        "producto": "Telcel $150",
+        "precio": 150,
+        "idOperador": "1",
+        "operador": "Telcel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telcel_logo.svg/1200px-Telcel_logo.svg.png"
+      },
+      {
+        "idProducto": "T200",
+        "producto": "Telcel $200",
+        "precio": 200,
+        "idOperador": "1",
+        "operador": "Telcel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telcel_logo.svg/1200px-Telcel_logo.svg.png"
+      },
+      {
+        "idProducto": "T300",
+        "producto": "Telcel $300",
+        "precio": 300,
+        "idOperador": "1",
+        "operador": "Telcel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telcel_logo.svg/1200px-Telcel_logo.svg.png"
+      },
+      {
+        "idProducto": "T500",
+        "producto": "Telcel $500",
+        "precio": 500,
+        "idOperador": "1",
+        "operador": "Telcel",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telcel_logo.svg/1200px-Telcel_logo.svg.png"
+      },
+      {
+        "idProducto": "M10",
+        "producto": "Movistar $10",
+        "precio": 10,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M20",
+        "producto": "Movistar $20",
+        "precio": 20,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M30",
+        "producto": "Movistar $30",
+        "precio": 30,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M40",
+        "producto": "Movistar $40",
+        "precio": 40,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M50",
+        "producto": "Movistar $50",
+        "precio": 50,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M60",
+        "producto": "Movistar $60",
+        "precio": 60,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M70",
+        "producto": "Movistar $70",
+        "precio": 70,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M80",
+        "producto": "Movistar $80",
+        "precio": 80,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M100",
+        "producto": "Movistar $100",
+        "precio": 100,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M120",
+        "producto": "Movistar $120",
+        "precio": 120,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M150",
+        "producto": "Movistar $150",
+        "precio": 150,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M200",
+        "producto": "Movistar $200",
+        "precio": 200,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M300",
+        "producto": "Movistar $300",
+        "precio": 300,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "M500",
+        "producto": "Movistar $500",
+        "precio": 500,
+        "idOperador": "2",
+        "operador": "Movistar",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Movistar_logo.svg/1200px-Movistar_logo.svg.png"
+      },
+      {
+        "idProducto": "A10",
+        "producto": "AT&T $10",
+        "precio": 10,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A20",
+        "producto": "AT&T $20",
+        "precio": 20,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A30",
+        "producto": "AT&T $30",
+        "precio": 30,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A40",
+        "producto": "AT&T $40",
+        "precio": 40,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A50",
+        "producto": "AT&T $50",
+        "precio": 50,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A60",
+        "producto": "AT&T $60",
+        "precio": 60,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A70",
+        "producto": "AT&T $70",
+        "precio": 70,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A80",
+        "producto": "AT&T $80",
+        "precio": 80,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A100",
+        "producto": "AT&T $100",
+        "precio": 100,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A120",
+        "producto": "AT&T $120",
+        "precio": 120,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A150",
+        "producto": "AT&T $150",
+        "precio": 150,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A200",
+        "producto": "AT&T $200",
+        "precio": 200,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A300",
+        "producto": "AT&T $300",
+        "precio": 300,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "A500",
+        "producto": "AT&T $500",
+        "precio": 500,
+        "idOperador": "3",
+        "operador": "AT&T",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/AT%26T_logo_2016.svg/1200px-AT%26T_logo_2016.svg.png"
+      },
+      {
+        "idProducto": "B10",
+        "producto": "Bait $10",
+        "precio": 10,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "B20",
+        "producto": "Bait $20",
+        "precio": 20,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "B30",
+        "producto": "Bait $30",
+        "precio": 30,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "B50",
+        "producto": "Bait $50",
+        "precio": 50,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "B65",
+        "producto": "Bait $65",
+        "precio": 65,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "B100",
+        "producto": "Bait $100",
+        "precio": 100,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "B125",
+        "producto": "Bait $125",
+        "precio": 125,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "B150",
+        "producto": "Bait $150",
+        "precio": 150,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "B200",
+        "producto": "Bait $200",
+        "precio": 200,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "B300",
+        "producto": "Bait $300",
+        "precio": 300,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "B500",
+        "producto": "Bait $500",
+        "precio": 500,
+        "idOperador": "4",
+        "operador": "Bait",
+        "logotipo": "https://mibait.com/img/logo-bait.png"
+      },
+      {
+        "idProducto": "U10",
+        "producto": "Unefon $10",
+        "precio": 10,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U20",
+        "producto": "Unefon $20",
+        "precio": 20,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U30",
+        "producto": "Unefon $30",
+        "precio": 30,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U40",
+        "producto": "Unefon $40",
+        "precio": 40,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U50",
+        "producto": "Unefon $50",
+        "precio": 50,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U60",
+        "producto": "Unefon $60",
+        "precio": 60,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U70",
+        "producto": "Unefon $70",
+        "precio": 70,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U80",
+        "producto": "Unefon $80",
+        "precio": 80,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U100",
+        "producto": "Unefon $100",
+        "precio": 100,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U150",
+        "producto": "Unefon $150",
+        "precio": 150,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U200",
+        "producto": "Unefon $200",
+        "precio": 200,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U300",
+        "producto": "Unefon $300",
+        "precio": 300,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "U500",
+        "producto": "Unefon $500",
+        "precio": 500,
+        "idOperador": "5",
+        "operador": "Unefon",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Logo_Unefon.svg/1200px-Logo_Unefon.svg.png"
+      },
+      {
+        "idProducto": "V20",
+        "producto": "Virgin $20",
+        "precio": 20,
+        "idOperador": "6",
+        "operador": "Virgin Mobile",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Virgin_Mobile_logo.svg/1200px-Virgin_Mobile_logo.svg.png"
+      },
+      {
+        "idProducto": "V30",
+        "producto": "Virgin $30",
+        "precio": 30,
+        "idOperador": "6",
+        "operador": "Virgin Mobile",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Virgin_Mobile_logo.svg/1200px-Virgin_Mobile_logo.svg.png"
+      },
+      {
+        "idProducto": "V50",
+        "producto": "Virgin $50",
+        "precio": 50,
+        "idOperador": "6",
+        "operador": "Virgin Mobile",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Virgin_Mobile_logo.svg/1200px-Virgin_Mobile_logo.svg.png"
+      },
+      {
+        "idProducto": "V100",
+        "producto": "Virgin $100",
+        "precio": 100,
+        "idOperador": "6",
+        "operador": "Virgin Mobile",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Virgin_Mobile_logo.svg/1200px-Virgin_Mobile_logo.svg.png"
+      },
+      {
+        "idProducto": "V150",
+        "producto": "Virgin $150",
+        "precio": 150,
+        "idOperador": "6",
+        "operador": "Virgin Mobile",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Virgin_Mobile_logo.svg/1200px-Virgin_Mobile_logo.svg.png"
+      },
+      {
+        "idProducto": "V200",
+        "producto": "Virgin $200",
+        "precio": 200,
+        "idOperador": "6",
+        "operador": "Virgin Mobile",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Virgin_Mobile_logo.svg/1200px-Virgin_Mobile_logo.svg.png"
+      },
+      {
+        "idProducto": "V300",
+        "producto": "Virgin $300",
+        "precio": 300,
+        "idOperador": "6",
+        "operador": "Virgin Mobile",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Virgin_Mobile_logo.svg/1200px-Virgin_Mobile_logo.svg.png"
+      },
+      {
+        "idProducto": "V500",
+        "producto": "Virgin $500",
+        "precio": 500,
+        "idOperador": "6",
+        "operador": "Virgin Mobile",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Virgin_Mobile_logo.svg/1200px-Virgin_Mobile_logo.svg.png"
+      },
+      {
+        "idProducto": "P50",
+        "producto": "Pillofon $50",
+        "precio": 50,
+        "idOperador": "7",
+        "operador": "Pillofon",
+        "logotipo": "https://pillofon.mx/wp-content/uploads/2020/10/logo-pillofon.png"
+      },
+      {
+        "idProducto": "P100",
+        "producto": "Pillofon $100",
+        "precio": 100,
+        "idOperador": "7",
+        "operador": "Pillofon",
+        "logotipo": "https://pillofon.mx/wp-content/uploads/2020/10/logo-pillofon.png"
+      },
+      {
+        "idProducto": "P149",
+        "producto": "Pillofon $149",
+        "precio": 149,
+        "idOperador": "7",
+        "operador": "Pillofon",
+        "logotipo": "https://pillofon.mx/wp-content/uploads/2020/10/logo-pillofon.png"
+      },
+      {
+        "idProducto": "P199",
+        "producto": "Pillofon $199",
+        "precio": 199,
+        "idOperador": "7",
+        "operador": "Pillofon",
+        "logotipo": "https://pillofon.mx/wp-content/uploads/2020/10/logo-pillofon.png"
+      },
+      {
+        "idProducto": "P299",
+        "producto": "Pillofon $299",
+        "precio": 299,
+        "idOperador": "7",
+        "operador": "Pillofon",
+        "logotipo": "https://pillofon.mx/wp-content/uploads/2020/10/logo-pillofon.png"
+      },
+      {
+        "idProducto": "P499",
+        "producto": "Pillofon $499",
+        "precio": 499,
+        "idOperador": "7",
+        "operador": "Pillofon",
+        "logotipo": "https://pillofon.mx/wp-content/uploads/2020/10/logo-pillofon.png"
+      },
+      {
+        "idProducto": "F30",
+        "producto": "FreedomPop $30",
+        "precio": 30,
+        "idOperador": "8",
+        "operador": "FreedomPop",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FreedomPop_logo.svg/1200px-FreedomPop_logo.svg.png"
+      },
+      {
+        "idProducto": "F50",
+        "producto": "FreedomPop $50",
+        "precio": 50,
+        "idOperador": "8",
+        "operador": "FreedomPop",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FreedomPop_logo.svg/1200px-FreedomPop_logo.svg.png"
+      },
+      {
+        "idProducto": "F100",
+        "producto": "FreedomPop $100",
+        "precio": 100,
+        "idOperador": "8",
+        "operador": "FreedomPop",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FreedomPop_logo.svg/1200px-FreedomPop_logo.svg.png"
+      },
+      {
+        "idProducto": "F200",
+        "producto": "FreedomPop $200",
+        "precio": 200,
+        "idOperador": "8",
+        "operador": "FreedomPop",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FreedomPop_logo.svg/1200px-FreedomPop_logo.svg.png"
+      },
+      {
+        "idProducto": "F300",
+        "producto": "FreedomPop $300",
+        "precio": 300,
+        "idOperador": "8",
+        "operador": "FreedomPop",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FreedomPop_logo.svg/1200px-FreedomPop_logo.svg.png"
+      },
+      {
+        "idProducto": "F500",
+        "producto": "FreedomPop $500",
+        "precio": 500,
+        "idOperador": "8",
+        "operador": "FreedomPop",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/FreedomPop_logo.svg/1200px-FreedomPop_logo.svg.png"
+      },
+      {
+        "idProducto": "W10",
+        "producto": "Weex $10",
+        "precio": 10,
+        "idOperador": "9",
+        "operador": "Weex",
+        "logotipo": "https://weex.mx/img/logo-weex.png"
+      },
+      {
+        "idProducto": "W20",
+        "producto": "Weex $20",
+        "precio": 20,
+        "idOperador": "9",
+        "operador": "Weex",
+        "logotipo": "https://weex.mx/img/logo-weex.png"
+      },
+      {
+        "idProducto": "W30",
+        "producto": "Weex $30",
+        "precio": 30,
+        "idOperador": "9",
+        "operador": "Weex",
+        "logotipo": "https://weex.mx/img/logo-weex.png"
+      },
+      {
+        "idProducto": "W50",
+        "producto": "Weex $50",
+        "precio": 50,
+        "idOperador": "9",
+        "operador": "Weex",
+        "logotipo": "https://weex.mx/img/logo-weex.png"
+      },
+      {
+        "idProducto": "W100",
+        "producto": "Weex $100",
+        "precio": 100,
+        "idOperador": "9",
+        "operador": "Weex",
+        "logotipo": "https://weex.mx/img/logo-weex.png"
+      },
+      {
+        "idProducto": "W200",
+        "producto": "Weex $200",
+        "precio": 200,
+        "idOperador": "9",
+        "operador": "Weex",
+        "logotipo": "https://weex.mx/img/logo-weex.png"
+      },
+      {
+        "idProducto": "W500",
+        "producto": "Weex $500",
+        "precio": 500,
+        "idOperador": "9",
+        "operador": "Weex",
+        "logotipo": "https://weex.mx/img/logo-weex.png"
+      },
+      {
+        "idProducto": "FL50",
+        "producto": "Flash Mobile $50",
+        "precio": 50,
+        "idOperador": "10",
+        "operador": "Flash Mobile",
+        "logotipo": "https://flashmobile.mx/wp-content/uploads/2020/07/logo-flash-mobile.png"
+      },
+      {
+        "idProducto": "FL100",
+        "producto": "Flash Mobile $100",
+        "precio": 100,
+        "idOperador": "10",
+        "operador": "Flash Mobile",
+        "logotipo": "https://flashmobile.mx/wp-content/uploads/2020/07/logo-flash-mobile.png"
+      },
+      {
+        "idProducto": "FL200",
+        "producto": "Flash Mobile $200",
+        "precio": 200,
+        "idOperador": "10",
+        "operador": "Flash Mobile",
+        "logotipo": "https://flashmobile.mx/wp-content/uploads/2020/07/logo-flash-mobile.png"
+      },
+      {
+        "idProducto": "FL300",
+        "producto": "Flash Mobile $300",
+        "precio": 300,
+        "idOperador": "10",
+        "operador": "Flash Mobile",
+        "logotipo": "https://flashmobile.mx/wp-content/uploads/2020/07/logo-flash-mobile.png"
+      },
+      {
+        "idProducto": "FL500",
+        "producto": "Flash Mobile $500",
+        "precio": 500,
+        "idOperador": "10",
+        "operador": "Flash Mobile",
+        "logotipo": "https://flashmobile.mx/wp-content/uploads/2020/07/logo-flash-mobile.png"
+      },
+      {
+        "idProducto": "ALO10",
+        "producto": "Alo $10",
+        "precio": 10,
+        "idOperador": "11",
+        "operador": "Alo",
+        "logotipo": "https://alo.com.mx/img/logo-alo.png"
+      },
+      {
+        "idProducto": "ALO20",
+        "producto": "Alo $20",
+        "precio": 20,
+        "idOperador": "11",
+        "operador": "Alo",
+        "logotipo": "https://alo.com.mx/img/logo-alo.png"
+      },
+      {
+        "idProducto": "MAZ30",
+        "producto": "Maz Tiempo $30",
+        "precio": 30,
+        "idOperador": "12",
+        "operador": "Maz Tiempo",
+        "logotipo": "https://maztiempo.com/img/logo-maz.png"
+      },
+      {
+        "idProducto": "MAZ50",
+        "producto": "Maz Tiempo $50",
+        "precio": 50,
+        "idOperador": "12",
+        "operador": "Maz Tiempo",
+        "logotipo": "https://maztiempo.com/img/logo-maz.png"
+      },
+      {
+        "idProducto": "OXXO20",
+        "producto": "Oxxo Cel $20",
+        "precio": 20,
+        "idOperador": "13",
+        "operador": "Oxxo Cel",
+        "logotipo": "https://www.oxxocel.com/img/logo-oxxo-cel.png"
+      },
+      {
+        "idProducto": "OXXO50",
+        "producto": "Oxxo Cel $50",
+        "precio": 50,
+        "idOperador": "13",
+        "operador": "Oxxo Cel",
+        "logotipo": "https://www.oxxocel.com/img/logo-oxxo-cel.png"
+      },
+      {
+        "idProducto": "OXXO100",
+        "producto": "Oxxo Cel $100",
+        "precio": 100,
+        "idOperador": "13",
+        "operador": "Oxxo Cel",
+        "logotipo": "https://www.oxxocel.com/img/logo-oxxo-cel.png"
+      },
+      {
+        "idProducto": "CIE20",
+        "producto": "Cierto $20",
+        "precio": 20,
+        "idOperador": "14",
+        "operador": "Cierto",
+        "logotipo": "https://cierto.com.mx/img/logo-cierto.png"
+      },
+      {
+        "idProducto": "CIE50",
+        "producto": "Cierto $50",
+        "precio": 50,
+        "idOperador": "14",
+        "operador": "Cierto",
+        "logotipo": "https://cierto.com.mx/img/logo-cierto.png"
+      },
+      {
+        "idProducto": "CIE100",
+        "producto": "Cierto $100",
+        "precio": 100,
+        "idOperador": "14",
+        "operador": "Cierto",
+        "logotipo": "https://cierto.com.mx/img/logo-cierto.png"
+      },
+      {
+        "idProducto": "OUI20",
+        "producto": "Oui $20",
+        "precio": 20,
+        "idOperador": "15",
+        "operador": "Oui",
+        "logotipo": "https://ouimovil.com.mx/img/logo-oui.png"
+      },
+      {
+        "idProducto": "OUI50",
+        "producto": "Oui $50",
+        "precio": 50,
+        "idOperador": "15",
+        "operador": "Oui",
+        "logotipo": "https://ouimovil.com.mx/img/logo-oui.png"
+      },
+      {
+        "idProducto": "OUI100",
+        "producto": "Oui $100",
+        "precio": 100,
+        "idOperador": "15",
+        "operador": "Oui",
+        "logotipo": "https://ouimovil.com.mx/img/logo-oui.png"
+      },
+      {
+        "idProducto": "DIRI50",
+        "producto": "Diri $50",
+        "precio": 50,
+        "idOperador": "16",
+        "operador": "Diri",
+        "logotipo": "https://diri.mx/assets/img/logo-diri.png"
+      },
+      {
+        "idProducto": "DIRI100",
+        "producto": "Diri $100",
+        "precio": 100,
+        "idOperador": "16",
+        "operador": "Diri",
+        "logotipo": "https://diri.mx/assets/img/logo-diri.png"
+      },
+      {
+        "idProducto": "DIRI200",
+        "producto": "Diri $200",
+        "precio": 200,
+        "idOperador": "16",
+        "operador": "Diri",
+        "logotipo": "https://diri.mx/assets/img/logo-diri.png"
+      },
+      {
+        "idProducto": "DIRI300",
+        "producto": "Diri $300",
+        "precio": 300,
+        "idOperador": "16",
+        "operador": "Diri",
+        "logotipo": "https://diri.mx/assets/img/logo-diri.png"
+      },
+      {
+        "idProducto": "DIRI500",
+        "producto": "Diri $500",
+        "precio": 500,
+        "idOperador": "16",
+        "operador": "Diri",
+        "logotipo": "https://diri.mx/assets/img/logo-diri.png"
+      },
+      {
+        "idProducto": "GUGU50",
+        "producto": "Gugú $50",
+        "precio": 50,
+        "idOperador": "17",
+        "operador": "Gugú Móvil",
+        "logotipo": "https://gugumovil.com/wp-content/uploads/2021/06/logo-gugu-movil.png"
+      },
+      {
+        "idProducto": "GUGU100",
+        "producto": "Gugú $100",
+        "precio": 100,
+        "idOperador": "17",
+        "operador": "Gugú Móvil",
+        "logotipo": "https://gugumovil.com/wp-content/uploads/2021/06/logo-gugu-movil.png"
+      },
+      {
+        "idProducto": "GUGU200",
+        "producto": "Gugú $200",
+        "precio": 200,
+        "idOperador": "17",
+        "operador": "Gugú Móvil",
+        "logotipo": "https://gugumovil.com/wp-content/uploads/2021/06/logo-gugu-movil.png"
+      },
+      {
+        "idProducto": "IZZI50",
+        "producto": "Izzi Móvil $50",
+        "precio": 50,
+        "idOperador": "18",
+        "operador": "Izzi Móvil",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Izzi_logo.svg/1200px-Izzi_logo.svg.png"
+      },
+      {
+        "idProducto": "IZZI100",
+        "producto": "Izzi Móvil $100",
+        "precio": 100,
+        "idOperador": "18",
+        "operador": "Izzi Móvil",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Izzi_logo.svg/1200px-Izzi_logo.svg.png"
+      },
+      {
+        "idProducto": "IZZI200",
+        "producto": "Izzi Móvil $200",
+        "precio": 200,
+        "idOperador": "18",
+        "operador": "Izzi Móvil",
+        "logotipo": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Izzi_logo.svg/1200px-Izzi_logo.svg.png"
+      },
+      {
+        "idProducto": "MEGA50",
+        "producto": "Megamóvil $50",
+        "precio": 50,
+        "idOperador": "19",
+        "operador": "Megamóvil",
+        "logotipo": "https://www.megacable.com.mx/img/logo-megacable.png"
+      },
+      {
+        "idProducto": "MEGA100",
+        "producto": "Megamóvil $100",
+        "precio": 100,
+        "idOperador": "19",
+        "operador": "Megamóvil",
+        "logotipo": "https://www.megacable.com.mx/img/logo-megacable.png"
+      },
+      {
+        "idProducto": "MEGA200",
+        "producto": "Megamóvil $200",
+        "precio": 200,
+        "idOperador": "19",
+        "operador": "Megamóvil",
+        "logotipo": "https://www.megacable.com.mx/img/logo-megacable.png"
+      }
+    ],
+    "message": "Usando datos cacheados porque getProducts está en bloqueo (rate limit)"
+  },
+  "timestamp": "2026-03-26T07:23:47.026Z"
+}

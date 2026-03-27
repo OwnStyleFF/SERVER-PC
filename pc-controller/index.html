@@ -39,6 +39,13 @@
 
     <div class="block">Estado: <strong id="statusText">inicializando...</strong></div>
     <div class="block">Token agente: <strong id="agentToken">(pendiente)</strong></div>
+
+    <div class="block" style="margin-top: 12px;">
+      <label>Terminal de depuración:</label>
+      <pre id="terminal" style="background:#08212e;color:#39ff90;padding:12px;border-radius:10px;height:220px;overflow:auto;white-space:pre-wrap;line-height:1.2;font-size:11px;"></pre>
+      <button id="btnClearLog" style="margin-top:8px;padding:6px 10px;border:none;border-radius:8px;background:#555;color:#fff;cursor:pointer;">Limpiar terminal</button>
+    </div>
+
     <div id="state"></div>
   </div>
 
@@ -77,11 +84,27 @@
       statusText.innerText = resultado.success ? 'Comando unlock enviado' : `Error unlock: ${resultado.error}`;
     });
 
+    const terminal = document.getElementById('terminal');
+    const btnClearLog = document.getElementById('btnClearLog');
+
+    const renderLogs = (lines = []) => {
+      terminal.textContent = lines.join('\n');
+      terminal.scrollTop = terminal.scrollHeight;
+    };
+
+    btnClearLog.addEventListener('click', () => {
+      terminal.textContent = '';
+    });
+
     window.pcController.onStatusUpdate((data) => {
       serverUrlInput.value = data.serverUrl;
       pcIdInput.value = data.pcId;
       agentTokenEl.innerText = data.agentToken ? '✅' : '(sin token)';
       statusText.innerText = data.connectionMessage || `Conectado a ${data.serverUrl} como ${data.pcId}`;
+
+      if (data.logs && Array.isArray(data.logs)) {
+        renderLogs(data.logs);
+      }
 
       if (data.connection === 'connected') {
         document.body.style.background = '#0a2f0f';
