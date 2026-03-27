@@ -163,7 +163,7 @@ async function requestPairCode() {
       pushStatus();
       return true;
     }
-
+    
     connectionMessage = `No se pudo iniciar emparejamiento: ${response.data?.error || 'sin detalles'}`;
     addLog(`Emparejamiento falló: ${JSON.stringify(response.data)}`);
     pushStatus();
@@ -175,6 +175,22 @@ async function requestPairCode() {
     addLog(`Error emparejamiento: ${connectionMessage}`);
     sendUIStatus();
     console.error('Pair error', details);
+    return false;
+  }
+}
+
+async function updateAgentPcName() {
+  if (!PC_ID || !SERVER_URL) return false;
+  try {
+    const response = await axios.post(`${SERVER_URL}/api/pc/update-name`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: 5000 });
+    if (response.data?.success) {
+      addLog(`Nombre PC actualizado: ${PC_ID}`);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    const details = error.response?.data || error.message || error;
+    addLog(`Error update-name: ${JSON.stringify(details)}`);
     return false;
   }
 }
@@ -249,8 +265,21 @@ async function reportStatus() {
     }
   } catch (error) {
     isPosConnected = false;
+    const status = error.response?.status;
     const details = error.response?.data || error.message || error;
-    connectionMessage = `Error conexión POS: ${error.response?.status || '?'} ${error.response?.statusText || ''} - ${JSON.stringify(details)}`;
+
+    if (status === 403 && error.response?.data?.error === 'invalid token') {
+      connectionMessage = 'Token inválido: reintentando registro.';
+      addLog(`Heartbeat invalid token: ${JSON.stringify(details)}`);
+      AGENT_TOKEN = null;
+      store.delete('agentToken');
+      await registerAgent();
+      await updateAgentPcName();
+      sendUIStatus();
+      return;
+    }
+
+    connectionMessage = `Error conexión POS: ${status || '?'} ${error.response?.statusText || ''} - ${JSON.stringify(details)}`;
     addLog(`Heartbeat error: ${connectionMessage}`);
     sendUIStatus();
     console.error('Heartbeat error', details);
@@ -326,17 +355,25 @@ ipcMain.handle('pc-controller-register', async (event, { pcId }) => {
     store.set('pcId', PC_ID);
   }
   const success = await registerAgent();
+  await updateAgentPcName();
   pushStatus();
   return { success, pcId: PC_ID, agentToken: AGENT_TOKEN };
 });
 
-ipcMain.handle('pc-controller-save-settings', (event, { serverUrl, pcId }) => {
+ipcMain.handle('pc-controller-save-settings', async (event, { serverUrl, pcId }) => {
   SERVER_URL = serverUrl || SERVER_URL;
   PC_ID = pcId || PC_ID;
   store.set('serverUrl', SERVER_URL);
   store.set('pcId', PC_ID);
+
+  const pairOk = await requestPairCode();
+  if (pairOk) {
+    await registerAgent();
+  }
+  await updateAgentPcName();
   pushStatus();
-  return { serverUrl: SERVER_URL, pcId: PC_ID };
+
+  return { serverUrl: SERVER_URL, pcId: PC_ID, agentToken: AGENT_TOKEN, paired: pairOk };
 });
 
 ipcMain.handle('pc-controller-send-command', async (event, { command, payload }) => {

@@ -41,6 +41,56 @@ CREATE TABLE IF NOT EXISTS pc_commands (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   delivered_at DATETIME
 );
+
+CREATE TABLE IF NOT EXISTS products (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  category TEXT,
+  price REAL DEFAULT 0,
+  cost REAL DEFAULT 0,
+  stock INTEGER DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS peripherals (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  type TEXT,
+  equipment_id INTEGER,
+  status TEXT DEFAULT 'available',
+  cost REAL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS rentals (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  equipment_id INTEGER,
+  identifier TEXT,
+  start_time DATETIME,
+  limit_minutes INTEGER DEFAULT 0,
+  status TEXT DEFAULT 'active',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS expenses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  description TEXT,
+  amount REAL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS losses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  description TEXT,
+  amount REAL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS sales (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  amount REAL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 `;
 
 db.exec(SCHEMA_SQL);
@@ -67,16 +117,17 @@ app.post('/api/pc/pair', (req, res) => {
 });
 
 app.post('/api/pc/register', (req, res) => {
-  const { pc_id } = req.body;
+  const { pc_id, pc_name } = req.body;
   if (!pc_id) return res.status(400).json({ success: false, error: 'pc_id required' });
 
-  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
+  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id) as any;
   if (!agent) return res.status(404).json({ success: false, error: 'pc not paired' });
 
   const token = crypto.randomBytes(32).toString('hex');
   const now = new Date().toISOString();
 
-  db.prepare('UPDATE pc_agents SET token = ?, status = ?, updated_at = ?, last_seen = ? WHERE pc_id = ?').run(token, 'paired', now, now, pc_id);
+  db.prepare('UPDATE pc_agents SET token = ?, status = ?, updated_at = ?, last_seen = ?, pc_name = COALESCE(?, pc_name) WHERE pc_id = ?')
+    .run(token, 'paired', now, now, pc_name || agent.pc_name, pc_id);
 
   // No registrar automáticamente en equipment, para poder ver la PC desde POS aun sin inventario.
   res.json({ success: true, pc_id, token });
@@ -122,6 +173,17 @@ app.get('/api/pc/unassigned', (req, res) => {
     ORDER BY created_at DESC
   `).all();
   res.json({ success: true, data: rows });
+});
+
+app.post('/api/pc/update-name', (req, res) => {
+  const { pc_id, pc_name } = req.body;
+  if (!pc_id || !pc_name) return res.status(400).json({ success: false, error: 'pc_id and pc_name required' });
+
+  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
+  if (!agent) return res.status(404).json({ success: false, error: 'pc not found' });
+
+  db.prepare('UPDATE pc_agents SET pc_name = ?, updated_at = ? WHERE pc_id = ?').run(pc_name, new Date().toISOString(), pc_id);
+  res.json({ success: true, pc_id, pc_name });
 });
 
 app.post('/api/pc/claim', (req, res) => {
@@ -233,6 +295,73 @@ app.get('/api/pc/:id/status', (req, res) => {
   const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
   if (!agent) return res.status(404).json({ success: false, error: 'not found' });
   res.json({ success: true, agent });
+});
+
+app.get('/api/products', (req, res) => {
+  const products = db.prepare('SELECT * FROM products ORDER BY id DESC').all();
+  res.json({ success: true, data: products });
+});
+
+app.post('/api/products', (req, res) => {
+  const { name, category, price, cost, stock } = req.body;
+  if (!name) return res.status(400).json({ success: false, error: 'name required' });
+  const info = db.prepare('INSERT INTO products (name, category, price, cost, stock) VALUES (?, ?, ?, ?, ?)').run(name, category || 'Otros', price || 0, cost || 0, stock || 0);
+  const product = db.prepare('SELECT * FROM products WHERE id = ?').get(info.lastInsertRowid);
+  res.json({ success: true, data: product });
+});
+
+app.get('/api/equipment', (req, res) => {
+  const equipmentList = db.prepare('SELECT * FROM equipment ORDER BY id DESC').all();
+  res.json({ success: true, data: equipmentList });
+});
+
+app.post('/api/equipment', (req, res) => {
+  const { name, type, status, cost, pc_id } = req.body;
+  if (!name || !type) return res.status(400).json({ success: false, error: 'name and type required' });
+  const info = db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, ?, ?)').run(name, type, status || 'available', cost || 0, pc_id || null);
+  const item = db.prepare('SELECT * FROM equipment WHERE id = ?').get(info.lastInsertRowid);
+  res.json({ success: true, data: item });
+});
+
+app.get('/api/peripherals', (req, res) => {
+  const peris = db.prepare('SELECT * FROM peripherals ORDER BY id DESC').all();
+  res.json({ success: true, data: peris });
+});
+
+app.post('/api/peripherals', (req, res) => {
+  const { name, type, equipment_id, status, cost } = req.body;
+  if (!name || !type || !equipment_id) return res.status(400).json({ success: false, error: 'name, type and equipment_id required' });
+  const info = db.prepare('INSERT INTO peripherals (name, type, equipment_id, status, cost) VALUES (?, ?, ?, ?, ?)').run(name, type, equipment_id, status || 'available', cost || 0);
+  const item = db.prepare('SELECT * FROM peripherals WHERE id = ?').get(info.lastInsertRowid);
+  res.json({ success: true, data: item });
+});
+
+app.get('/api/rentals/active', (req, res) => {
+  const rentals = db.prepare("SELECT r.*, e.name AS equipment_name FROM rentals r LEFT JOIN equipment e ON e.id = r.equipment_id WHERE r.status='active' ORDER BY r.id DESC").all();
+  res.json({ success: true, data: rentals });
+});
+
+app.get('/api/expenses', (req, res) => {
+  const expenses = db.prepare('SELECT * FROM expenses ORDER BY id DESC').all();
+  res.json({ success: true, data: expenses });
+});
+
+app.get('/api/losses', (req, res) => {
+  const losses = db.prepare('SELECT * FROM losses ORDER BY id DESC').all();
+  res.json({ success: true, data: losses });
+});
+
+app.get('/api/sales', (req, res) => {
+  const sales = db.prepare('SELECT * FROM sales ORDER BY id DESC').all();
+  res.json({ success: true, data: sales });
+});
+
+app.get('/api/analytics/summary', (req, res) => {
+  const totalSales = (db.prepare('SELECT COALESCE(SUM(amount),0) AS total FROM sales').get() as any).total;
+  const totalLosses = (db.prepare('SELECT COALESCE(SUM(amount),0) AS total FROM losses').get() as any).total;
+  const totalExpenses = (db.prepare('SELECT COALESCE(SUM(amount),0) AS total FROM expenses').get() as any).total;
+  const totalProducts = (db.prepare('SELECT COUNT(*) AS count FROM products').get() as any).count;
+  res.json({ success: true, data: { totalSales, totalLosses, totalExpenses, totalProducts }});
 });
 
 app.listen(PORT, () => {
