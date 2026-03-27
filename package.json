@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "start": "npx tsx server.ts",
-    "dev": "npx tsx server.ts --watch"
+    "start": "node node_modules/tsx/dist/cli.mjs server.ts",
+    "dev": "node node_modules/tsx/dist/cli.mjs server.ts --watch"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",
