@@ -120,11 +120,13 @@ function hideLockScreen() {
   }
 }
 
+const AXIOS_TIMEOUT = 15000; // 15s, para conexiones lentas
+
 async function registerAgent() {
   try {
-    await axios.post(`${SERVER_URL}/api/pc/pair`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: 5000 });
+    await axios.post(`${SERVER_URL}/api/pc/pair`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: AXIOS_TIMEOUT });
 
-    const response = await axios.post(`${SERVER_URL}/api/pc/register`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: 5000 });
+    const response = await axios.post(`${SERVER_URL}/api/pc/register`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: AXIOS_TIMEOUT });
 
     if (response.data && response.data.success && response.data.token) {
       AGENT_TOKEN = response.data.token;
@@ -154,7 +156,7 @@ async function requestPairCode() {
   if (!PC_ID) return false;
 
   try {
-    const response = await axios.post(`${SERVER_URL}/api/pc/pair`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: 5000 });
+    const response = await axios.post(`${SERVER_URL}/api/pc/pair`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: AXIOS_TIMEOUT });
 
     if (response.data && response.data.success) {
       connectionMessage = `PC ${PC_ID} en estado pending para emparejar.`;
@@ -228,7 +230,7 @@ async function reportStatus() {
       status: 'alive',
       token: AGENT_TOKEN,
       timestamp: new Date().toISOString()
-    }, { timeout: 5000 });
+    }, { timeout: AXIOS_TIMEOUT });
 
     if (response.status === 200 && response.data && response.data.success) {
       isPosConnected = true;
