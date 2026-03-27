@@ -122,9 +122,9 @@ function hideLockScreen() {
 
 async function registerAgent() {
   try {
-    await axios.post(`${SERVER_URL}/api/pc/pair`, { pc_id: PC_ID }, { timeout: 5000 });
+    await axios.post(`${SERVER_URL}/api/pc/pair`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: 5000 });
 
-    const response = await axios.post(`${SERVER_URL}/api/pc/register`, { pc_id: PC_ID }, { timeout: 5000 });
+    const response = await axios.post(`${SERVER_URL}/api/pc/register`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: 5000 });
 
     if (response.data && response.data.success && response.data.token) {
       AGENT_TOKEN = response.data.token;
