@@ -5,14 +5,14 @@ const axios = require('axios');
 
 const store = new Store({ name: 'pc-controller-config' });
 
-let SERVER_URL = store.get('serverUrl', 'http://localhost:3000');
-let PC_ID = store.get('pcId', 'pc-1');
+let SERVER_URL = process.env.PC_SERVER_URL || store.get('serverUrl', 'https://server-pc-fq7x.onrender.com');
+let PC_ID = process.env.PC_NAME || store.get('pcId', 'pc-1');
 let AGENT_TOKEN = store.get('agentToken', null);
 
 let mainWindow;
 let lockWindow;
 let isPosConnected = false;
-let connectionMessage = 'Esperando conexión con POS...';
+let connectionMessage = 'Iniciando, conectando a servidor...';
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -241,14 +241,16 @@ app.whenReady().then(async () => {
   createMainWindow();
   registerHotkeys();
 
-  const paired = await registerAgent();
-  if (!paired) {
-    console.log('No se pudo registrar agente directamente. Intentando reintentar cada 10s...');
-    connectionMessage = 'Reintentando registro con POS...';
-    sendUIStatus();
+  // For rent use case: auto pair/register and heartbeat with single pc identifier.
+  const pairOk = await requestPairCode();
+  if (pairOk) {
+    const reg = await registerAgent();
+    if (!reg) {
+      console.warn('Registro no exitoso. Reintentando cada 10s...');
+    }
   }
 
-  pushStatus();
+  // Every 5 seconds send heartbeat and check server actions
   reportStatus();
   setInterval(reportStatus, 5000);
 

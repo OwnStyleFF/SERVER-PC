@@ -55,26 +55,12 @@
       statusText.innerText = `Configuración guardada: ${result.serverUrl} / ${result.pcId}`;
     });
 
-    document.getElementById('btnConnect').addEventListener('click', async () => {
-      const serverUrl = serverUrlInput.value.trim();
-      const pcId = pcIdInput.value.trim();
-      await window.pcController.saveSettings(serverUrl, pcId);
+    document.getElementById('btnConnect').style.display = 'none';
+    document.getElementById('btnRefreshStatus').style.display = 'none';
+    document.getElementById('btnLockPC').style.display = 'none';
+    document.getElementById('btnUnlockPC').style.display = 'none';
 
-      const pairOk = await window.pcController.requestPairCode(serverUrl, pcId);
-      if (!pairOk) {
-        statusText.innerText = 'Error: no se pudo iniciar emparejamiento en el servidor.';
-        return;
-      }
-
-      const result = await window.pcController.requestRegister(pcId);
-      if (result.success) {
-        agentTokenEl.innerText = result.agentToken || '✅';
-        statusText.innerText = 'PC emparejada y registrada con éxito. Conexión activa.';
-      } else {
-        agentTokenEl.innerText = '(sin token)';
-        statusText.innerText = `Error registro: ${result.error || 'revisar servidor'}`;
-      }
-    });
+    statusText.innerText = 'Automático: el agente intentará emparejar y registrar al iniciarse.';
 
     document.getElementById('btnRefreshStatus').addEventListener('click', () => {
       statusText.innerText = 'Refrescando estado...';
