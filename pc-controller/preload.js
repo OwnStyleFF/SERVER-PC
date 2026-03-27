@@ -3,7 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('pcController', {
   getConfig: () => {
     return {
-      serverUrl: process.env.PC_CONTROLLER_SERVER_URL || 'http://localhost:3000',
+      serverUrl: process.env.PC_CONTROLLER_SERVER_URL || 'https://server-pc-fq7x.onrender.com',
       pcId: process.env.PC_CONTROLLER_ID || 'pc-1'
     };
   },

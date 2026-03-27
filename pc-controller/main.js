@@ -66,8 +66,12 @@ function sendUIStatus() {
   });
 }
 
-function showLockScreen(message = 'PC bloqueada') {
-  if (lockWindow && !lockWindow.isDestroyed()) return;
+function showLockScreen(message = 'PC bloqueada', imagePath = 'image/AOD.png', countdownSeconds = null) {
+  if (lockWindow && !lockWindow.isDestroyed()) {
+    const script = `window.updateLockScreen(${JSON.stringify(message)}, ${JSON.stringify(imagePath)}, ${countdownSeconds !== null ? countdownSeconds : 'null'})`;
+    lockWindow.webContents.executeJavaScript(script).catch(() => {});
+    return;
+  }
 
   lockWindow = new BrowserWindow({
     width: 1280,
@@ -83,8 +87,9 @@ function showLockScreen(message = 'PC bloqueada') {
     }
   });
 
-  lockWindow.loadFile(path.join(__dirname, 'lock-screen.html'));
-  lockWindow.webContents.executeJavaScript(`document.getElementById('message').innerText = '${message}';`);
+  const filePath = path.join(__dirname, 'lock-screen.html');
+  const query = `?message=${encodeURIComponent(message)}&image=${encodeURIComponent(imagePath)}&countdown=${countdownSeconds !== null ? countdownSeconds : ''}`;
+  lockWindow.loadFile(filePath, { query });
 
   lockWindow.on('close', (e) => {
     e.preventDefault();
@@ -195,9 +200,15 @@ async function reportStatus() {
 
     if (response.data && response.data.action) {
       const action = response.data.action;
-      if (action.type === 'lock') {
-        showLockScreen(action.payload?.message || 'Bloqueado desde POS');
+      if (action.type === 'lock' || action.type === 'aod') {
+        showLockScreen(action.message || 'PC no rentada', action.image || 'image/AOD.png');
+      } else if (action.type === 'countdown') {
+        showLockScreen(`Tiempo restante: ${action.seconds}s`, action.image || 'image/AOD.png', action.seconds);
+      } else if (action.type === 'maintenance') {
+        showLockScreen(action.message || 'Modo mantenimiento activo', action.image || 'image/AOD.png');
       } else if (action.type === 'unlock') {
+        hideLockScreen();
+      } else {
         hideLockScreen();
       }
       connectionMessage = `Acción recibida: ${action.type}`;
