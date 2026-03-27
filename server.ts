@@ -78,7 +78,7 @@ app.post('/api/pc/register', (req, res) => {
 
   db.prepare('UPDATE pc_agents SET token = ?, status = ?, updated_at = ?, last_seen = ? WHERE pc_id = ?').run(token, 'paired', now, now, pc_id);
 
-  db.prepare('INSERT OR IGNORE INTO equipment (name, type, status, cost, pc_id) VALUES (?, "PC", "available", 0, ?)').run(pc_id, pc_id);
+  db.prepare('INSERT OR IGNORE INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, 0, ?)').run(pc_id, 'PC', 'available', pc_id);
 
   res.json({ success: true, pc_id, token });
 });
@@ -93,7 +93,23 @@ app.get('/api/pc/discovered', (req, res) => {
   const freshnessMinutes = Number(req.query.freshnessMinutes || 5);
   const cutoff = new Date(Date.now() - freshnessMinutes * 60 * 1000).toISOString();
 
-  const rows = db.prepare('SELECT pc_id, pc_name, status, last_seen, created_at FROM pc_agents WHERE last_seen >= ? ORDER BY last_seen DESC').all(cutoff);
+  const rows = db.prepare(`
+    SELECT a.pc_id, a.pc_name, a.status, a.last_seen, a.created_at
+    FROM pc_agents a
+    JOIN equipment e ON e.pc_id = a.pc_id
+    WHERE a.last_seen >= ?
+    ORDER BY a.last_seen DESC
+  `).all(cutoff);
+  res.json({ success: true, data: rows });
+});
+
+app.get('/api/pc/unassigned', (req, res) => {
+  const rows = db.prepare(`
+    SELECT pc_id, pc_name, status, last_seen, created_at
+    FROM pc_agents
+    WHERE status = 'paired' AND pc_id NOT IN (SELECT pc_id FROM equipment WHERE pc_id IS NOT NULL)
+    ORDER BY created_at DESC
+  `).all();
   res.json({ success: true, data: rows });
 });
 
@@ -103,7 +119,7 @@ app.post('/api/pc/claim', (req, res) => {
 
   const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
   if (!agent) return res.status(404).json({ success: false, error: 'pc not paired' });
-  if (agent.status !== 'pending') return res.status(409).json({ success: false, error: 'pc already claimed or in invalid state' });
+  if (agent.status !== 'paired') return res.status(409).json({ success: false, error: 'pc is not in registration state' });
 
   const existing = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
   if (existing) return res.status(409).json({ success: false, error: 'already claimed' });
@@ -126,6 +142,9 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
   const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
   if (!agent) return res.status(404).json({ success: false, error: 'pc not found' });
   if (agent.token !== token) return res.status(403).json({ success: false, error: 'invalid token' });
+
+  const equipment = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
+  if (!equipment) return res.status(403).json({ success: false, error: 'pc not assigned to inventory' });
 
   const now = new Date().toISOString();
   db.prepare('UPDATE pc_agents SET last_seen = ?, status = ?, updated_at = ? WHERE pc_id = ?').run(now, status || 'paired', now, pc_id);
