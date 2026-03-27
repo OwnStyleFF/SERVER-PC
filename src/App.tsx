@@ -393,7 +393,7 @@ export default function App() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 10000);
+    const interval = setInterval(fetchData, 3000); // Actualiza cada 3 segundos para refresco casi en tiempo real
     return () => clearInterval(interval);
   }, []);
 
@@ -524,14 +524,38 @@ export default function App() {
         fetch('/api/sales')
       ]);
       
-      if (prodRes.ok) setProducts(await prodRes.json());
-      if (equipRes.ok) setEquipment(await equipRes.json());
-      if (periRes.ok) setPeripherals(await periRes.json());
-      if (rentRes.ok) setActiveRentals(await rentRes.json());
-      if (expRes.ok) setExpenses(await expRes.json());
-      if (summaryRes.ok) setSummary(await summaryRes.json());
-      if (lossRes.ok) setLosses(await lossRes.json());
-      if (salesRes.ok) setSales(await salesRes.json());
+      if (prodRes.ok) {
+        const prodJson = await prodRes.json();
+        setProducts(Array.isArray(prodJson) ? prodJson : Array.isArray(prodJson?.data) ? prodJson.data : []);
+      }
+      if (equipRes.ok) {
+        const equipJson = await equipRes.json();
+        setEquipment(Array.isArray(equipJson) ? equipJson : Array.isArray(equipJson?.data) ? equipJson.data : []);
+      }
+      if (periRes.ok) {
+        const periJson = await periRes.json();
+        setPeripherals(Array.isArray(periJson) ? periJson : Array.isArray(periJson?.data) ? periJson.data : []);
+      }
+      if (rentRes.ok) {
+        const rentJson = await rentRes.json();
+        setActiveRentals(Array.isArray(rentJson) ? rentJson : Array.isArray(rentJson?.data) ? rentJson.data : []);
+      }
+      if (expRes.ok) {
+        const expJson = await expRes.json();
+        setExpenses(Array.isArray(expJson) ? expJson : Array.isArray(expJson?.data) ? expJson.data : []);
+      }
+      if (summaryRes.ok) {
+        const summaryJson = await summaryRes.json();
+        setSummary(summaryJson?.data || summaryJson || summary);
+      }
+      if (lossRes.ok) {
+        const lossJson = await lossRes.json();
+        setLosses(Array.isArray(lossJson) ? lossJson : Array.isArray(lossJson?.data) ? lossJson.data : []);
+      }
+      if (salesRes.ok) {
+        const salesJson = await salesRes.json();
+        setSales(Array.isArray(salesJson) ? salesJson : Array.isArray(salesJson?.data) ? salesJson.data : []);
+      }
       const pairRes = await fetch('/api/pc/pending-pair-codes');
       if (pairRes.ok) {
         const pairData = await pairRes.json();
@@ -613,6 +637,7 @@ export default function App() {
       setDiscoveredPCs((prev) => prev.map((pc) => pc.pc_id === pcId ? { ...pc, pc_name: pcName } : pc));
       setPcNameEdits((prev) => ({ ...prev, [pcId]: pcName }));
       if (selectedPcIdForForm === pcId) setSelectedPcNameForForm(pcName);
+      fetchData(); // refetch inmediato para reflejar en toda la UI
       showNotification(`Nombre de PC ${pcId} actualizado a '${pcName}'`, 'success');
       return true;
     } catch (err) {
