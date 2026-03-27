@@ -119,7 +119,7 @@ export default function App() {
 
   const [taecelSalesData, setTaecelSalesData] = useState<any[]>([]);
   const [pendingPairCodes, setPendingPairCodes] = useState<Array<{pc_id: string; expires_at: string}>>([]);
-  const [discoveredPCs, setDiscoveredPCs] = useState<Array<{pc_id: string; pc_name?: string; status: string; last_seen: string}>>([]);
+  const [discoveredPCs, setDiscoveredPCs] = useState<Array<{pc_id: string; pc_name?: string; status: string; last_seen: string; assigned?: boolean}>>([]);
   const [selectedPcIdForForm, setSelectedPcIdForForm] = useState<string>('');
   const [selectedPcNameForForm, setSelectedPcNameForForm] = useState<string>('');
   const [isSelectPcModalOpen, setIsSelectPcModalOpen] = useState(false);
@@ -4056,7 +4056,7 @@ const renderWarningModal = () => {
                                   <div className="text-sm text-gray-400">No se han detectado PCs aún.</div>
                                 ) : (
                                   discoveredPCs.map((item) => {
-                                    const assigned = equipment.some((eq) => eq.pc_id === item.pc_id && (eq.type === 'PC' || eq.type === 'Console'));
+                                    const assigned = item.assigned || false;
                                     const editedName = pcNameEdits[item.pc_id] || item.pc_name || item.pc_id;
                                     return (
                                       <div key={item.pc_id} className="p-3 border border-gray-200 rounded-xl bg-gray-50">
@@ -4065,7 +4065,11 @@ const renderWarningModal = () => {
                                             <p className="font-black text-sm">{editedName}</p>
                                             <p className="text-[11px] text-gray-500">ID: {item.pc_id}</p>
                                             <p className="text-[11px] text-gray-400">Último reporte: {new Date(item.last_seen).toLocaleString()}</p>
-                                            {assigned && <span className="text-[10px] inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-red-600 mt-1">Ya asignada</span>}
+                                            {assigned ? (
+                                              <span className="text-[10px] inline-flex items-center px-2 py-1 rounded-full bg-red-100 text-red-600 mt-1">Ya asignada en inventario</span>
+                                            ) : (
+                                              <span className="text-[10px] inline-flex items-center px-2 py-1 rounded-full bg-green-100 text-green-600 mt-1">No asignada</span>
+                                            )}
                                           </div>
                                           <div className="flex flex-col items-end gap-2">
                                             <button
