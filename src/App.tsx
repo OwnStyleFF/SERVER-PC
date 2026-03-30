@@ -643,6 +643,27 @@ export default function App() {
     }
   };
 
+  const sendPcCommand = async (pcId: string, command: string, payload: any = {}) => {
+    try {
+      const res = await fetch(`/api/pc/${pcId}/command`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command, payload })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showNotification(`Comando ${command} enviado a ${pcId}`, 'success');
+        return true;
+      }
+      showNotification(`No se pudo enviar comando a ${pcId}: ${data.error || 'error'}`, 'error');
+      return false;
+    } catch (err) {
+      console.error(err);
+      showNotification(`Error enviando comando a ${pcId}`, 'error');
+      return false;
+    }
+  };
+
   const updatePcAgentName = async (pcId: string, pcName: string) => {
     try {
       const res = await fetch('/api/pc/update-name', {
@@ -1509,6 +1530,19 @@ export default function App() {
         }
       }
     });
+  };
+
+  const cancelOrFinishRental = async (rental: Rental) => {
+    const option = window.prompt('Seleccione: 1) Terminar y cobrar, 2) Cancelar sin cobro', '1');
+    if (!option) return;
+
+    if (option.trim() === '1') {
+      openCompleteModal(rental);
+    } else if (option.trim() === '2') {
+      await cancelRental(rental.id);
+    } else {
+      showNotification('Opción no válida', 'info');
+    }
   };
 
   const updateRentalLimit = async (rentalId: number, limitMinutes: number) => {
@@ -3940,8 +3974,9 @@ const renderWarningModal = () => {
                                 setAdjustmentValue(15);
                                 setRentalModal({ type: 'adjust-time', rental, adjustmentType: 'reduce' });
                               }}
-                              onCancel={() => cancelRental(rental.id)}
+                              onCancel={() => cancelOrFinishRental(rental)}
                               onUnblock={() => unblockEquipment(rental.equipment_id)}
+                              onSendCommand={sendPcCommand}
                             />
                           </div>
                         ))
@@ -5479,7 +5514,8 @@ function ActiveRentalCard({
   onAddTime,
   onReduceTime,
   onCancel,
-  onUnblock
+  onUnblock,
+  onSendCommand
 }: { 
   rental: Rental; 
   onComplete: () => void; 
@@ -5488,8 +5524,9 @@ function ActiveRentalCard({
   onFreeze: () => void;
   onAddTime: () => void;
   onReduceTime: () => void;
-  onCancel: () => void;
+  onCancel: (rental: Rental) => void;
   onUnblock: () => void;
+  onSendCommand: (pcId: string, command: string, payload?: any) => void;
   key?: React.Key 
 }) {
   const [elapsed, setElapsed] = useState('');
@@ -5630,6 +5667,39 @@ function ActiveRentalCard({
         </button>
       </div>
 
+      <div className="grid grid-cols-3 gap-2 mt-2">
+        <button
+          onClick={() => {
+            const pcId = rental.equipment_pc_id || rental.identifier;
+            onSendCommand(pcId, 'lock', { reason: 'rent-timeout' });
+          }}
+          className="bg-red-500 text-white py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-600 transition-all"
+        >
+          Bloquear PC
+        </button>
+        <button
+          onClick={() => {
+            const pcId = rental.equipment_pc_id || rental.identifier;
+            onSendCommand(pcId, 'unlock');
+          }}
+          className="bg-green-500 text-white py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-green-600 transition-all"
+        >
+          Desbloquear PC
+        </button>
+        <button
+          onClick={() => {
+            const msg = prompt('Mensaje para pantalla de PC:');
+            if (msg) {
+              const pcId = rental.equipment_pc_id || rental.identifier;
+              onSendCommand(pcId, 'message', { text: msg });
+            }
+          }}
+          className="bg-blue-500 text-white py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-all"
+        >
+          Mensaje Remoto
+        </button>
+      </div>
+
       <div className="grid grid-cols-2 gap-2">
         <button 
           onClick={onAddTime}
@@ -5655,7 +5725,7 @@ function ActiveRentalCard({
           {rental.is_frozen ? "Reanudar" : "Congelar"}
         </button>
         <button 
-          onClick={onCancel}
+          onClick={() => onCancel(rental)}
           className="flex-1 bg-red-50 text-red-600 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-red-100 transition-colors flex items-center justify-center gap-1"
         >
           Cancelar

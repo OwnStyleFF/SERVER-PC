@@ -163,7 +163,13 @@ app.post('/api/pc/register', (req, res) => {
   db.prepare('UPDATE pc_agents SET token = ?, status = ?, updated_at = ?, last_seen = ?, pc_name = COALESCE(?, pc_name) WHERE pc_id = ?')
     .run(token, 'paired', now, now, pc_name || agent.pc_name, pc_id);
 
-  // No registrar automáticamente en equipment, para poder ver la PC desde POS aun sin inventario.
+  // auto registrar en equipment si no existe (para operación inmediata de rentas y control remoto).
+  const existingEquip = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
+  if (!existingEquip) {
+    db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, ?, ?)')
+      .run(pc_name || pc_id, 'PC', 'available', 0, pc_id);
+  }
+
   res.json({ success: true, pc_id, token });
 });
 
@@ -232,7 +238,8 @@ app.post('/api/pc/claim', (req, res) => {
   if (existing) return res.status(409).json({ success: false, error: 'already claimed' });
 
   try {
-    const info = db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, "PC", "available", 0, ?)').run(pc_id, pc_id);
+    const pcName = agent.pc_name || pc_id;
+    const info = db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, "PC", "available", 0, ?)').run(pcName, pc_id);
     db.prepare('UPDATE pc_agents SET status = "paired", updated_at = ? WHERE pc_id = ?').run(new Date().toISOString(), pc_id);
     res.json({ success: true, equipmentId: info.lastInsertRowid });
   } catch (error: unknown) {
@@ -381,8 +388,27 @@ app.post('/api/peripherals', (req, res) => {
 });
 
 app.get('/api/rentals/active', (req, res) => {
-  const rentals = db.prepare("SELECT r.*, e.name AS equipment_name FROM rentals r LEFT JOIN equipment e ON e.id = r.equipment_id WHERE r.status='active' ORDER BY r.id DESC").all();
-  res.json({ success: true, data: rentals });
+  const nowMs = Date.now();
+  const rows = db.prepare("SELECT r.*, e.name AS equipment_name, e.pc_id AS equipment_pc_id FROM rentals r LEFT JOIN equipment e ON e.id = r.equipment_id WHERE r.status='active' ORDER BY r.id DESC").all();
+  const data = rows.map((r: any) => {
+    const start = r.start_time ? new Date(String(r.start_time).replace(' ', 'T')).getTime() : null;
+    const limitSec = Number(r.limit_minutes || 0) * 60;
+    let remaining_seconds = null;
+    let is_overdue = false;
+
+    if (start && limitSec > 0) {
+      remaining_seconds = Math.ceil((start + limitSec * 1000 - nowMs) / 1000);
+      is_overdue = remaining_seconds <= 0;
+    }
+
+    return {
+      ...r,
+      is_frozen: Boolean(r.is_frozen),
+      remaining_seconds,
+      is_overdue
+    };
+  });
+  res.json({ success: true, data });
 });
 
 app.post('/api/rentals/start', (req, res) => {
@@ -443,6 +469,12 @@ app.post('/api/rentals/:id/freeze', (req, res) => {
   const frozenAt = is_frozen ? new Date().toISOString() : null;
   db.prepare('UPDATE rentals SET is_frozen = ?, frozen_at = ? WHERE id = ?').run(frozen, frozenAt, id);
 
+  const equipment = rental.equipment_id ? db.prepare('SELECT * FROM equipment WHERE id = ?').get(rental.equipment_id) as any : null;
+  if (equipment?.pc_id) {
+    db.prepare('INSERT INTO pc_commands (pc_id, command, payload) VALUES (?, ?, ?)')
+      .run(equipment.pc_id, 'freeze', JSON.stringify({ is_frozen: Boolean(frozen) }));
+  }
+
   res.json({ success: true, data: { id, is_frozen: Boolean(frozen) } });
 });
 
@@ -455,6 +487,13 @@ app.post('/api/rentals/:id/add-time', (req, res) => {
   if (!rental) return res.status(404).json({ success: false, error: 'rental not found' });
 
   db.prepare('UPDATE rentals SET limit_minutes = limit_minutes + ? WHERE id = ?').run(minutes, id);
+
+  const equipment = rental.equipment_id ? db.prepare('SELECT * FROM equipment WHERE id = ?').get(rental.equipment_id) as any : null;
+  if (equipment?.pc_id) {
+    db.prepare('INSERT INTO pc_commands (pc_id, command, payload) VALUES (?, ?, ?)')
+      .run(equipment.pc_id, 'add-time', JSON.stringify({ minutes }));
+  }
+
   res.json({ success: true, data: { id, limit_minutes: rental.limit_minutes + minutes } });
 });
 
@@ -468,6 +507,13 @@ app.post('/api/rentals/:id/reduce-time', (req, res) => {
 
   const newLimit = Math.max(0, (rental.limit_minutes || 0) - minutes);
   db.prepare('UPDATE rentals SET limit_minutes = ? WHERE id = ?').run(newLimit, id);
+
+  const equipment = rental.equipment_id ? db.prepare('SELECT * FROM equipment WHERE id = ?').get(rental.equipment_id) as any : null;
+  if (equipment?.pc_id) {
+    db.prepare('INSERT INTO pc_commands (pc_id, command, payload) VALUES (?, ?, ?)')
+      .run(equipment.pc_id, 'reduce-time', JSON.stringify({ minutes }));
+  }
+
   res.json({ success: true, data: { id, limit_minutes: newLimit } });
 });
 
@@ -481,6 +527,12 @@ app.post('/api/rentals/:id/cancel', (req, res) => {
     db.prepare('UPDATE equipment SET status = ? WHERE id = ?').run('available', rental.equipment_id);
   }
 
+  const equipment = rental.equipment_id ? db.prepare('SELECT * FROM equipment WHERE id = ?').get(rental.equipment_id) as any : null;
+  if (equipment?.pc_id) {
+    db.prepare('INSERT INTO pc_commands (pc_id, command, payload) VALUES (?, ?, ?)')
+      .run(equipment.pc_id, 'cancel', JSON.stringify({ reason: 'user_cancelled' }));
+  }
+
   res.json({ success: true, data: { id } });
 });
 
@@ -489,10 +541,17 @@ app.put('/api/rentals/:id/limit', (req, res) => {
   const { limit_minutes } = req.body;
   if (typeof limit_minutes !== 'number' || isNaN(limit_minutes)) return res.status(400).json({ success: false, error: 'limit_minutes required' });
 
-  const rental = db.prepare('SELECT * FROM rentals WHERE id = ?').get(id);
+  const rental = db.prepare('SELECT * FROM rentals WHERE id = ?').get(id) as any;
   if (!rental) return res.status(404).json({ success: false, error: 'rental not found' });
 
   db.prepare('UPDATE rentals SET limit_minutes = ? WHERE id = ?').run(limit_minutes, id);
+
+  const equipment = rental.equipment_id ? db.prepare('SELECT * FROM equipment WHERE id = ?').get(rental.equipment_id) as any : null;
+  if (equipment?.pc_id) {
+    db.prepare('INSERT INTO pc_commands (pc_id, command, payload) VALUES (?, ?, ?)')
+      .run(equipment.pc_id, 'set-limit', JSON.stringify({ limit_minutes }));
+  }
+
   res.json({ success: true, data: { id, limit_minutes } });
 });
 

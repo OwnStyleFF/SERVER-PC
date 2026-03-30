@@ -83,6 +83,22 @@ function sendUIStatus() {
   });
 }
 
+let remoteMessageTimer = null;
+
+function showRemoteMessage(message = 'Mensaje remoto', durationMs = 10000) {
+  if (remoteMessageTimer) {
+    clearTimeout(remoteMessageTimer);
+    remoteMessageTimer = null;
+  }
+  showLockScreen(message, '');
+  if (durationMs > 0) {
+    remoteMessageTimer = setTimeout(() => {
+      hideLockScreen();
+      remoteMessageTimer = null;
+    }, durationMs);
+  }
+}
+
 function showLockScreen(message = 'PC bloqueada', imagePath = 'image/AOD.png', countdownSeconds = null) {
   if (lockWindow && !lockWindow.isDestroyed()) {
     const script = `window.updateLockScreen(${JSON.stringify(message)}, ${JSON.stringify(imagePath)}, ${countdownSeconds !== null ? countdownSeconds : 'null'})`;
@@ -248,6 +264,8 @@ async function reportStatus() {
 
     if (response.data && response.data.action) {
       const action = response.data.action;
+
+      // Acciones por estado general
       if (action.type === 'lock' || action.type === 'aod') {
         showLockScreen(action.message || 'PC no autorizada aún', action.image || 'image/AOD.png');
       } else if (action.type === 'unassigned') {
@@ -262,6 +280,33 @@ async function reportStatus() {
       } else {
         hideLockScreen();
       }
+
+      // Comando remoto específico desde POS
+      if (action.command) {
+        const cmd = action.command;
+        addLog(`Comando remoto recibido: ${cmd.type}`);
+
+        if (cmd.type === 'lock') {
+          showLockScreen(cmd.payload?.message || 'Bloqueo remoto activo', cmd.payload?.image || 'image/AOD.png');
+        } else if (cmd.type === 'unlock') {
+          hideLockScreen();
+        } else if (cmd.type === 'message') {
+          const msg = cmd.payload?.text || 'Mensaje remoto';
+          const duration = Number(cmd.payload?.duration || 12000);
+          showRemoteMessage(msg, duration);
+          connectionMessage = `Mensaje remoto: ${msg}`;
+          addLog(`Mostrar mensaje remoto: ${msg}`);
+        } else if (cmd.type === 'add-time') {
+          addLog(`Comando agregar tiempo: ${cmd.payload?.minutes || 'n/a'}m`);
+        } else if (cmd.type === 'reduce-time') {
+          addLog(`Comando reducir tiempo: ${cmd.payload?.minutes || 'n/a'}m`);
+        } else if (cmd.type === 'freeze') {
+          const message = cmd.payload?.is_frozen ? 'Renta en pausa' : 'Renta reanudada';
+          showLockScreen(message, cmd.payload?.image || 'image/AOD.png');
+          setTimeout(() => hideLockScreen(), 5000);
+        }
+      }
+
       connectionMessage = `Acción recibida: ${action.type}`;
       sendUIStatus();
     }

@@ -25,6 +25,7 @@ export interface Product {
 export interface Rental {
   id: number;
   equipment_id: number | null;
+  equipment_pc_id?: string | null;
   type: 'PC' | 'Console';
   identifier: string;
   start_time: string;
