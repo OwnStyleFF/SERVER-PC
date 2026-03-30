@@ -228,10 +228,20 @@ function pushStatus() {
 
 async function isPcRegisteredInPos() {
   try {
-    const response = await axios.get(`${SERVER_URL}/api/pc/discovered`, { timeout: AXIOS_TIMEOUT });
-    const pcs = response.data?.data || [];
-    const current = pcs.find((p) => p.pc_id === PC_ID);
-    return Boolean(current && current.assigned);
+    const discoveredResp = await axios.get(`${SERVER_URL}/api/pc/discovered`, { timeout: AXIOS_TIMEOUT });
+    const unassignedResp = await axios.get(`${SERVER_URL}/api/pc/unassigned`, { timeout: AXIOS_TIMEOUT });
+
+    const discovered = discoveredResp.data?.data || [];
+    const unassigned = unassignedResp.data?.data || [];
+
+    const current = discovered.find((p) => p.pc_id === PC_ID);
+    const isUnassigned = unassigned.some((p) => p.pc_id === PC_ID);
+
+    addLog(`Check inventario POS: pc_id=${PC_ID}, found=${!!current}, assigned=${!!current?.assigned}, unassigned=${isUnassigned}`);
+
+    if (isUnassigned) return false;
+    if (!current) return false;
+    return Boolean(current.assigned);
   } catch (error) {
     const details = error.response?.data || error.message || error;
     addLog(`Error verificando inventario POS: ${JSON.stringify(details)}`);
