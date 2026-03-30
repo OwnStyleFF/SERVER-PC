@@ -266,14 +266,14 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
 
   const command = db.prepare('SELECT * FROM pc_commands WHERE pc_id = ? AND status = ? ORDER BY id ASC LIMIT 1').get(pc_id, 'pending') as any;
 
-  let isMaintenance = agent.status === 'maintenance';
+  const isMaintenance = agent.status === 'maintenance';
   let normalMode = false;
   let countdown: number | null = null;
+  let rental: any = null;
 
   if (!isAssigned) {
     normalMode = true;
   } else {
-    let rental: any = null;
     try {
       rental = db.prepare('SELECT * FROM rentals WHERE equipment_id = ? AND status = ?').get(equipment.id, 'active');
     } catch (e) {
@@ -298,7 +298,9 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
     action = { type: 'maintenance', message: 'Modo mantenimiento activo. Técnico autorizado.' };
   } else if (!isAssigned) {
     action = { type: 'unassigned', message: 'PC no inventariada en POS, arranque normal.' };
-  } else if (!normalMode) {
+  } else if (rental) {
+    action = { type: 'active', message: 'Renta activa, acceso liberado.' };
+  } else {
     action = { type: 'aod', image: '/image/AOD.png', message: 'PC bloqueada, esperando renta.' };
   }
 

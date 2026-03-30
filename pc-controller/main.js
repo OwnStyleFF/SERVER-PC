@@ -226,6 +226,19 @@ function pushStatus() {
   }
 }
 
+async function isPcRegisteredInPos() {
+  try {
+    const response = await axios.get(`${SERVER_URL}/api/pc/discovered`, { timeout: AXIOS_TIMEOUT });
+    const pcs = response.data?.data || [];
+    const current = pcs.find((p) => p.pc_id === PC_ID);
+    return Boolean(current && current.assigned);
+  } catch (error) {
+    const details = error.response?.data || error.message || error;
+    addLog(`Error verificando inventario POS: ${JSON.stringify(details)}`);
+    return false;
+  }
+}
+
 async function reportStatus() {
   try {
     if (!AGENT_TOKEN) {
@@ -262,6 +275,16 @@ async function reportStatus() {
       showMainWindow();
     }
 
+    const pcRegistered = await isPcRegisteredInPos();
+    if (!pcRegistered) {
+      addLog(`PC ${PC_ID} no registrada en inventario POS. Desbloqueando IU local.`);
+      connectionMessage = 'PC no registrada en POS; UI local habilitada.';
+      hideLockScreen();
+      showMainWindow();
+      sendUIStatus();
+      return;
+    }
+
     if (response.data && response.data.action) {
       const action = response.data.action;
 
@@ -270,6 +293,10 @@ async function reportStatus() {
         showLockScreen(action.message || 'PC no autorizada aún', action.image || 'image/AOD.png');
       } else if (action.type === 'unassigned') {
         addLog('PC no inventariada: estado normal bloqueado no aplicado, espera inventario.');
+        hideLockScreen();
+        showMainWindow();
+      } else if (action.type === 'active') {
+        addLog('Renta activa: desbloqueado.');
         hideLockScreen();
         showMainWindow();
       } else if (action.type === 'countdown') {
@@ -309,6 +336,12 @@ async function reportStatus() {
       }
 
       connectionMessage = `Acción recibida: ${action.type}`;
+      sendUIStatus();
+    } else {
+      addLog('Sin acción específica. Mantener IU disponible / desbloqueada.');
+      hideLockScreen();
+      showMainWindow();
+      connectionMessage = 'PC lista. Sin bloqueo activo.';
       sendUIStatus();
     }
   } catch (error) {
