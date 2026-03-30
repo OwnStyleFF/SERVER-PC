@@ -1158,9 +1158,12 @@ export default function App() {
             fetchData();
             showNotification('Item eliminado', 'success');
           } else {
-            showNotification('Error al eliminar', 'error');
+            const text = await res.text();
+            showNotification(`Error al eliminar: ${text}`, 'error');
+            console.error('Delete entry failed:', endpoint, res.status, text);
           }
         } catch (e) {
+          console.error('Delete entry request failed:', endpoint, e);
           showNotification('Error de conexión', 'error');
         }
       }
