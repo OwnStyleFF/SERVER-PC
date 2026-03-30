@@ -271,6 +271,7 @@ async function reportStatus() {
       } else if (action.type === 'unassigned') {
         addLog('PC no inventariada: estado normal bloqueado no aplicado, espera inventario.');
         hideLockScreen();
+        showMainWindow();
       } else if (action.type === 'countdown') {
         showLockScreen(`Tiempo restante: ${action.seconds}s`, action.image || 'image/AOD.png', action.seconds);
       } else if (action.type === 'maintenance') {

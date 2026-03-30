@@ -296,6 +296,8 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
 
   if (isMaintenance) {
     action = { type: 'maintenance', message: 'Modo mantenimiento activo. Técnico autorizado.' };
+  } else if (!isAssigned) {
+    action = { type: 'unassigned', message: 'PC no inventariada en POS, arranque normal.' };
   } else if (!normalMode) {
     action = { type: 'aod', image: '/image/AOD.png', message: 'PC bloqueada, esperando renta.' };
   }
