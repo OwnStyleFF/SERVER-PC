@@ -361,9 +361,25 @@ app.post('/api/products', (req, res) => {
   res.json({ success: true, data: product });
 });
 
+app.delete('/api/products/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const product = db.prepare('SELECT * FROM products WHERE id = ?').get(id);
+  if (!product) return res.status(404).json({ success: false, error: 'product not found' });
+  db.prepare('DELETE FROM products WHERE id = ?').run(id);
+  res.json({ success: true, data: { id } });
+});
+
 app.get('/api/equipment', (req, res) => {
   const equipmentList = db.prepare('SELECT * FROM equipment ORDER BY id DESC').all();
   res.json({ success: true, data: equipmentList });
+});
+
+app.delete('/api/equipment/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const equipment = db.prepare('SELECT * FROM equipment WHERE id = ?').get(id);
+  if (!equipment) return res.status(404).json({ success: false, error: 'equipment not found' });
+  db.prepare('DELETE FROM equipment WHERE id = ?').run(id);
+  res.json({ success: true, data: { id } });
 });
 
 app.post('/api/equipment', (req, res) => {
@@ -377,6 +393,14 @@ app.post('/api/equipment', (req, res) => {
 app.get('/api/peripherals', (req, res) => {
   const peris = db.prepare('SELECT * FROM peripherals ORDER BY id DESC').all();
   res.json({ success: true, data: peris });
+});
+
+app.delete('/api/peripherals/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const peripheral = db.prepare('SELECT * FROM peripherals WHERE id = ?').get(id);
+  if (!peripheral) return res.status(404).json({ success: false, error: 'peripheral not found' });
+  db.prepare('DELETE FROM peripherals WHERE id = ?').run(id);
+  res.json({ success: true, data: { id } });
 });
 
 app.post('/api/peripherals', (req, res) => {
