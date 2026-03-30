@@ -9,6 +9,32 @@ let SERVER_URL = process.env.PC_SERVER_URL || store.get('serverUrl', 'https://se
 let PC_ID = process.env.PC_NAME || store.get('pcId', 'pc-1');
 let AGENT_TOKEN = store.get('agentToken', null);
 
+const FALLBACK_SERVER_URLS = ['http://127.0.0.1:4000', 'http://localhost:4000'];
+
+async function isServerReachable(url) {
+  try {
+    await axios.get(`${url}/api/pc/discovered?freshnessMinutes=1`, { timeout: 3000 });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function pickBestServerUrl() {
+  if (await isServerReachable(SERVER_URL)) return SERVER_URL;
+
+  for (const candidate of FALLBACK_SERVER_URLS) {
+    if (await isServerReachable(candidate)) {
+      SERVER_URL = candidate;
+      store.set('serverUrl', SERVER_URL);
+      addLog(`Servidor principal inalcanzable; usando fallback ${SERVER_URL}`);
+      return SERVER_URL;
+    }
+  }
+
+  return SERVER_URL;
+}
+
 let mainWindow;
 let lockWindow;
 let isPosConnected = false;
@@ -139,6 +165,8 @@ function hideLockScreen() {
 const AXIOS_TIMEOUT = 15000; // 15s, para conexiones lentas
 
 async function registerAgent() {
+  await pickBestServerUrl();
+
   try {
     await axios.post(`${SERVER_URL}/api/pc/pair`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: AXIOS_TIMEOUT });
 
@@ -199,18 +227,24 @@ async function requestPairCode() {
 
 async function updateAgentPcName() {
   if (!PC_ID || !SERVER_URL) return false;
-  try {
-    const response = await axios.post(`${SERVER_URL}/api/pc/update-name`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: 5000 });
-    if (response.data?.success) {
-      addLog(`Nombre PC actualizado: ${PC_ID}`);
-      return true;
+
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const response = await axios.post(`${SERVER_URL}/api/pc/update-name`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: 7000 });
+      if (response.data?.success) {
+        addLog(`Nombre PC actualizado: ${PC_ID} (intento ${attempt})`);
+        return true;
+      }
+      addLog(`Intento ${attempt} update-name fallido: ${JSON.stringify(response.data)}`);
+    } catch (error) {
+      const details = error.response?.data || error.message || error;
+      addLog(`Error update-name (intento ${attempt}): ${JSON.stringify(details)}`);
+      if (attempt === 3) return false;
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
-    return false;
-  } catch (error) {
-    const details = error.response?.data || error.message || error;
-    addLog(`Error update-name: ${JSON.stringify(details)}`);
-    return false;
   }
+
+  return false;
 }
 
 function pushStatus() {
@@ -250,6 +284,7 @@ async function isPcRegisteredInPos() {
 }
 
 async function reportStatus() {
+  await pickBestServerUrl();
   try {
     if (!AGENT_TOKEN) {
       const pairCode = store.get('pairCode');

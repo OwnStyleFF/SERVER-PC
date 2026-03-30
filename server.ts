@@ -180,7 +180,8 @@ app.get('/api/pc/pending-pair-codes', (req, res) => {
 });
 
 app.get('/api/pc/discovered', (req, res) => {
-  const freshnessMinutes = Number(req.query.freshnessMinutes || 5);
+  const freshnessMinutes = Number(req.query.freshnessMinutes ?? 60);
+  const useAll = freshnessMinutes <= 0;
   const cutoff = new Date(Date.now() - freshnessMinutes * 60 * 1000).toISOString();
 
   const rows = db.prepare(`
@@ -188,9 +189,9 @@ app.get('/api/pc/discovered', (req, res) => {
            e.id AS equipment_id, e.name AS equipment_name
     FROM pc_agents a
     LEFT JOIN equipment e ON e.pc_id = a.pc_id
-    WHERE a.last_seen >= ? OR a.last_seen IS NULL
+    ${useAll ? '' : 'WHERE a.last_seen >= ? OR a.last_seen IS NULL'}
     ORDER BY a.last_seen DESC
-  `).all(cutoff);
+  `).all(useAll ? [] : [cutoff]);
 
   const enriched = rows.map((r: any) => ({
     pc_id: r.pc_id,

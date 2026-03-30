@@ -583,16 +583,34 @@ export default function App() {
         setPendingPairCodes(pairData.data || []);
       }
 
-      const discoveredRes = await fetch('/api/pc/discovered');
+      const discoveredRes = await fetch('/api/pc/discovered?freshnessMinutes=-1');
+      let discovered: Array<any> = [];
       if (discoveredRes.ok) {
         const discoveredData = await discoveredRes.json();
-        const discovered = discoveredData.data || [];
-        setDiscoveredPCs(discovered);
-        setPcNameEdits(discovered.reduce((acc: Record<string,string>, item: any) => {
-          if (item.pc_id) acc[item.pc_id] = item.pc_name || item.pc_id;
-          return acc;
-        }, {}));
+        discovered = discoveredData.data || [];
       }
+
+      const unassignedRes = await fetch('/api/pc/unassigned');
+      let unassigned: Array<any> = [];
+      if (unassignedRes.ok) {
+        const unassignedData = await unassignedRes.json();
+        unassigned = (unassignedData.data || []).map((pc: any) => ({ ...pc, assigned: false }));
+      }
+
+      const discoveredById = new Map<string, any>();
+      discovered.forEach((pc: any) => discoveredById.set(pc.pc_id, { ...pc, assigned: Boolean(pc.equipment_id) }));
+      unassigned.forEach((pc: any) => {
+        if (!discoveredById.has(pc.pc_id)) {
+          discoveredById.set(pc.pc_id, pc);
+        }
+      });
+
+      const allDiscovered = Array.from(discoveredById.values());
+      setDiscoveredPCs(allDiscovered);
+      setPcNameEdits(allDiscovered.reduce((acc: Record<string,string>, item: any) => {
+        if (item.pc_id) acc[item.pc_id] = item.pc_name || item.pc_id;
+        return acc;
+      }, {}));
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -3925,9 +3943,10 @@ const renderWarningModal = () => {
                               </div>
                               <button
                                 onClick={() => claimPairCode(item.pc_id)}
-                                className="px-4 py-2 bg-indigo-600 text-white font-black rounded-lg hover:bg-indigo-700 transition-all"
+                                disabled={item.assigned}
+                                className={`px-4 py-2 font-black rounded-lg transition-all ${item.assigned ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}
                               >
-                                Seleccionar y control
+                                {item.assigned ? 'Ya asignada' : 'Seleccionar y control'}
                               </button>
                             </div>
                           ))}
