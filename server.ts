@@ -163,13 +163,7 @@ app.post('/api/pc/register', (req, res) => {
   db.prepare('UPDATE pc_agents SET token = ?, status = ?, updated_at = ?, last_seen = ?, pc_name = COALESCE(?, pc_name) WHERE pc_id = ?')
     .run(token, 'paired', now, now, pc_name || agent.pc_name, pc_id);
 
-  // auto registrar en equipment si no existe (para operación inmediata de rentas y control remoto).
-  const existingEquip = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
-  if (!existingEquip) {
-    db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, ?, ?)')
-      .run(pc_name || pc_id, 'PC', 'available', 0, pc_id);
-  }
-
+  // Nota: no auto-asignar a inventario en registro. La PC debe ser reclamada manualmente via /api/pc/claim.
   res.json({ success: true, pc_id, token });
 });
 
