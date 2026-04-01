@@ -288,11 +288,11 @@ async function isPcRegisteredInPos() {
     const current = discovered.find((p) => p.pc_id === PC_ID);
     const isUnassigned = unassigned.some((p) => p.pc_id === PC_ID);
 
-    addLog(`Check inventario POS: pc_id=${PC_ID}, found=${!!current}, assigned=${!!current?.assigned}, unassigned=${isUnassigned}`);
+    const registered = Boolean(current?.assigned && !isUnassigned);
 
-    if (isUnassigned) return false;
-    if (!current) return false;
-    return Boolean(current.assigned);
+    addLog(`Check inventario POS: pc_id=${PC_ID}, found=${!!current}, assigned=${!!current?.assigned}, unassigned=${isUnassigned}, registered=${registered}`);
+
+    return registered;
   } catch (error) {
     const details = error.response?.data || error.message || error;
     addLog(`Error verificando inventario POS: ${JSON.stringify(details)}`);
@@ -339,8 +339,9 @@ async function reportStatus() {
 
     const pcRegistered = await isPcRegisteredInPos();
     if (!pcRegistered) {
-      addLog(`PC ${PC_ID} no registrada en inventario POS. Desbloqueando IU local.`);
-      connectionMessage = 'PC no registrada en POS; UI local habilitada.';
+      addLog(`PC ${PC_ID} no registrada en inventario POS. Esperando registro antes de bloqueo.`);
+      connectionMessage = 'Esperando registro en inventario POS...';
+      isPosConnected = false;
       hideLockScreen();
       showMainWindow();
       sendUIStatus();
