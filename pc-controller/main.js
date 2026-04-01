@@ -1,4 +1,4 @@
-const { app, BrowserWindow, globalShortcut, powerMonitor, ipcMain } = require('electron');
+const { app, BrowserWindow, globalShortcut, powerMonitor, ipcMain, desktopCapturer } = require('electron');
 const path = require('path');
 const Store = require('electron-store');
 const axios = require('axios');
@@ -454,6 +454,21 @@ async function sendPosCommand(command, payload = {}) {
   }
 }
 
+async function sendScreenshot() {
+  if (!PC_ID || !SERVER_URL) return;
+  try {
+    const sources = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize: { width: 640, height: 360 } });
+    if (!sources.length) return;
+    const imageDataUrl = sources[0].thumbnail.toDataURL();
+
+    await axios.post(`${SERVER_URL}/api/pc/${PC_ID}/screenshot`, { image: imageDataUrl }, { timeout: 15000 });
+    addLog('Screenshot enviado al servidor.');
+  } catch (error) {
+    const details = error.response?.data || error.message || error;
+    addLog(`Error enviando screenshot: ${JSON.stringify(details)}`);
+  }
+}
+
 function registerHotkeys() {
   // Bloquear combinación de teclado de Windows y otras cosas
   globalShortcut.register('CommandOrControl+Shift+Q', () => {
@@ -483,6 +498,9 @@ app.whenReady().then(async () => {
   // Every 5 seconds send heartbeat and check server actions
   reportStatus();
   setInterval(reportStatus, 5000);
+
+  sendScreenshot();
+  setInterval(sendScreenshot, 30000);
 
   powerMonitor.on('suspend', () => {
     console.log('System suspend detected');

@@ -109,6 +109,13 @@ CREATE TABLE IF NOT EXISTS sales (
   amount REAL DEFAULT 0,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS pc_snapshots (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  pc_id TEXT NOT NULL,
+  image_data TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 `;
 
 db.exec(SCHEMA_SQL);
@@ -208,6 +215,24 @@ app.get('/api/pc/unassigned', (req, res) => {
     ORDER BY created_at DESC
   `).all();
   res.json({ success: true, data: rows });
+});
+
+app.post('/api/pc/:id/screenshot', (req, res) => {
+  const pc_id = req.params.id;
+  const { image } = req.body;
+  if (!pc_id || !image) return res.status(400).json({ success: false, error: 'pc_id and image required' });
+
+  db.prepare('INSERT INTO pc_snapshots (pc_id, image_data) VALUES (?, ?)').run(pc_id, image);
+  res.json({ success: true, pc_id });
+});
+
+app.get('/api/pc/:id/screenshot/latest', (req, res) => {
+  const pc_id = req.params.id;
+  if (!pc_id) return res.status(400).json({ success: false, error: 'pc_id required' });
+
+  const snapshot = db.prepare('SELECT * FROM pc_snapshots WHERE pc_id = ? ORDER BY id DESC LIMIT 1').get(pc_id);
+  if (!snapshot) return res.status(404).json({ success: false, error: 'not found' });
+  res.json({ success: true, data: snapshot });
 });
 
 app.post('/api/pc/update-name', (req, res) => {
@@ -336,6 +361,37 @@ app.get('/api/pc/:id/status', (req, res) => {
   if (!agent) return res.status(404).json({ success: false, error: 'not found' });
   res.json({ success: true, agent });
 });
+
+function schedulePcEnforcement() {
+  setInterval(() => {
+    const agents = db.prepare('SELECT a.pc_id, a.status AS agent_status, e.id AS equipment_id FROM pc_agents a LEFT JOIN equipment e ON e.pc_id = a.pc_id WHERE a.status = ?').all('paired');
+
+    agents.forEach((item: any) => {
+      if (!item.equipment_id) return; // no equipment no lock/unlock
+
+      const rental = db.prepare('SELECT * FROM rentals WHERE equipment_id = ? AND status = ?').get(item.equipment_id, 'active') as any;
+      if (!rental) {
+        // No renta activa -> enviar bloqueo
+        db.prepare('INSERT INTO pc_commands (pc_id, command, payload) VALUES (?, ?, ?)').run(item.pc_id, 'lock', JSON.stringify({ message: 'PC sin renta activa - bloqueando' }));
+        return;
+      }
+
+      const start = rental.start_time ? new Date(String(rental.start_time).replace(' ', 'T')).getTime() : null;
+      const expire = start && rental.limit_minutes > 0 ? start + (Number(rental.limit_minutes) || 0) * 60 * 1000 : null;
+      const rentalId = rental.id;
+
+      if (expire && Date.now() > expire) {
+        db.prepare('UPDATE rentals SET status = ? WHERE id = ?').run('completed', rentalId);
+        db.prepare('INSERT INTO pc_commands (pc_id, command, payload) VALUES (?, ?, ?)').run(item.pc_id, 'lock', JSON.stringify({ message: 'Renta expirada - bloqueando' }));
+      } else {
+        // Si renta activa, desbloquear (puede enviarse unlock como seguro)
+        db.prepare('INSERT INTO pc_commands (pc_id, command, payload) VALUES (?, ?, ?)').run(item.pc_id, 'unlock', JSON.stringify({ message: 'Renta activa' }));
+      }
+    });
+  }, 15000);
+}
+
+schedulePcEnforcement();
 app.get('/api/taecel/status', (req, res) => {
   res.json({ success: true, status: 'ok', lastCacheTimestamp: Date.now(), lastBackupTimestamp: Date.now() });
 });
