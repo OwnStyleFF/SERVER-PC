@@ -7,7 +7,9 @@
     "build": "tsc --project tsconfig.json",
     "start": "node node_modules/tsx/dist/cli.mjs server.ts",
     "dev": "concurrently \"node node_modules/tsx/dist/cli.mjs server.ts --watch\" \"vite\"",
-    "client": "vite"
+    "client": "vite",
+    "test:connectivity": "node scripts/check-connection.js",
+    "test:agent-connectivity": "node scripts/check-agent-connectivity.js"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",
