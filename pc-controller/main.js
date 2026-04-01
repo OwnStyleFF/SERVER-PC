@@ -38,6 +38,8 @@ async function pickBestServerUrl() {
 let mainWindow;
 let lockWindow;
 let isPosConnected = false;
+let isPosRegistered = false;
+let pcName = PC_ID;
 let connectionMessage = 'Iniciando, conectando a servidor...';
 
 const logLines = [];
@@ -91,7 +93,7 @@ function showMainWindow() {
 
 function hideMainWindowAfterConnected() {
   if (mainWindow && !mainWindow.isDestroyed()) {
-    if (!isPosConnected) return;
+    if (!isPosConnected || !isPosRegistered) return;
     mainWindow.hide();
   }
 }
@@ -102,8 +104,10 @@ function sendUIStatus() {
   mainWindow.webContents.send('pc-controller-status', {
     serverUrl: SERVER_URL,
     pcId: PC_ID,
+    pcName,
     agentToken: AGENT_TOKEN,
     connection: isPosConnected ? 'connected' : 'disconnected',
+    registered: isPosRegistered,
     connectionMessage,
     logs: getLogs()
   });
@@ -289,6 +293,10 @@ async function isPcRegisteredInPos() {
     const isUnassigned = unassigned.some((p) => p.pc_id === PC_ID);
 
     const registered = Boolean(current?.assigned && !isUnassigned);
+    if (current?.pc_name && current.pc_name !== pcName) {
+      pcName = current.pc_name;
+      addLog(`Nombre PC actualizado desde POS: ${pcName}`);
+    }
 
     addLog(`Check inventario POS: pc_id=${PC_ID}, found=${!!current}, assigned=${!!current?.assigned}, unassigned=${isUnassigned}, registered=${registered}`);
 
@@ -338,6 +346,8 @@ async function reportStatus() {
     }
 
     const pcRegistered = await isPcRegisteredInPos();
+    isPosRegistered = pcRegistered;
+
     if (!pcRegistered) {
       addLog(`PC ${PC_ID} no registrada en inventario POS. Esperando registro antes de bloqueo.`);
       connectionMessage = 'Esperando registro en inventario POS...';
