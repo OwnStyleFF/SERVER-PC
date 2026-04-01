@@ -167,33 +167,50 @@ const AXIOS_TIMEOUT = 15000; // 15s, para conexiones lentas
 async function registerAgent() {
   await pickBestServerUrl();
 
-  try {
-    await axios.post(`${SERVER_URL}/api/pc/pair`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: AXIOS_TIMEOUT });
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      addLog(`registerAgent inicio (intento ${attempt}) server=${SERVER_URL} pc_id=${PC_ID}`);
+      await axios.post(`${SERVER_URL}/api/pc/pair`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: AXIOS_TIMEOUT });
 
-    const response = await axios.post(`${SERVER_URL}/api/pc/register`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: AXIOS_TIMEOUT });
+      const response = await axios.post(`${SERVER_URL}/api/pc/register`, { pc_id: PC_ID, pc_name: PC_ID }, { timeout: AXIOS_TIMEOUT });
 
-    if (response.data && response.data.success && response.data.token) {
-      AGENT_TOKEN = response.data.token;
-      store.set('agentToken', AGENT_TOKEN);
-      connectionMessage = 'Agente registrado exitosamente con PC ID.';
-      addLog(`Registro exitoso: ${PC_ID}`);
-      pushStatus();
-      return true;
+      if (response.data && response.data.success && response.data.token) {
+        AGENT_TOKEN = response.data.token;
+        store.set('agentToken', AGENT_TOKEN);
+        connectionMessage = 'Agente registrado exitosamente con PC ID.';
+        addLog(`Registro exitoso: ${PC_ID}`);
+        pushStatus();
+        return true;
+      }
+
+      const issue = response.data?.error || 'sin detalles';
+      connectionMessage = `Registro no exitoso: ${issue}`;
+      addLog(`Registro no exitoso (intento ${attempt}): ${JSON.stringify(response.data)}`);
+
+      if (issue === 'pc not found' || issue === 'pc not paired' || issue === 'invalid token') {
+        // Rerun pair/reg intent
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        continue;
+      }
+
+      sendUIStatus();
+      return false;
+    } catch (error) {
+      const details = error.response?.data || error.message || error;
+      connectionMessage = `Error registro agente: ${error.response?.status || '?'} ${error.response?.statusText || ''} -- ${JSON.stringify(details)}`;
+      addLog(`Error registro agente (intento ${attempt}): ${connectionMessage}`);
+      sendUIStatus();
+      console.error('Register agent error', details);
+
+      if (attempt < 4) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        continue;
+      }
+      return false;
     }
-
-    connectionMessage = `Registro no exitoso: ${response.data?.error || 'sin detalles'}`;
-    addLog(`Registro no exitoso: ${JSON.stringify(response.data)}`);
-    sendUIStatus();
-    console.warn('Registro no exitoso:', response.data?.error || response.data);
-    return false;
-  } catch (error) {
-    const details = error.response?.data || error.message || error;
-    connectionMessage = `Error registro agente: ${error.response?.status || '?'} ${error.response?.statusText || ''} -- ${JSON.stringify(details)}`;
-    addLog(`Error registro agente: ${connectionMessage}`);
-    sendUIStatus();
-    console.error('Register agent error', details);
-    return false;
   }
+
+  return false;
 }
 
 async function requestPairCode() {
@@ -397,6 +414,17 @@ async function reportStatus() {
     if (status === 403 && error.response?.data?.error === 'invalid token') {
       connectionMessage = 'Token inválido: reintentando registro.';
       addLog(`Heartbeat invalid token: ${JSON.stringify(details)}`);
+      AGENT_TOKEN = null;
+      store.delete('agentToken');
+      await registerAgent();
+      await updateAgentPcName();
+      sendUIStatus();
+      return;
+    }
+
+    if (status === 404 && error.response?.data?.error === 'pc not found') {
+      connectionMessage = 'PC no encontrada en POS: reintentando emparejamiento.';
+      addLog(`Heartbeat pc not found: ${JSON.stringify(details)}`);
       AGENT_TOKEN = null;
       store.delete('agentToken');
       await registerAgent();
