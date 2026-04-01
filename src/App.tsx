@@ -45,6 +45,12 @@ const DEFAULT_PC_BLOCKED_IMAGE_URL = process.env.REACT_APP_PC_BLOCKED_IMAGE || '
 
 export default function App() {
   console.log('App component render');
+  const API_BASE = process.env.REACT_APP_API_URL?.trim() || '';
+  const apiFetch = (path: string, options?: RequestInit) => {
+    const url = `${API_BASE}${path}`;
+    return fetch(url, options);
+  };
+
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSplashTimeout, setIsSplashTimeout] = useState(false);
   const [isSplashError, setIsSplashError] = useState(false);
@@ -577,20 +583,20 @@ export default function App() {
         const salesJson = await salesRes.json();
         setSales(Array.isArray(salesJson) ? salesJson : Array.isArray(salesJson?.data) ? salesJson.data : []);
       }
-      const pairRes = await fetch('/api/pc/pending-pair-codes');
+      const pairRes = await apiFetch('/api/pc/pending-pair-codes');
       if (pairRes.ok) {
         const pairData = await pairRes.json();
         setPendingPairCodes(pairData.data || []);
       }
 
-      const discoveredRes = await fetch('/api/pc/discovered?freshnessMinutes=-1');
+      const discoveredRes = await apiFetch('/api/pc/discovered?freshnessMinutes=-1');
       let discovered: Array<any> = [];
       if (discoveredRes.ok) {
         const discoveredData = await discoveredRes.json();
         discovered = discoveredData.data || [];
       }
 
-      const unassignedRes = await fetch('/api/pc/unassigned');
+      const unassignedRes = await apiFetch('/api/pc/unassigned');
       let unassigned: Array<any> = [];
       if (unassignedRes.ok) {
         const unassignedData = await unassignedRes.json();
@@ -643,7 +649,7 @@ export default function App() {
 
   const claimPairCode = async (pcId: string) => {
     try {
-      const res = await fetch('/api/pc/claim', {
+      const res = await apiFetch('/api/pc/claim', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pc_id: pcId })
@@ -684,7 +690,7 @@ export default function App() {
 
   const updatePcAgentName = async (pcId: string, pcName: string) => {
     try {
-      const res = await fetch('/api/pc/update-name', {
+      const res = await apiFetch('/api/pc/update-name', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pc_id: pcId, pc_name: pcName })
