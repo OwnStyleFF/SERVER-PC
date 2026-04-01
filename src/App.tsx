@@ -4129,7 +4129,10 @@ const renderWarningModal = () => {
                             <div className="flex flex-col gap-2">
                               <button
                                 type="button"
-                                onClick={() => setIsSelectPcModalOpen(true)}
+                                onClick={async () => {
+                                  await fetchData();
+                                  setIsSelectPcModalOpen(true);
+                                }}
                                 className="w-full bg-indigo-600 text-white py-3 rounded-xl font-black uppercase tracking-widest hover:bg-indigo-700 transition-all"
                               >
                                 Abrir lista de PCs instaladas
