@@ -227,7 +227,7 @@ app.get('/api/pc/discovered', (req, res) => {
 
   if (onlyUnregistered) {
     sql += useAll ? 'WHERE ' : 'AND ';
-    sql += 'e.id IS NULL AND a.status IN ("registered", "paired")\n';
+    sql += 'e.id IS NULL AND a.status IN ("pending", "registered", "paired")\n';
   }
 
   sql += 'ORDER BY a.last_seen DESC\n';
@@ -265,7 +265,7 @@ app.get('/api/pc/unassigned', (req, res) => {
   const rows = db.prepare(`
     SELECT pc_id, pc_name, status, last_seen, created_at
     FROM pc_agents
-    WHERE status IN ('registered', 'paired')
+    WHERE status IN ('pending','registered', 'paired')
       AND (last_seen >= ? OR last_seen IS NULL)
       AND pc_id NOT IN (SELECT pc_id FROM equipment WHERE pc_id IS NOT NULL)
     ORDER BY last_seen DESC
