@@ -48,24 +48,40 @@ export default function App() {
   const API_BASE = process.env.REACT_APP_API_URL?.trim() || '';
   const DEFAULT_REMOTE_BASE = 'https://server-pc-fq7x.onrender.com';
 
-  const apiFetch = async (path: string, options?: RequestInit) => {
-    const localUrl = `${window.location.protocol}//${window.location.hostname}:4000${path}`;
+  const apiFetch = async (path: string, options: RequestInit = {}) => {
+    const localCandidates = [
+      `http://localhost:4000${path}`,
+      `${window.location.protocol}//${window.location.hostname}:4000${path}`,
+      `${window.location.protocol}//127.0.0.1:4000${path}`
+    ];
     const remoteUrl = `${API_BASE || DEFAULT_REMOTE_BASE}${path}`;
 
     if (API_BASE) {
-      return fetch(remoteUrl, options);
+      try {
+        return await fetch(remoteUrl, options);
+      } catch (error) {
+        console.warn('Remote API fetch failed:', error);
+        throw error;
+      }
+    }
+
+    for (const url of localCandidates) {
+      try {
+        const res = await fetch(url, options);
+        if (res.ok) {
+          return res;
+        }
+      } catch (error) {
+        console.warn(`Local API candidate failed (${url}):`, error);
+      }
     }
 
     try {
-      const localRes = await fetch(localUrl, options);
-      if (localRes.ok) {
-        return localRes;
-      }
+      return await fetch(remoteUrl, options);
     } catch (error) {
-      // console.info('Local API no disponible, intentando remoto', error);
+      console.error('Fallback remote API fetch failed:', error);
+      throw error;
     }
-
-    return fetch(remoteUrl, options);
   };
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -420,7 +436,7 @@ export default function App() {
   const fetchWithRetry = async (url: string, options: RequestInit = {}, retries = 5, delayMs = 500) => {
     for (let i = 0; i <= retries; i++) {
       try {
-        const res = await fetch(url, options);
+        const res = await apiFetch(url, options);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res;
       } catch (err) {
@@ -442,13 +458,7 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (!selectedPcIdForForm && unassignedDiscoveredPCs.length > 0) {
-      const firstUnassigned = unassignedDiscoveredPCs[0];
-      setSelectedPcIdForForm(firstUnassigned.pc_id);
-      setSelectedPcNameForForm(pcNameEdits[firstUnassigned.pc_id] || firstUnassigned.pc_name || firstUnassigned.pc_id);
-    }
-  }, [unassignedDiscoveredPCs, selectedPcIdForForm, pcNameEdits]);
+
 
   useEffect(() => {
     if (activeRentals.length === 0) return;
