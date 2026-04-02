@@ -3897,7 +3897,7 @@ const renderWarningModal = () => {
                     </div>
                     <div className="p-6">
                       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        {equipment.filter(e => e.type === 'PC').map(station => {
+                        {equipment.filter(e => e.type === 'PC' && (!e.pc_id || discoveredPCs.some(d => d.pc_id === e.pc_id && d.status === 'paired'))).map(station => {
                           const activeRental = activeRentals.find(r => r.equipment_id === station.id || r.identifier === station.name);
                           return (
                             <EquipmentStationCard 
