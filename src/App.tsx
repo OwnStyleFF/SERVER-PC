@@ -158,10 +158,17 @@ export default function App() {
 
   const [taecelSalesData, setTaecelSalesData] = useState<any[]>([]);
   const [pendingPairCodes, setPendingPairCodes] = useState<Array<{pc_id: string; expires_at: string}>>([]);
-  const [discoveredPCs, setDiscoveredPCs] = useState<Array<{pc_id: string; pc_name?: string; status: string; last_seen: string; assigned?: boolean}>>([]);
+  const [discoveredPCs, setDiscoveredPCs] = useState<Array<{pc_id: string; pc_name?: string; status: string; last_seen: string; assigned?: boolean; isOnline?: boolean}>>([]);
   const unassignedDiscoveredPCs = useMemo(() => discoveredPCs.filter((pc) => !pc.assigned), [discoveredPCs]);
   const [pcListMode, setPcListMode] = useState<'unassigned'|'all'>('unassigned');
   const visiblePcList = useMemo(() => (pcListMode === 'unassigned' ? unassignedDiscoveredPCs : discoveredPCs), [pcListMode, unassignedDiscoveredPCs, discoveredPCs]);
+  const equipmentOnlineByPcId = useMemo(() => {
+    const map: Record<string, boolean> = {};
+    discoveredPCs.forEach((pc) => {
+      map[pc.pc_id] = !!pc.isOnline;
+    });
+    return map;
+  }, [discoveredPCs]);
   const [selectedPcIdForForm, setSelectedPcIdForForm] = useState<string>('');
   const [selectedPcNameForForm, setSelectedPcNameForForm] = useState<string>('');
   const [isSelectPcModalOpen, setIsSelectPcModalOpen] = useState(false);
@@ -627,14 +634,14 @@ export default function App() {
         setPendingPairCodes(pairData.data || []);
       }
 
-      const discoveredRes = await apiFetch('/api/pc/discovered?freshnessMinutes=10');
+      const discoveredRes = await apiFetch('/api/pc/discovered?freshnessMinutes=0&onlineThresholdMinutes=1');
       let discovered: Array<any> = [];
       if (discoveredRes.ok) {
         const discoveredData = await discoveredRes.json();
         discovered = discoveredData.data || [];
       }
 
-      const unassignedRes = await apiFetch('/api/pc/unassigned?freshnessMinutes=10');
+      const unassignedRes = await apiFetch('/api/pc/unassigned?freshnessMinutes=0&onlineThresholdMinutes=1');
       let unassigned: Array<any> = [];
       if (unassignedRes.ok) {
         const unassignedData = await unassignedRes.json();
@@ -2196,9 +2203,14 @@ export default function App() {
                   <option value="">-- Seleccionar Equipo --</option>
                   {equipment
                     .filter(eq => eq.type === rentalModal.rentalType && (eq.status === 'available' || eq.id === rentalModal.equipmentId))
-                    .map(eq => (
-                      <option key={eq.id} value={eq.id}>{eq.name} ({eq.status})</option>
-                    ))
+                    .map(eq => {
+                      const isDetected = eq.pc_id ? equipmentOnlineByPcId[eq.pc_id] : true;
+                      return (
+                        <option key={eq.id} value={eq.id} disabled={!isDetected}>
+                          {eq.name} ({eq.status}) {eq.pc_id ? `- ${isDetected ? 'online' : 'offline'}` : ''}
+                        </option>
+                      );
+                    })
                   }
                 </select>
 
@@ -2312,6 +2324,15 @@ export default function App() {
                   if (minutes <= 0) {
                     showNotification("Debes asignar minutos de renta para iniciar.", "error");
                     return;
+                  }
+
+                  const selectedEquipment = equipment.find(eq => eq.id.toString() === equipId);
+                  if (selectedEquipment?.pc_id) {
+                    const isDetected = equipmentOnlineByPcId[selectedEquipment.pc_id];
+                    if (!isDetected) {
+                      showNotification("Equipo offline: no se puede iniciar renta hasta que se reconecte.", "error");
+                      return;
+                    }
                   }
 
                   startRental(

@@ -14,6 +14,8 @@ let PC_ID = process.env.PC_NAME || store.get('pcId', 'pc-1');
 let AGENT_TOKEN = store.get('agentToken', null);
 
 const FALLBACK_SERVER_URLS = ['http://127.0.0.1:4000', 'http://localhost:4000'];
+const HEARTBEAT_INTERVAL_MS = 3000;
+const RECONNECT_DELAY_MS = 2000;
 
 async function isServerReachable(url) {
   try {
@@ -586,6 +588,10 @@ async function reportStatus() {
     const status = error.response?.status;
     const details = error.response?.data || error.message || error;
 
+    // Ante fallo de conexión, cambia a servidor disponible y reintenta pronto.
+    await pickBestServerUrl();
+    setTimeout(reportStatus, RECONNECT_DELAY_MS);
+
     if (status === 403 && error.response?.data?.error === 'invalid token') {
       connectionMessage = 'Token inválido: reintentando registro.';
       addLog(`Heartbeat invalid token: ${JSON.stringify(details)}`);
@@ -669,9 +675,9 @@ app.whenReady().then(async () => {
     }
   }
 
-  // Every 5 seconds send heartbeat and check server actions
+  // Heartbeat loop: en segundo plano intenta reconexión cada pocos segundos.
   reportStatus();
-  setInterval(reportStatus, 5000);
+  setInterval(reportStatus, HEARTBEAT_INTERVAL_MS);
 
   sendScreenshot();
   setInterval(sendScreenshot, 30000);

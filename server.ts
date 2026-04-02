@@ -206,9 +206,12 @@ app.get('/api/pc/pending-pair-codes', (req, res) => {
 
 app.get('/api/pc/discovered', (req, res) => {
   const freshnessMinutes = Number(req.query.freshnessMinutes ?? 60);
+  const onlineThresholdMinutes = Number(req.query.onlineThresholdMinutes ?? 1);
   const onlyUnregistered = req.query.unregistered === 'true';
   const useAll = freshnessMinutes <= 0;
   const cutoff = new Date(Date.now() - freshnessMinutes * 60 * 1000).toISOString();
+  const nowMs = Date.now();
+  const onlineThresholdMs = onlineThresholdMinutes * 60 * 1000;
 
   let sql = `
     SELECT a.pc_id, a.pc_name, a.status, a.last_seen, a.created_at,
@@ -230,22 +233,31 @@ app.get('/api/pc/discovered', (req, res) => {
 
   const rows = db.prepare(sql).all(useAll ? [] : [cutoff]);
 
-  const enriched = rows.map((r: any) => ({
-    pc_id: r.pc_id,
-    pc_name: normalizePcDisplayName(r.pc_id, r.pc_name),
-    status: r.status,
-    last_seen: r.last_seen,
-    created_at: r.created_at,
-    assigned: Boolean(r.equipment_id),
-    equipment_name: r.equipment_name || null
-  }));
+  const enriched = rows.map((r: any) => {
+    const lastSeenMs = r.last_seen ? new Date(String(r.last_seen).replace(' ', 'T')).getTime() : null;
+    const isOnline = lastSeenMs ? (nowMs - lastSeenMs) <= onlineThresholdMs : false;
+
+    return {
+      pc_id: r.pc_id,
+      pc_name: normalizePcDisplayName(r.pc_id, r.pc_name),
+      status: r.status,
+      last_seen: r.last_seen,
+      created_at: r.created_at,
+      assigned: Boolean(r.equipment_id),
+      equipment_name: r.equipment_name || null,
+      isOnline
+    };
+  });
 
   res.json({ success: true, data: enriched });
 });
 
 app.get('/api/pc/unassigned', (req, res) => {
   const freshnessMinutes = Number(req.query.freshnessMinutes ?? 10);
+  const onlineThresholdMinutes = Number(req.query.onlineThresholdMinutes ?? 1);
   const cutoff = new Date(Date.now() - freshnessMinutes * 60 * 1000).toISOString();
+  const nowMs = Date.now();
+  const onlineThresholdMs = onlineThresholdMinutes * 60 * 1000;
 
   const rows = db.prepare(`
     SELECT pc_id, pc_name, status, last_seen, created_at
@@ -256,10 +268,15 @@ app.get('/api/pc/unassigned', (req, res) => {
     ORDER BY last_seen DESC
   `).all(cutoff);
 
-  const normalizedRows = rows.map((r: any) => ({
-    ...r,
-    pc_name: normalizePcDisplayName(r.pc_id, r.pc_name)
-  }));
+  const normalizedRows = rows.map((r: any) => {
+    const lastSeenMs = r.last_seen ? new Date(String(r.last_seen).replace(' ', 'T')).getTime() : null;
+    const isOnline = lastSeenMs ? (nowMs - lastSeenMs) <= onlineThresholdMs : false;
+    return {
+      ...r,
+      pc_name: normalizePcDisplayName(r.pc_id, r.pc_name),
+      isOnline
+    };
+  });
 
   res.json({ success: true, data: normalizedRows });
 });
@@ -618,6 +635,19 @@ app.post('/api/rentals/start', (req, res) => {
   if (!identifier) return res.status(400).json({ success: false, error: 'identifier required' });
 
   const now = new Date().toISOString();
+
+  if (equipment_id) {
+    const equipment = db.prepare('SELECT pc_id FROM equipment WHERE id = ?').get(equipment_id as number) as any;
+    if (equipment?.pc_id) {
+      const agent = db.prepare('SELECT last_seen FROM pc_agents WHERE pc_id = ?').get(equipment.pc_id) as any;
+      const lastSeenMs = agent?.last_seen ? new Date(String(agent.last_seen).replace(' ', 'T')).getTime() : null;
+      const isOnline = lastSeenMs ? (Date.now() - lastSeenMs) <= 2 * 60 * 1000 : false;
+      if (!isOnline) {
+        return res.status(409).json({ success: false, error: 'PC no está en línea. Espera a que se reconecte antes de rentar.' });
+      }
+    }
+  }
+
   const info = db.prepare('INSERT INTO rentals (equipment_id, type, identifier, start_time, limit_minutes, advance_payment, total_price, is_frozen, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
     .run(equipment_id, type, identifier, now, limit_minutes, advance_payment, 0, 0, 'active', now);
 
