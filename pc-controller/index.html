@@ -24,10 +24,6 @@
       <label>Identificación de PC:</label>
       <input id="pcId" type="text" placeholder="pc-1" />
     </div>
-    <div class="block">
-      <label>Nombre visible (pc_name):</label>
-      <input id="pcName" type="text" placeholder="PC One" />
-    </div>
 
     <button id="btnSave">Guardar configuración</button>
 
@@ -65,16 +61,15 @@
     document.getElementById('btnSave').addEventListener('click', async () => {
       const serverUrl = serverUrlInput.value.trim();
       const pcId = pcIdInput.value.trim();
-      const pcNameValue = document.getElementById('pcName').value.trim();
+      const pcNameValue = pcId;
+
       const result = await window.pcController.saveSettings(serverUrl, pcId, pcNameValue);
       statusText.innerText = `Configuración guardada: ${result.serverUrl} / ${result.pcId}`;
 
-      if (pcNameValue) {
-        const update = await window.pcController.updateAgentName(pcId, pcNameValue);
-        statusText.innerText = update.success
-          ? `Nombre PC actualizado: ${pcNameValue}`
-          : `Error al actualizar nombre: ${update.error}`;
-      }
+      const update = await window.pcController.updateAgentName(pcId, pcNameValue);
+      statusText.innerText = update.success
+        ? `Nombre PC establecido como identificador: ${pcNameValue}`
+        : `Error al establecer nombre: ${update.error}`;
     });
 
     document.getElementById('btnConnect').style.display = 'none';
