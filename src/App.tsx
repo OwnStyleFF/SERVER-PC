@@ -4216,8 +4216,13 @@ const renderWarningModal = () => {
                               <button
                                 type="button"
                                 onClick={async () => {
-                                  await fetchData();
                                   setIsSelectPcModalOpen(true);
+                                  try {
+                                    await fetchData();
+                                  } catch (error: any) {
+                                    console.error('Error al refrescar lista de PCs:', error);
+                                    showNotification('No se pudo refrescar la lista de PCs detectadas, intenta de nuevo.', 'error');
+                                  }
                                 }}
                                 className="w-full bg-indigo-600 text-white py-3 rounded-xl font-black uppercase tracking-widest hover:bg-indigo-700 transition-all"
                               >
