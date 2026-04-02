@@ -46,9 +46,26 @@ const DEFAULT_PC_BLOCKED_IMAGE_URL = process.env.REACT_APP_PC_BLOCKED_IMAGE || '
 export default function App() {
   console.log('App component render');
   const API_BASE = process.env.REACT_APP_API_URL?.trim() || '';
-  const apiFetch = (path: string, options?: RequestInit) => {
-    const url = `${API_BASE}${path}`;
-    return fetch(url, options);
+  const DEFAULT_REMOTE_BASE = 'https://server-pc-fq7x.onrender.com';
+
+  const apiFetch = async (path: string, options?: RequestInit) => {
+    const localUrl = `${window.location.protocol}//${window.location.hostname}:4000${path}`;
+    const remoteUrl = `${API_BASE || DEFAULT_REMOTE_BASE}${path}`;
+
+    if (API_BASE) {
+      return fetch(remoteUrl, options);
+    }
+
+    try {
+      const localRes = await fetch(localUrl, options);
+      if (localRes.ok) {
+        return localRes;
+      }
+    } catch (error) {
+      // console.info('Local API no disponible, intentando remoto', error);
+    }
+
+    return fetch(remoteUrl, options);
   };
 
   const [isLoaded, setIsLoaded] = useState(false);
