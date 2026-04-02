@@ -265,7 +265,7 @@ app.get('/api/pc/unassigned', (req, res) => {
   const rows = db.prepare(`
     SELECT pc_id, pc_name, status, last_seen, created_at
     FROM pc_agents
-    WHERE status IN ('pending','registered', 'paired')
+    WHERE status IN ('pending', 'registered', 'paired')
       AND (last_seen >= ? OR last_seen IS NULL)
       AND pc_id NOT IN (SELECT pc_id FROM equipment WHERE pc_id IS NOT NULL)
     ORDER BY last_seen DESC
