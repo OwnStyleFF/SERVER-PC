@@ -198,6 +198,13 @@ const normalizePcDisplayName = (pc_id: string, pc_name: string | null) => {
   return rawName;
 };
 
+const isTestPCEntry = (pc_id: string, pc_name?: string | null) => {
+  const lowerId = String(pc_id || '').toLowerCase();
+  const lowerName = String(pc_name || '').toLowerCase();
+  const testLabels = ['test', 'prueba', 'demo', 'dummy', 'qa', 'staging'];
+  return testLabels.some((label) => lowerId.includes(label) || lowerName.includes(label));
+};
+
 app.get('/api/pc/pending-pair-codes', (req, res) => {
   const now = new Date().toISOString();
   const pending = db.prepare("SELECT pc_id, status, expires_at FROM pc_agents WHERE status = 'pending' AND expires_at > ?").all(now);
@@ -233,21 +240,23 @@ app.get('/api/pc/discovered', (req, res) => {
 
   const rows = db.prepare(sql).all(useAll ? [] : [cutoff]);
 
-  const enriched = rows.map((r: any) => {
-    const lastSeenMs = r.last_seen ? new Date(String(r.last_seen).replace(' ', 'T')).getTime() : null;
-    const isOnline = lastSeenMs ? (nowMs - lastSeenMs) <= onlineThresholdMs : false;
+  const enriched = rows
+    .filter((r: any) => !isTestPCEntry(r.pc_id, r.pc_name))
+    .map((r: any) => {
+      const lastSeenMs = r.last_seen ? new Date(String(r.last_seen).replace(' ', 'T')).getTime() : null;
+      const isOnline = lastSeenMs ? (nowMs - lastSeenMs) <= onlineThresholdMs : false;
 
-    return {
-      pc_id: r.pc_id,
-      pc_name: normalizePcDisplayName(r.pc_id, r.pc_name),
-      status: r.status,
-      last_seen: r.last_seen,
-      created_at: r.created_at,
-      assigned: Boolean(r.equipment_id),
-      equipment_name: r.equipment_name || null,
-      isOnline
-    };
-  });
+      return {
+        pc_id: r.pc_id,
+        pc_name: normalizePcDisplayName(r.pc_id, r.pc_name),
+        status: r.status,
+        last_seen: r.last_seen,
+        created_at: r.created_at,
+        assigned: Boolean(r.equipment_id),
+        equipment_name: r.equipment_name || null,
+        isOnline
+      };
+    });
 
   res.json({ success: true, data: enriched });
 });
@@ -268,15 +277,17 @@ app.get('/api/pc/unassigned', (req, res) => {
     ORDER BY last_seen DESC
   `).all(cutoff);
 
-  const normalizedRows = rows.map((r: any) => {
-    const lastSeenMs = r.last_seen ? new Date(String(r.last_seen).replace(' ', 'T')).getTime() : null;
-    const isOnline = lastSeenMs ? (nowMs - lastSeenMs) <= onlineThresholdMs : false;
-    return {
-      ...r,
-      pc_name: normalizePcDisplayName(r.pc_id, r.pc_name),
-      isOnline
-    };
-  });
+  const normalizedRows = rows
+    .filter((r: any) => !isTestPCEntry(r.pc_id, r.pc_name))
+    .map((r: any) => {
+      const lastSeenMs = r.last_seen ? new Date(String(r.last_seen).replace(' ', 'T')).getTime() : null;
+      const isOnline = lastSeenMs ? (nowMs - lastSeenMs) <= onlineThresholdMs : false;
+      return {
+        ...r,
+        pc_name: normalizePcDisplayName(r.pc_id, r.pc_name),
+        isOnline
+      };
+    });
 
   res.json({ success: true, data: normalizedRows });
 });
