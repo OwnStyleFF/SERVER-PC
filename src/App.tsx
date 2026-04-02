@@ -640,6 +640,7 @@ export default function App() {
         const discoveredData = await discoveredRes.json();
         discovered = discoveredData.data || [];
       }
+      console.log('[Rentas PC/Consolas] discovered PCs', discovered);
 
       const unassignedRes = await apiFetch('/api/pc/unassigned?freshnessMinutes=0&onlineThresholdMinutes=1');
       let unassigned: Array<any> = [];
@@ -4356,12 +4357,29 @@ const renderWarningModal = () => {
                                   showNotification('Selecciona una PC desde la lista antes de guardar.', 'error');
                                   return;
                                 }
-                                const assignedCheck = discoveredPCs.find((n) => n.pc_id === pcIdVal)?.assigned;
+                                console.log('[PC Register] Inicio verificación', {
+                                  pcIdVal,
+                                  selectedPcNameForForm,
+                                  discoveredPCsCount: discoveredPCs.length,
+                                  equipmentCount: equipment.length
+                                });
+
+                                const discoveredRes2 = await apiFetch('/api/pc/discovered?freshnessMinutes=0&onlineThresholdMinutes=1');
+                                let preservedDiscovered = discoveredPCs;
+                                if (discoveredRes2.ok) {
+                                  const discoveredData2 = await discoveredRes2.json();
+                                  preservedDiscovered = (discoveredData2.data || []).map((pc: any) => ({ ...pc, assigned: pc.status === 'paired' && !!pc.equipment_id }));
+                                }
+
+                                const assignedCheck = preservedDiscovered.find((n) => n.pc_id === pcIdVal)?.assigned;
+                                const alreadyAssigned = equipment.some((eq: any) => (eq.type === 'PC' || eq.type === 'Console') && eq.pc_id === pcIdVal);
+
+                                console.log('[PC Register] checks', { pcIdVal, assignedCheck, alreadyAssigned, preservedDiscoveredItem: preservedDiscovered.find((n) => n.pc_id === pcIdVal) });
+
                                 if (assignedCheck) {
                                   showNotification(`PC ${pcIdVal} ya está asignada a inventario. Elige otra.`, 'error');
                                   return;
                                 }
-                                const alreadyAssigned = equipment.some((eq: any) => (eq.type === 'PC' || eq.type === 'Console') && eq.pc_id === pcIdVal);
                                 if (alreadyAssigned) {
                                   showNotification(`PC ${pcIdVal} ya está asignada a inventario. Elige otra.`, 'error');
                                   return;

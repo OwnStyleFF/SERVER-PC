@@ -587,7 +587,15 @@ app.delete('/api/equipment/:id', (req, res) => {
 
 app.post('/api/equipment', (req, res) => {
   const { name, type, status, cost, pc_id } = req.body;
+  console.log('[api/equipment] request', { name, type, status, cost, pc_id });
   if (!name || !type) return res.status(400).json({ success: false, error: 'name and type required' });
+  if (pc_id) {
+    const existing = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
+    if (existing) {
+      console.log('[api/equipment] conflicto pc_id ya existe', { pc_id, existing });
+      return res.status(409).json({ success: false, error: 'pc already assigned', equipment: existing });
+    }
+  }
   const info = db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, ?, ?)').run(name, type, status || 'available', cost || 0, pc_id || null);
   const item = db.prepare('SELECT * FROM equipment WHERE id = ?').get(info.lastInsertRowid);
   res.json({ success: true, data: item });
