@@ -176,10 +176,11 @@ app.post('/api/pc/register', (req, res) => {
   const now = new Date().toISOString();
 
   db.prepare('UPDATE pc_agents SET token = ?, status = ?, updated_at = ?, last_seen = ?, pc_name = COALESCE(?, pc_name) WHERE pc_id = ?')
-    .run(token, 'paired', now, now, pc_name || agent.pc_name, pc_id);
+    .run(token, 'registered', now, now, pc_name || agent.pc_name, pc_id);
 
   // NO registrar automáticamente en equipo: la asignación de inventario debe hacerse
   // manualmente desde la UI (tarea de recibir la PC desde la lista de detectadas).
+  // status = 'registered' indica agente activo pero aún no inventariado en equipos.
   res.json({ success: true, pc_id, token });
 });
 
@@ -327,7 +328,7 @@ app.post('/api/pc/claim', (req, res) => {
 
   const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
   if (!agent) return res.status(404).json({ success: false, error: 'pc not paired' });
-  if ((agent as any).status !== 'paired') return res.status(409).json({ success: false, error: 'pc is not in registration state' });
+  if (!['registered', 'paired'].includes((agent as any).status)) return res.status(409).json({ success: false, error: 'pc is not in registration state' });
 
   const existingEquipment = db.prepare('SELECT id FROM equipment WHERE pc_id = ?').get(pc_id) as {id: number} | undefined;
   if (existingEquipment) {
@@ -359,7 +360,8 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
   const isAssigned = Boolean(equipment);
 
   const now = new Date().toISOString();
-  db.prepare('UPDATE pc_agents SET last_seen = ?, status = ?, updated_at = ? WHERE pc_id = ?').run(now, status || 'paired', now, pc_id);
+  // status puede ser "registered" (PC detectada pero no inventariado) o "paired" (reclamada en inventario)
+  db.prepare('UPDATE pc_agents SET last_seen = ?, status = ?, updated_at = ? WHERE pc_id = ?').run(now, status || 'registered', now, pc_id);
 
   const command = db.prepare('SELECT * FROM pc_commands WHERE pc_id = ? AND status = ? ORDER BY id ASC LIMIT 1').get(pc_id, 'pending') as any;
 
