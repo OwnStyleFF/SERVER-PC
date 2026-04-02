@@ -5,6 +5,7 @@ const os = require('os');
 const { spawn } = require('child_process');
 const Store = require('electron-store');
 const axios = require('axios');
+const crypto = require('crypto');
 
 const store = new Store({ name: 'pc-controller-config' });
 
@@ -70,6 +71,24 @@ async function calculateFileHash(filePath) {
     stream.on('data', (chunk) => hash.update(chunk));
     stream.on('end', () => resolve(hash.digest('hex')));
   });
+}
+
+async function downloadUrlToFile(url, destinationPath) {
+  addLog(`Intentando descargar actualización desde URL: ${url}`);
+
+  const response = await axios.get(url, { responseType: 'stream', timeout: 300000, validateStatus: () => true });
+  if (response.status !== 200) {
+    throw new Error(`HTTP ${response.status} al descargar ${url}`);
+  }
+
+  await new Promise((resolve, reject) => {
+    const writer = fs.createWriteStream(destinationPath);
+    response.data.pipe(writer);
+    writer.on('finish', resolve);
+    writer.on('error', reject);
+  });
+
+  return destinationPath;
 }
 
 
@@ -159,45 +178,61 @@ function sendUpdateNotification(info) {
 }
 
 async function downloadAndInstallUpdate() {
-  if (!updateInfo || !updateInfo.url) {
+  const targetUrls = [];
+
+  if (updateInfo && updateInfo.url) targetUrls.push(updateInfo.url);
+  if (process.env.PC_CONTROLLER_LATEST_URL) targetUrls.push(process.env.PC_CONTROLLER_LATEST_URL);
+
+  if (targetUrls.length === 0) {
     connectionMessage = 'No hay URL de actualización disponible';
     sendUIStatus();
     return false;
   }
 
+  let downloadedPath = null;
+  const failedErrors = [];
+
+  for (const url of targetUrls) {
+    try {
+      const tempFilename = `gcweb-controller-update-${Date.now()}.exe`;
+      const tempPath = path.join(os.tmpdir(), tempFilename);
+      await downloadUrlToFile(url, tempPath);
+      downloadedPath = tempPath;
+      addLog(`Descarga completada desde ${url}`);
+      break;
+    } catch (err) {
+      const message = err.message || String(err);
+      failedErrors.push(`${url} -> ${message}`);
+      addLog(`Fallo descarga desde ${url}: ${message}`);
+    }
+  }
+
+  if (!downloadedPath) {
+    connectionMessage = `No se pudo descargar actualización (${failedErrors.join(' | ')})`;
+    sendUIStatus();
+    return false;
+  }
+
   try {
-    const tempFilename = `gcweb-controller-update-${Date.now()}.exe`;
-    const tempPath = path.join(os.tmpdir(), tempFilename);
-    const response = await axios.get(updateInfo.url, { responseType: 'stream', timeout: 300000 });
-
-    await new Promise((resolve, reject) => {
-      const writer = fs.createWriteStream(tempPath);
-      response.data.pipe(writer);
-      writer.on('finish', resolve);
-      writer.on('error', reject);
-    });
-
-    if (updateInfo.hash) {
-      const computedHash = await calculateFileHash(tempPath);
+    if (updateInfo?.hash) {
+      const computedHash = await calculateFileHash(downloadedPath);
       if (computedHash.toLowerCase() !== updateInfo.hash.toLowerCase()) {
         addLog(`Hash mismatch: esperado ${updateInfo.hash}, obtenido ${computedHash}`);
-        connectionMessage = 'Verification de hash falló, actualización cancelada.';
+        connectionMessage = 'Verificación de hash falló, actualización cancelada.';
         sendUIStatus();
-        fs.unlinkSync(tempPath);
+        fs.unlinkSync(downloadedPath);
         return false;
       }
       addLog('Hash verificado correctamente.');
     }
 
-    addLog(`Actualización descargada a ${tempPath}. Iniciando instalador...`);
-
-    spawn(tempPath, ['/S'], { detached: true, stdio: 'ignore' }).unref();
-
+    addLog(`Actualización descargada a ${downloadedPath}. Iniciando instalador...`);
+    spawn(downloadedPath, ['/S'], { detached: true, stdio: 'ignore' }).unref();
     app.quit();
     return true;
   } catch (error) {
-    addLog(`Error descargando/instalando actualización: ${error.message || error}`);
-    connectionMessage = 'Error al descargar la actualización';
+    addLog(`Error ejecutando instalador: ${error.message || error}`);
+    connectionMessage = 'Error al ejecutar la actualización.';
     sendUIStatus();
     return false;
   }
