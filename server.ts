@@ -336,8 +336,10 @@ app.post('/api/pc/claim', (req, res) => {
   if (!agent) return res.status(404).json({ success: false, error: 'pc not paired' });
   if (agent.status !== 'paired') return res.status(409).json({ success: false, error: 'pc is not in registration state' });
 
-  const existing = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
-  if (existing) return res.status(409).json({ success: false, error: 'already claimed' });
+  const existing = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id) as any;
+  if (existing) {
+    return res.json({ success: true, equipmentId: existing.id, message: 'already claimed' });
+  }
 
   try {
     const pcName = agent.pc_name || pc_id;
