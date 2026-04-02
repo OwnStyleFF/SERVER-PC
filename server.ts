@@ -182,8 +182,8 @@ app.post('/api/pc/register', (req, res) => {
   const existingEquipment = db.prepare('SELECT id FROM equipment WHERE pc_id = ?').get(pc_id);
   if (!existingEquipment) {
     const pcNameValue = String(pc_name || agent.pc_name || pc_id).trim();
-    db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, "PC", "available", 0, ?)')
-      .run(pcNameValue, pc_id);
+    db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, ?, ?)')
+      .run(pcNameValue, 'PC', 'available', 0, pc_id);
     db.prepare('UPDATE pc_agents SET status = ?, updated_at = ? WHERE pc_id = ?').run('paired', new Date().toISOString(), pc_id);
   }
 
@@ -313,7 +313,7 @@ app.post('/api/pc/claim', (req, res) => {
 
   try {
     const pcName = agent.pc_name || pc_id;
-    const info = db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, "PC", "available", 0, ?)').run(pcName, pc_id);
+    const info = db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, ?, ?)').run(pcName, 'PC', 'available', 0, pc_id);
     db.prepare('UPDATE pc_agents SET status = "paired", updated_at = ? WHERE pc_id = ?').run(new Date().toISOString(), pc_id);
     res.json({ success: true, equipmentId: info.lastInsertRowid });
   } catch (error: unknown) {
