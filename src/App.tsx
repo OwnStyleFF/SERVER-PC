@@ -4341,12 +4341,18 @@ const renderWarningModal = () => {
                             }
 
                             try {
+                              await fetchData(); // asegúrate de datos frescos antes de registrar
                               if (cat === 'pc' || cat === 'console') {
                                 // Register as Equipment (costo de inversión real sin periféricos)
                                 const equipCost = parseFloat(cost || '0');
                                 const pcIdVal = selectedPcIdForForm.trim();
                                 if (!pcIdVal) {
                                   showNotification('Selecciona una PC desde la lista antes de guardar.', 'error');
+                                  return;
+                                }
+                                const assignedCheck = discoveredPCs.find((n) => n.pc_id === pcIdVal)?.assigned;
+                                if (assignedCheck) {
+                                  showNotification(`PC ${pcIdVal} ya está asignada a inventario. Elige otra.`, 'error');
                                   return;
                                 }
                                 const alreadyAssigned = equipment.some((eq: any) => (eq.type === 'PC' || eq.type === 'Console') && eq.pc_id === pcIdVal);
