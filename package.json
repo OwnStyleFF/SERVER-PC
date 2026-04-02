@@ -9,7 +9,10 @@
     "dev": "concurrently \"node node_modules/tsx/dist/cli.mjs server.ts --watch\" \"vite\"",
     "client": "vite",
     "test:connectivity": "node scripts/check-connection.js",
-    "test:agent-connectivity": "node scripts/check-agent-connectivity.js"
+    "test:agent-connectivity": "node scripts/check-agent-connectivity.js",
+    "test:pc-name-uniqueness": "node scripts/test-pc-name-uniqueness.mjs",
+    "test:pc-update-check": "node scripts/test-pc-update-check.mjs",
+    "test:pc-release-update": "node scripts/test-pc-release-update-info.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",

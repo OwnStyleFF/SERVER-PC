@@ -624,16 +624,32 @@ export default function App() {
       discovered.forEach((pc: any) => discoveredById.set(pc.pc_id, { ...pc, assigned: Boolean(pc.equipment_id) }));
       unassigned.forEach((pc: any) => {
         if (!discoveredById.has(pc.pc_id)) {
-          discoveredById.set(pc.pc_id, pc);
+          discoveredById.set(pc.pc_id, { ...pc, assigned: false });
         }
       });
 
       const allDiscovered = Array.from(discoveredById.values());
-      setDiscoveredPCs(allDiscovered);
-      setPcNameEdits(allDiscovered.reduce((acc: Record<string,string>, item: any) => {
-        if (item.pc_id) acc[item.pc_id] = item.pc_name || item.pc_id;
-        return acc;
-      }, {}));
+      const unassignedDiscovered = allDiscovered.filter((item: any) => !item.assigned);
+
+      const uniqueNameSet = new Set<string>();
+      const uniqueUnassigned = unassignedDiscovered.filter((item: any) => {
+        const normalized = (item.pc_name || item.pc_id || '').toString().trim().toLowerCase();
+        if (!normalized) return false;
+        if (uniqueNameSet.has(normalized)) return false;
+        uniqueNameSet.add(normalized);
+        return true;
+      });
+
+      setDiscoveredPCs(uniqueUnassigned);
+      setPcNameEdits((prev) => {
+        const next = { ...prev };
+        uniqueUnassigned.forEach((item: any) => {
+          if (item.pc_id && !next[item.pc_id]) {
+            next[item.pc_id] = item.pc_name || item.pc_id;
+          }
+        });
+        return next;
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -705,23 +721,36 @@ export default function App() {
     }
   };
 
-  const updatePcAgentName = async (pcId: string, pcName: string) => {
+  const updatePcAgentName = async (pcId: string, pcNameInput: string) => {
+    const pcNameTrimmed = pcNameInput.trim();
+    if (!pcNameTrimmed) {
+      showNotification('El nombre de PC no puede estar vacío', 'error');
+      return false;
+    }
+
+    const duplicate = discoveredPCs.find((pc) => pc.pc_id !== pcId && pc.pc_name?.toLowerCase() === pcNameTrimmed.toLowerCase());
+    if (duplicate) {
+      showNotification(`El nombre '${pcNameTrimmed}' ya está en uso por ${duplicate.pc_id}`, 'error');
+      return false;
+    }
+
     try {
       const res = await apiFetch('/api/pc/update-name', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pc_id: pcId, pc_name: pcName })
+        body: JSON.stringify({ pc_id: pcId, pc_name: pcNameTrimmed })
       });
       const data = await res.json();
       if (!res.ok || !data.success) {
         showNotification(`No se pudo actualizar nombre de PC ${pcId}: ${data.error || 'error desconocido'}`, 'error');
         return false;
       }
-      setDiscoveredPCs((prev) => prev.map((pc) => pc.pc_id === pcId ? { ...pc, pc_name: pcName } : pc));
-      setPcNameEdits((prev) => ({ ...prev, [pcId]: pcName }));
-      if (selectedPcIdForForm === pcId) setSelectedPcNameForForm(pcName);
-      fetchData(); // refetch inmediato para reflejar en toda la UI
-      showNotification(`Nombre de PC ${pcId} actualizado a '${pcName}'`, 'success');
+
+      setDiscoveredPCs((prev) => prev.map((pc) => (pc.pc_id === pcId ? { ...pc, pc_name: pcNameTrimmed } : pc)));
+      setPcNameEdits((prev) => ({ ...prev, [pcId]: pcNameTrimmed }));
+      if (selectedPcIdForForm === pcId) setSelectedPcNameForForm(pcNameTrimmed);
+      await fetchData(); // refetch inmediato para reflejar en toda la UI y en tiempo real
+      showNotification(`Nombre de PC ${pcId} actualizado a '${pcNameTrimmed}'`, 'success');
       return true;
     } catch (err) {
       console.error(err);
@@ -3954,7 +3983,7 @@ const renderWarningModal = () => {
                     </div>
                     <div className="p-6">
                       {discoveredPCs.length === 0 ? (
-                        <div className="text-sm text-gray-400">No se han detectado PCs aún.</div>
+                        <div className="text-sm text-gray-400">No se han detectado PCs no asignadas aún.</div>
                       ) : (
                         <div className="grid gap-3">
                           {discoveredPCs.map((item) => (
@@ -4182,7 +4211,7 @@ const renderWarningModal = () => {
                               </div>
                               <div className="p-4 space-y-3 max-h-[70vh] overflow-y-auto">
                                 {discoveredPCs.length === 0 ? (
-                                  <div className="text-sm text-gray-400">No se han detectado PCs aún.</div>
+                                  <div className="text-sm text-gray-400">No se han detectado PCs no asignadas aún.</div>
                                 ) : (
                                   discoveredPCs.map((item) => {
                                     const assigned = item.assigned || false;

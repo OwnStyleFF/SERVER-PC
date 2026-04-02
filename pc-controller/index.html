@@ -24,6 +24,10 @@
       <label>Identificación de PC:</label>
       <input id="pcId" type="text" placeholder="pc-1" />
     </div>
+    <div class="block">
+      <label>Nombre visible (pc_name):</label>
+      <input id="pcName" type="text" placeholder="PC One" />
+    </div>
 
     <button id="btnSave">Guardar configuración</button>
 
@@ -39,6 +43,9 @@
 
     <div class="block">Estado: <strong id="statusText">inicializando...</strong></div>
     <div class="block">Token agente: <strong id="agentToken">(pendiente)</strong></div>
+    <div class="block" style="margin-top:8px;">
+      <button id="btnInstallUpdate" style="display:none;padding:8px 12px;background:#F59E0B;color:#111;border:none;border-radius:8px;cursor:pointer;">Actualizar usado</button>
+    </div>
 
     <div class="block" style="margin-top: 12px;">
       <label>Terminal de depuración:</label>
@@ -58,8 +65,16 @@
     document.getElementById('btnSave').addEventListener('click', async () => {
       const serverUrl = serverUrlInput.value.trim();
       const pcId = pcIdInput.value.trim();
-      const result = await window.pcController.saveSettings(serverUrl, pcId);
+      const pcNameValue = document.getElementById('pcName').value.trim();
+      const result = await window.pcController.saveSettings(serverUrl, pcId, pcNameValue);
       statusText.innerText = `Configuración guardada: ${result.serverUrl} / ${result.pcId}`;
+
+      if (pcNameValue) {
+        const update = await window.pcController.updateAgentName(pcId, pcNameValue);
+        statusText.innerText = update.success
+          ? `Nombre PC actualizado: ${pcNameValue}`
+          : `Error al actualizar nombre: ${update.error}`;
+      }
     });
 
     document.getElementById('btnConnect').style.display = 'none';
@@ -72,6 +87,12 @@
     document.getElementById('btnRefreshStatus').addEventListener('click', () => {
       statusText.innerText = 'Refrescando estado...';
       // Se actualiza desde el evento onStatusUpdate del main
+    });
+
+    document.getElementById('btnInstallUpdate').addEventListener('click', async () => {
+      statusText.innerText = 'Iniciando actualización...';
+      const result = await window.pcController.installUpdate();
+      statusText.innerText = result.success ? 'Instalador lanzado; la app se cerrará.' : 'Error en la actualización';
     });
 
     document.getElementById('btnLockPC').addEventListener('click', async () => {
@@ -104,6 +125,18 @@
 
       if (data.logs && Array.isArray(data.logs)) {
         renderLogs(data.logs);
+      }
+
+      if (typeof data.pcName !== 'undefined') {
+        document.getElementById('pcName').value = data.pcName;
+      }
+
+      const btnInstall = document.getElementById('btnInstallUpdate');
+      if (data.updateAvailable) {
+        btnInstall.style.display = 'inline-block';
+        btnInstall.innerText = `Actualizar a ${data.latestVersion}`;
+      } else {
+        btnInstall.style.display = 'none';
       }
 
       if (data.connection === 'connected') {

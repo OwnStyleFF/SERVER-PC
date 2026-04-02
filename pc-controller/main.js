@@ -1,5 +1,8 @@
 const { app, BrowserWindow, globalShortcut, powerMonitor, ipcMain, desktopCapturer } = require('electron');
 const path = require('path');
+const fs = require('fs');
+const os = require('os');
+const { spawn } = require('child_process');
 const Store = require('electron-store');
 const axios = require('axios');
 
@@ -41,6 +44,34 @@ let isPosConnected = false;
 let isPosRegistered = false;
 let pcName = PC_ID;
 let connectionMessage = 'Iniciando, conectando a servidor...';
+
+const packageJson = require('./package.json');
+const CURRENT_VERSION = packageJson.version || '1.0.0';
+let latestRemoteVersion = CURRENT_VERSION;
+let updateInfo = null;
+
+function semverCompare(a, b) {
+  const pa = String(a).split('.').map(Number);
+  const pb = String(b).split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    const na = pa[i] || 0;
+    const nb = pb[i] || 0;
+    if (na > nb) return 1;
+    if (na < nb) return -1;
+  }
+  return 0;
+}
+
+async function calculateFileHash(filePath) {
+  return new Promise((resolve, reject) => {
+    const hash = crypto.createHash('sha256');
+    const stream = fs.createReadStream(filePath);
+    stream.on('error', reject);
+    stream.on('data', (chunk) => hash.update(chunk));
+    stream.on('end', () => resolve(hash.digest('hex')));
+  });
+}
+
 
 const logLines = [];
 const maxLogs = 200;
@@ -109,9 +140,69 @@ function sendUIStatus() {
     connection: isPosConnected ? 'connected' : 'disconnected',
     registered: isPosRegistered,
     connectionMessage,
-    logs: getLogs()
+    logs: getLogs(),
+    currentVersion: CURRENT_VERSION,
+    latestVersion: latestRemoteVersion,
+    updateAvailable: latestRemoteVersion && latestRemoteVersion !== CURRENT_VERSION,
+    updateInfo
   });
 }
+
+function sendUpdateNotification(info) {
+  if (!info || !info.version || info.version === CURRENT_VERSION) return;
+  latestRemoteVersion = info.version;
+  updateInfo = info;
+
+  connectionMessage = `Nueva versión ${info.version} disponible. Presiona actualizar.`;
+  addLog(connectionMessage);
+  sendUIStatus();
+}
+
+async function downloadAndInstallUpdate() {
+  if (!updateInfo || !updateInfo.url) {
+    connectionMessage = 'No hay URL de actualización disponible';
+    sendUIStatus();
+    return false;
+  }
+
+  try {
+    const tempFilename = `gcweb-controller-update-${Date.now()}.exe`;
+    const tempPath = path.join(os.tmpdir(), tempFilename);
+    const response = await axios.get(updateInfo.url, { responseType: 'stream', timeout: 300000 });
+
+    await new Promise((resolve, reject) => {
+      const writer = fs.createWriteStream(tempPath);
+      response.data.pipe(writer);
+      writer.on('finish', resolve);
+      writer.on('error', reject);
+    });
+
+    if (updateInfo.hash) {
+      const computedHash = await calculateFileHash(tempPath);
+      if (computedHash.toLowerCase() !== updateInfo.hash.toLowerCase()) {
+        addLog(`Hash mismatch: esperado ${updateInfo.hash}, obtenido ${computedHash}`);
+        connectionMessage = 'Verification de hash falló, actualización cancelada.';
+        sendUIStatus();
+        fs.unlinkSync(tempPath);
+        return false;
+      }
+      addLog('Hash verificado correctamente.');
+    }
+
+    addLog(`Actualización descargada a ${tempPath}. Iniciando instalador...`);
+
+    spawn(tempPath, ['/S'], { detached: true, stdio: 'ignore' }).unref();
+
+    app.quit();
+    return true;
+  } catch (error) {
+    addLog(`Error descargando/instalando actualización: ${error.message || error}`);
+    connectionMessage = 'Error al descargar la actualización';
+    sendUIStatus();
+    return false;
+  }
+}
+
 
 let remoteMessageTimer = null;
 
@@ -285,6 +376,13 @@ async function isPcRegisteredInPos() {
   try {
     const discoveredResp = await axios.get(`${SERVER_URL}/api/pc/discovered`, { timeout: AXIOS_TIMEOUT });
     const unassignedResp = await axios.get(`${SERVER_URL}/api/pc/unassigned`, { timeout: AXIOS_TIMEOUT });
+    const updateResp = await axios.get(`${SERVER_URL}/api/pc/update-info`, { timeout: AXIOS_TIMEOUT });
+    if (updateResp.data?.success && updateResp.data?.data) {
+      checkForUpdate(updateResp.data.data);
+    }
+
+    // Report current installed version to server for telemetry
+    await axios.post(`${SERVER_URL}/api/pc/report-version`, { pc_id: PC_ID, current_version: CURRENT_VERSION }, { timeout: AXIOS_TIMEOUT }).catch(() => {});
 
     const discovered = discoveredResp.data?.data || [];
     const unassigned = unassignedResp.data?.data || [];
@@ -307,6 +405,24 @@ async function isPcRegisteredInPos() {
     return false;
   }
 }
+
+function checkForUpdate(info) {
+  if (!info || !info.version || !info.url) return;
+
+  // Verifica que el cambio realmente sea a mayor versión semver.
+  const cmp = semverCompare(info.version, CURRENT_VERSION);
+  if (cmp <= 0) {
+    latestRemoteVersion = CURRENT_VERSION;
+    return;
+  }
+
+  if (info.version !== store.get('lastKnownVersion')) {
+    store.set('lastKnownVersion', info.version);
+    sendUpdateNotification(info);
+  }
+}
+
+
 
 async function reportStatus() {
   await pickBestServerUrl();
@@ -543,7 +659,7 @@ ipcMain.handle('pc-controller-register', async (event, { pcId }) => {
   return { success, pcId: PC_ID, agentToken: AGENT_TOKEN };
 });
 
-ipcMain.handle('pc-controller-save-settings', async (event, { serverUrl, pcId }) => {
+ipcMain.handle('pc-controller-save-settings', async (event, { serverUrl, pcId, pcName }) => {
   SERVER_URL = serverUrl || SERVER_URL;
   PC_ID = pcId || PC_ID;
   store.set('serverUrl', SERVER_URL);
@@ -553,14 +669,48 @@ ipcMain.handle('pc-controller-save-settings', async (event, { serverUrl, pcId })
   if (pairOk) {
     await registerAgent();
   }
+
+  if (pcName && pcName.trim()) {
+    try {
+      const response = await axios.post(`${SERVER_URL}/api/pc/update-name`, { pc_id: PC_ID, pc_name: pcName.trim() }, { timeout: AXIOS_TIMEOUT });
+      if (response.data?.success) {
+        pcName = pcName.trim();
+        addLog(`Nombre PC actualizado desde controlador: ${pcName}`);
+      }
+    } catch (err) {
+      const details = err.response?.data || err.message || err;
+      addLog(`Error update-name desde controlador: ${JSON.stringify(details)}`);
+    }
+  }
+
   await updateAgentPcName();
   pushStatus();
 
   return { serverUrl: SERVER_URL, pcId: PC_ID, agentToken: AGENT_TOKEN, paired: pairOk };
 });
 
+ipcMain.handle('pc-controller-update-name', async (event, { pcId, pcName }) => {
+  try {
+    const response = await axios.post(`${SERVER_URL}/api/pc/update-name`, { pc_id: pcId, pc_name: pcName }, { timeout: AXIOS_TIMEOUT });
+    if (response.data?.success) {
+      addLog(`Nombre PC actualizado desde controlador: ${pcName}`);
+      return { success: true };
+    }
+    return { success: false, error: response.data?.error || 'unknown error' };
+  } catch (err) {
+    const details = err.response?.data || err.message || err;
+    addLog(`Error update-name IPC: ${JSON.stringify(details)}`);
+    return { success: false, error: details };
+  }
+});
+
 ipcMain.handle('pc-controller-send-command', async (event, { command, payload }) => {
   return await sendPosCommand(command, payload);
+});
+
+ipcMain.handle('pc-controller-install-update', async () => {
+  const OK = await downloadAndInstallUpdate();
+  return { success: OK };
 });
 
 app.on('window-all-closed', (e) => {

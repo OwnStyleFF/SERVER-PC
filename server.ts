@@ -148,13 +148,19 @@ app.post('/api/pc/pair', (req, res) => {
   const { pc_id, pc_name } = req.body;
   if (!pc_id) return res.status(400).json({ success: false, error: 'pc_id required' });
 
+  const newName = String(pc_name || pc_id).trim();
+  if (!newName) return res.status(400).json({ success: false, error: 'pc_name cannot be empty' });
+
+  const conflict = db.prepare('SELECT pc_id FROM pc_agents WHERE LOWER(pc_name) = LOWER(?) AND pc_id != ?').get(newName, pc_id);
+  if (conflict) return res.status(409).json({ success: false, error: 'pc_name already in use' });
+
   const now = new Date().toISOString();
   const expiresAt = new Date(Date.now() + 24 * 60 * 60000).toISOString();
 
   db.prepare(`INSERT INTO pc_agents (pc_id, pc_name, status, created_at, updated_at, expires_at) VALUES (?, ?, 'pending', ?, ?, ?)
-    ON CONFLICT(pc_id) DO UPDATE SET pc_name = excluded.pc_name, status = 'pending', updated_at = excluded.updated_at, expires_at = excluded.expires_at;`).run(pc_id, pc_name || null, now, now, expiresAt);
+    ON CONFLICT(pc_id) DO UPDATE SET pc_name = excluded.pc_name, status = 'pending', updated_at = excluded.updated_at, expires_at = excluded.expires_at;`).run(pc_id, newName, now, now, expiresAt);
 
-  res.json({ success: true, pc_id, pc_name: pc_name || null, status: 'pending', expires_at: expiresAt });
+  res.json({ success: true, pc_id, pc_name: newName, status: 'pending', expires_at: expiresAt });
 });
 
 app.post('/api/pc/register', (req, res) => {
@@ -182,17 +188,29 @@ app.get('/api/pc/pending-pair-codes', (req, res) => {
 
 app.get('/api/pc/discovered', (req, res) => {
   const freshnessMinutes = Number(req.query.freshnessMinutes ?? 60);
+  const onlyUnregistered = req.query.unregistered === 'true';
   const useAll = freshnessMinutes <= 0;
   const cutoff = new Date(Date.now() - freshnessMinutes * 60 * 1000).toISOString();
 
-  const rows = db.prepare(`
+  let sql = `
     SELECT a.pc_id, a.pc_name, a.status, a.last_seen, a.created_at,
            e.id AS equipment_id, e.name AS equipment_name
     FROM pc_agents a
     LEFT JOIN equipment e ON e.pc_id = a.pc_id
-    ${useAll ? '' : 'WHERE a.last_seen >= ? OR a.last_seen IS NULL'}
-    ORDER BY a.last_seen DESC
-  `).all(useAll ? [] : [cutoff]);
+  `;
+
+  if (!useAll) {
+    sql += 'WHERE a.last_seen >= ? OR a.last_seen IS NULL\n';
+  }
+
+  if (onlyUnregistered) {
+    sql += useAll ? 'WHERE ' : 'AND ';
+    sql += 'e.id IS NULL AND a.status = "paired"\n';
+  }
+
+  sql += 'ORDER BY a.last_seen DESC\n';
+
+  const rows = db.prepare(sql).all(useAll ? [] : [cutoff]);
 
   const enriched = rows.map((r: any) => ({
     pc_id: r.pc_id,
@@ -217,33 +235,40 @@ app.get('/api/pc/unassigned', (req, res) => {
   res.json({ success: true, data: rows });
 });
 
-app.post('/api/pc/:id/screenshot', (req, res) => {
+app.post('/api/pc/:id/video-frame', (req, res) => {
   const pc_id = req.params.id;
-  const { image } = req.body;
-  if (!pc_id || !image) return res.status(400).json({ success: false, error: 'pc_id and image required' });
+  const { frame } = req.body;
+  if (!pc_id || !frame) return res.status(400).json({ success: false, error: 'pc_id and frame required' });
 
-  db.prepare('INSERT INTO pc_snapshots (pc_id, image_data) VALUES (?, ?)').run(pc_id, image);
+  db.prepare('INSERT INTO pc_snapshots (pc_id, image_data) VALUES (?, ?)').run(pc_id, frame);
   res.json({ success: true, pc_id });
 });
 
-app.get('/api/pc/:id/screenshot/latest', (req, res) => {
+app.get('/api/pc/:id/video/live', (req, res) => {
   const pc_id = req.params.id;
   if (!pc_id) return res.status(400).json({ success: false, error: 'pc_id required' });
 
-  const snapshot = db.prepare('SELECT * FROM pc_snapshots WHERE pc_id = ? ORDER BY id DESC LIMIT 1').get(pc_id);
-  if (!snapshot) return res.status(404).json({ success: false, error: 'not found' });
-  res.json({ success: true, data: snapshot });
+  const frame = db.prepare('SELECT * FROM pc_snapshots WHERE pc_id = ? ORDER BY id DESC LIMIT 1').get(pc_id);
+  if (!frame) return res.status(404).json({ success: false, error: 'not found' });
+  res.json({ success: true, data: frame });
 });
 
 app.post('/api/pc/update-name', (req, res) => {
   const { pc_id, pc_name } = req.body;
   if (!pc_id || !pc_name) return res.status(400).json({ success: false, error: 'pc_id and pc_name required' });
 
+  const newName = String(pc_name).trim();
+  if (!newName) return res.status(400).json({ success: false, error: 'pc_name cannot be empty' });
+
   const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
   if (!agent) return res.status(404).json({ success: false, error: 'pc not found' });
 
-  db.prepare('UPDATE pc_agents SET pc_name = ?, updated_at = ? WHERE pc_id = ?').run(pc_name, new Date().toISOString(), pc_id);
-  res.json({ success: true, pc_id, pc_name });
+  const conflict = db.prepare('SELECT pc_id FROM pc_agents WHERE LOWER(pc_name) = LOWER(?) AND pc_id != ?').get(newName, pc_id);
+  if (conflict) return res.status(409).json({ success: false, error: 'pc_name already in use' });
+
+  db.prepare('UPDATE pc_agents SET pc_name = ?, updated_at = ? WHERE pc_id = ?').run(newName, new Date().toISOString(), pc_id);
+  db.prepare('UPDATE equipment SET name = ? WHERE pc_id = ?').run(newName, pc_id);
+  res.json({ success: true, pc_id, pc_name: newName });
 });
 
 app.post('/api/pc/claim', (req, res) => {
