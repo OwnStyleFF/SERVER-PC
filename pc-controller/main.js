@@ -406,20 +406,34 @@ async function isPcRegisteredInPos() {
   }
 }
 
+let isUpdateInstalling = false;
+
 function checkForUpdate(info) {
   if (!info || !info.version || !info.url) return;
 
-  // Verifica que el cambio realmente sea a mayor versión semver.
   const cmp = semverCompare(info.version, CURRENT_VERSION);
   if (cmp <= 0) {
     latestRemoteVersion = CURRENT_VERSION;
+    updateInfo = null;
+    sendUIStatus();
     return;
   }
 
-  if (info.version !== store.get('lastKnownVersion')) {
-    store.set('lastKnownVersion', info.version);
-    sendUpdateNotification(info);
+  latestRemoteVersion = info.version;
+  updateInfo = info;
+
+  // Si la versión remota es mayor que la versión actual, notificar siempre.
+  sendUpdateNotification(info);
+
+  if (isUpdateInstalling) {
+    addLog(`Actualización ya en progreso a ${info.version}, se mantiene.`);
+    return;
   }
+
+  isUpdateInstalling = true;
+  downloadAndInstallUpdate().finally(() => {
+    isUpdateInstalling = false;
+  });
 }
 
 

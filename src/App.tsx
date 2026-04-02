@@ -629,21 +629,12 @@ export default function App() {
       });
 
       const allDiscovered = Array.from(discoveredById.values());
-      const unassignedDiscovered = allDiscovered.filter((item: any) => !item.assigned);
 
-      const uniqueNameSet = new Set<string>();
-      const uniqueUnassigned = unassignedDiscovered.filter((item: any) => {
-        const normalized = (item.pc_name || item.pc_id || '').toString().trim().toLowerCase();
-        if (!normalized) return false;
-        if (uniqueNameSet.has(normalized)) return false;
-        uniqueNameSet.add(normalized);
-        return true;
-      });
-
-      setDiscoveredPCs(uniqueUnassigned);
+      // Mostrar todas las PCs detectadas (incluyendo ya asignadas), para uso en inventario y actualizaciones.
+      setDiscoveredPCs(allDiscovered);
       setPcNameEdits((prev) => {
         const next = { ...prev };
-        uniqueUnassigned.forEach((item: any) => {
+        allDiscovered.forEach((item: any) => {
           if (item.pc_id && !next[item.pc_id]) {
             next[item.pc_id] = item.pc_name || item.pc_id;
           }
