@@ -360,7 +360,7 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
   const isAssigned = Boolean(equipment);
 
   const now = new Date().toISOString();
-  // status puede ser "registered" (PC detectada pero no inventariado) o "paired" (reclamada en inventario)
+  // status puede ser "registered" (PC detectada pero no inventariada) o "paired" (reclamada en inventario)
   db.prepare('UPDATE pc_agents SET last_seen = ?, status = ?, updated_at = ? WHERE pc_id = ?').run(now, status || 'registered', now, pc_id);
 
   const command = db.prepare('SELECT * FROM pc_commands WHERE pc_id = ? AND status = ? ORDER BY id ASC LIMIT 1').get(pc_id, 'pending') as any;
