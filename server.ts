@@ -181,6 +181,14 @@ app.post('/api/pc/register', (req, res) => {
   res.json({ success: true, pc_id, token });
 });
 
+const normalizePcDisplayName = (pc_id: string, pc_name: string | null) => {
+  const rawName = String(pc_name || '').trim();
+  if (!rawName || /^pc-one/i.test(rawName)) {
+    return pc_id;
+  }
+  return rawName;
+};
+
 app.get('/api/pc/pending-pair-codes', (req, res) => {
   const now = new Date().toISOString();
   const pending = db.prepare("SELECT pc_id, status, expires_at FROM pc_agents WHERE status = 'pending' AND expires_at > ?").all(now);
@@ -215,7 +223,7 @@ app.get('/api/pc/discovered', (req, res) => {
 
   const enriched = rows.map((r: any) => ({
     pc_id: r.pc_id,
-    pc_name: r.pc_name || r.pc_id,
+    pc_name: normalizePcDisplayName(r.pc_id, r.pc_name),
     status: r.status,
     last_seen: r.last_seen,
     created_at: r.created_at,
@@ -227,13 +235,24 @@ app.get('/api/pc/discovered', (req, res) => {
 });
 
 app.get('/api/pc/unassigned', (req, res) => {
+  const freshnessMinutes = Number(req.query.freshnessMinutes ?? 10);
+  const cutoff = new Date(Date.now() - freshnessMinutes * 60 * 1000).toISOString();
+
   const rows = db.prepare(`
     SELECT pc_id, pc_name, status, last_seen, created_at
     FROM pc_agents
-    WHERE status = 'paired' AND pc_id NOT IN (SELECT pc_id FROM equipment WHERE pc_id IS NOT NULL)
-    ORDER BY created_at DESC
-  `).all();
-  res.json({ success: true, data: rows });
+    WHERE status = 'paired'
+      AND (last_seen >= ? OR last_seen IS NULL)
+      AND pc_id NOT IN (SELECT pc_id FROM equipment WHERE pc_id IS NOT NULL)
+    ORDER BY last_seen DESC
+  `).all(cutoff);
+
+  const normalizedRows = rows.map((r: any) => ({
+    ...r,
+    pc_name: normalizePcDisplayName(r.pc_id, r.pc_name)
+  }));
+
+  res.json({ success: true, data: normalizedRows });
 });
 
 app.post('/api/pc/:id/video-frame', (req, res) => {
