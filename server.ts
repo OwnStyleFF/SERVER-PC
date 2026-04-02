@@ -441,6 +441,27 @@ app.get('/api/pc/:id/status', (req, res) => {
   res.json({ success: true, agent });
 });
 
+app.get('/api/pc/:id/check', (req, res) => {
+  const pc_id = req.params.id;
+  if (!pc_id) return res.status(400).json({ success: false, error: 'pc_id required' });
+
+  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
+  const inEquipment = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
+  const discovered = db.prepare('SELECT a.pc_id, a.pc_name, a.status, a.last_seen, e.id AS equipment_id FROM pc_agents a LEFT JOIN equipment e ON e.pc_id = a.pc_id WHERE a.pc_id = ?').get(pc_id) as any;
+
+  res.json({
+    success: true,
+    data: {
+      pc_id,
+      agent,
+      inEquipment,
+      discovered,
+      assigned: Boolean(inEquipment),
+      shouldAppearInRentas: Boolean(inEquipment) && discovered?.status === 'paired'
+    }
+  });
+});
+
 function schedulePcEnforcement() {
   setInterval(() => {
     const agents = db.prepare('SELECT a.pc_id, a.status AS agent_status, e.id AS equipment_id FROM pc_agents a LEFT JOIN equipment e ON e.pc_id = a.pc_id WHERE a.status = ?').all('paired');
@@ -587,7 +608,15 @@ app.delete('/api/equipment/:id', (req, res) => {
 
 app.post('/api/equipment', (req, res) => {
   const { name, type, status, cost, pc_id } = req.body;
+  console.log('[api/equipment] request', { name, type, status, cost, pc_id });
   if (!name || !type) return res.status(400).json({ success: false, error: 'name and type required' });
+  if (pc_id) {
+    const existing = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
+    if (existing) {
+      console.log('[api/equipment] conflicto pc_id ya existe', { pc_id, existing });
+      return res.status(409).json({ success: false, error: 'pc already assigned', equipment: existing });
+    }
+  }
   const info = db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, ?, ?)').run(name, type, status || 'available', cost || 0, pc_id || null);
   const item = db.prepare('SELECT * FROM equipment WHERE id = ?').get(info.lastInsertRowid);
   res.json({ success: true, data: item });
