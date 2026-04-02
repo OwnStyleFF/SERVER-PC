@@ -160,6 +160,8 @@ export default function App() {
   const [pendingPairCodes, setPendingPairCodes] = useState<Array<{pc_id: string; expires_at: string}>>([]);
   const [discoveredPCs, setDiscoveredPCs] = useState<Array<{pc_id: string; pc_name?: string; status: string; last_seen: string; assigned?: boolean}>>([]);
   const unassignedDiscoveredPCs = useMemo(() => discoveredPCs.filter((pc) => !pc.assigned), [discoveredPCs]);
+  const [pcListMode, setPcListMode] = useState<'unassigned'|'all'>('unassigned');
+  const visiblePcList = useMemo(() => (pcListMode === 'unassigned' ? unassignedDiscoveredPCs : discoveredPCs), [pcListMode, unassignedDiscoveredPCs, discoveredPCs]);
   const [selectedPcIdForForm, setSelectedPcIdForForm] = useState<string>('');
   const [selectedPcNameForForm, setSelectedPcNameForForm] = useState<string>('');
   const [isSelectPcModalOpen, setIsSelectPcModalOpen] = useState(false);
@@ -4220,10 +4222,35 @@ const renderWarningModal = () => {
                                 <button onClick={() => setIsSelectPcModalOpen(false)} className="text-gray-500 hover:text-gray-900">Cerrar</button>
                               </div>
                               <div className="p-4 space-y-3 max-h-[70vh] overflow-y-auto">
-                                {unassignedDiscoveredPCs.length === 0 ? (
-                                  <div className="text-sm text-gray-400">No se han detectado PCs no asignadas aún. Intenta actualizar o revisa que los agentes estén conectados.</div>
+                                <div className="flex items-center justify-between mb-3">
+                                  <div className="text-xs text-gray-500">
+                                    {`Mostrando ${visiblePcList.length} de ${discoveredPCs.length} PCs detectadas`}
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => setPcListMode('unassigned')}
+                                      className={`px-3 py-1 text-xs rounded-full ${pcListMode === 'unassigned' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                    >
+                                      No registradas
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setPcListMode('all')}
+                                      className={`px-3 py-1 text-xs rounded-full ${pcListMode === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                    >
+                                      Todas
+                                    </button>
+                                  </div>
+                                </div>
+                                {visiblePcList.length === 0 ? (
+                                  <div className="text-sm text-gray-400">
+                                    {pcListMode === 'unassigned'
+                                      ? 'No se han detectado PCs no asignadas. Cambia a "Todas" para ver la lista completa.'
+                                      : 'No se han detectado PCs. Asegúrate de que los agentes estén conectados y en línea.'}
+                                  </div>
                                 ) : (
-                                  unassignedDiscoveredPCs.map((item) => {
+                                  visiblePcList.map((item) => {
                                     const assigned = item.assigned || false;
                                     const editedName = pcNameEdits[item.pc_id] || item.pc_id;
                                     return (
