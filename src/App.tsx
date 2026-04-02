@@ -4399,7 +4399,11 @@ const renderWarningModal = () => {
                                   })
                                 });
                                 const equipData = await equipRes.json();
-                                const equipmentId = equipData.id;
+                                if (!equipRes.ok) {
+                                  console.error('[PC Register] equipment error', { status: equipRes.status, equipData });
+                                  throw new Error(equipData.error || 'Error al crear equipo');
+                                }
+                                const equipmentId = equipData.data?.id || equipData.id;
 
                                 // Register included peripherals
                                 for (const peri of formPeripherals) {
@@ -4463,8 +4467,10 @@ const renderWarningModal = () => {
                               (document.getElementById('prod-price') as HTMLInputElement).value = '';
                               (document.getElementById('prod-stock') as HTMLInputElement).value = '';
                               setFormPeripherals([]);
-                            } catch (e) {
-                              showNotification('Error al registrar item', 'error');
+                            } catch (e: any) {
+                              console.error('Error al registrar item', e);
+                              const msg = e?.message || 'Error al registrar item';
+                              showNotification(msg, 'error');
                             }
                           }}
                           className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
