@@ -189,11 +189,7 @@ async function downloadAndInstallUpdate() {
   }
 
   let downloadedPath = null;
-<<<<<<< HEAD
   const failedErrors = [];
-=======
-  let failedErrors = [];
->>>>>>> d99f6e0 (sync agent update process changes and submodule pointer)
 
   for (const url of targetUrls) {
     try {
