@@ -711,7 +711,8 @@ export default function App() {
         showNotification(`No se pudo reclamar PC ${pcId}: ${data.error || 'error desconocido'}`, 'error');
         return;
       }
-      showNotification(`PC ${pcId} reclamada y añadida al inventario`, 'success');
+      const message = data.message === 'already claimed' ? 'ya estaba reclamada en el inventario' : 'reclamada y añadida al inventario';
+      showNotification(`PC ${pcId} ${message}`, 'success');
       fetchData();
     } catch (err) {
       console.error(err);
