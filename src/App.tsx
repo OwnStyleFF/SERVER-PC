@@ -4371,15 +4371,16 @@ const renderWarningModal = () => {
                                   preservedDiscovered = (discoveredData2.data || []).map((pc: any) => ({ ...pc, assigned: pc.status === 'paired' && !!pc.equipment_id }));
                                 }
 
-                                const assignedCheck = preservedDiscovered.find((n) => n.pc_id === pcIdVal)?.assigned;
+                                const discoveredEntry = preservedDiscovered.find((n) => n.pc_id === pcIdVal);
+                                let assignedCheck = Boolean(discoveredEntry?.assigned);
                                 const alreadyAssigned = equipment.some((eq: any) => (eq.type === 'PC' || eq.type === 'Console') && eq.pc_id === pcIdVal);
 
-                                console.log('[PC Register] checks', { pcIdVal, assignedCheck, alreadyAssigned, preservedDiscoveredItem: preservedDiscovered.find((n) => n.pc_id === pcIdVal) });
-
-                                // Si la PC está marcada como asignada (posible stale) pero no existe en equipment, no bloqueamos.
-                                if ((assignedCheck || alreadyAssigned) && !alreadyAssigned) {
-                                  console.warn(`[PC Register] estado inconsistent: assignedCheck=true pero no hay equipment row para ${pcIdVal}, se permite continuar`);
+                                if (assignedCheck && !alreadyAssigned) {
+                                  console.warn(`[PC Register] inconsistencia: detected as assigned en discovered pero no existe en equipment, permitiendo registro. pcId=${pcIdVal}`);
+                                  assignedCheck = false;
                                 }
+
+                                console.log('[PC Register] checks', { pcIdVal, assignedCheck, alreadyAssigned, discoveredEntry });
 
                                 if (alreadyAssigned) {
                                   showNotification(`PC ${pcIdVal} ya está asignada a inventario. Elige otra.`, 'error');
