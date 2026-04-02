@@ -332,19 +332,19 @@ app.post('/api/pc/claim', (req, res) => {
   const { pc_id } = req.body;
   if (!pc_id) return res.status(400).json({ success: false, error: 'pc_id required' });
 
-  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id) as any;
+  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
   if (!agent) return res.status(404).json({ success: false, error: 'pc not paired' });
-  if (agent.status !== 'paired') return res.status(409).json({ success: false, error: 'pc is not in registration state' });
+  if ((agent as any).status !== 'paired') return res.status(409).json({ success: false, error: 'pc is not in registration state' });
 
-  const existing = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id) as any;
-  if (existing) {
-    return res.json({ success: true, equipmentId: existing.id, message: 'already claimed' });
+  const existingEquipment = db.prepare('SELECT id FROM equipment WHERE pc_id = ?').get(pc_id) as {id: number} | undefined;
+  if (existingEquipment) {
+    return res.json({ success: true, equipmentId: existingEquipment.id, message: 'already claimed' });
   }
 
   try {
-    const pcName = agent.pc_name || pc_id;
+    const pcName = (agent as any).pc_name || pc_id;
     const info = db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, ?, ?)').run(pcName, 'PC', 'available', 0, pc_id);
-    db.prepare('UPDATE pc_agents SET status = "paired", updated_at = ? WHERE pc_id = ?').run(new Date().toISOString(), pc_id);
+    db.prepare('UPDATE pc_agents SET status = ?, updated_at = ? WHERE pc_id = ?').run('paired', new Date().toISOString(), pc_id);
     res.json({ success: true, equipmentId: info.lastInsertRowid });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'unknown error';
