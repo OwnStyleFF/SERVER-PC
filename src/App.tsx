@@ -606,14 +606,14 @@ export default function App() {
         setPendingPairCodes(pairData.data || []);
       }
 
-      const discoveredRes = await apiFetch('/api/pc/discovered?freshnessMinutes=-1');
+      const discoveredRes = await apiFetch('/api/pc/discovered?freshnessMinutes=10');
       let discovered: Array<any> = [];
       if (discoveredRes.ok) {
         const discoveredData = await discoveredRes.json();
         discovered = discoveredData.data || [];
       }
 
-      const unassignedRes = await apiFetch('/api/pc/unassigned');
+      const unassignedRes = await apiFetch('/api/pc/unassigned?freshnessMinutes=10');
       let unassigned: Array<any> = [];
       if (unassignedRes.ok) {
         const unassignedData = await unassignedRes.json();
@@ -3989,7 +3989,7 @@ const renderWarningModal = () => {
                           {discoveredPCs.map((item) => (
                             <div key={item.pc_id} className="p-4 border border-gray-200 rounded-xl flex justify-between items-center">
                               <div>
-                                <div className="font-black text-gray-900">{item.pc_name || item.pc_id}</div>
+                                <div className="font-black text-gray-900">{item.pc_id}</div>
                                 <div className="text-[11px] text-gray-500">ID: {item.pc_id}</div>
                                 <div className="text-[10px] text-gray-400">Reporte: {new Date(item.last_seen).toLocaleString()}</div>
                               </div>
@@ -4215,12 +4215,12 @@ const renderWarningModal = () => {
                                 ) : (
                                   discoveredPCs.map((item) => {
                                     const assigned = item.assigned || false;
-                                    const editedName = pcNameEdits[item.pc_id] || item.pc_name || item.pc_id;
+                                    const editedName = pcNameEdits[item.pc_id] || item.pc_id;
                                     return (
                                       <div key={item.pc_id} className="p-3 border border-gray-200 rounded-xl bg-gray-50">
                                         <div className="flex justify-between items-center gap-2">
                                           <div>
-                                            <p className="font-black text-sm">{editedName}</p>
+                                            <p className="font-black text-sm">{item.pc_id}</p>
                                             <p className="text-[11px] text-gray-500">ID: {item.pc_id}</p>
                                             <p className="text-[11px] text-gray-400">Último reporte: {new Date(item.last_seen).toLocaleString()}</p>
                                             {assigned ? (
