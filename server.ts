@@ -140,7 +140,40 @@ ensureRentalColumn('frozen_at', 'DATETIME');
 const app = express();
 const PORT = Number(process.env.PORT || 4000);
 
-app.use(cors());
+// Enable CORS for all routes (frontend localhost:5173, 127.0.0.1:5173 and others)
+app.use(cors({
+  origin: (origin, callback) => {
+    // allow requests with no origin (e.g. mobile apps, postman)
+    if (!origin) return callback(null, true);
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://localhost:4000',
+      'http://127.0.0.1:4000',
+      '*'
+    ];
+    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  credentials: true,
+}));
+app.options('*', cors());
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
@@ -258,6 +291,7 @@ app.get('/api/pc/discovered', (req, res) => {
 app.get('/api/pc/unassigned', (req, res) => {
   const freshnessMinutes = Number(req.query.freshnessMinutes ?? 10);
   const onlineThresholdMinutes = Number(req.query.onlineThresholdMinutes ?? 1);
+  const useAll = freshnessMinutes <= 0;
   const cutoff = new Date(Date.now() - freshnessMinutes * 60 * 1000).toISOString();
   const nowMs = Date.now();
   const onlineThresholdMs = onlineThresholdMinutes * 60 * 1000;
@@ -266,10 +300,10 @@ app.get('/api/pc/unassigned', (req, res) => {
     SELECT pc_id, pc_name, status, last_seen, created_at
     FROM pc_agents
     WHERE status IN ('pending', 'registered', 'paired')
-      AND (last_seen >= ? OR last_seen IS NULL)
+      ${useAll ? '' : 'AND (last_seen >= ? OR last_seen IS NULL)'}
       AND pc_id NOT IN (SELECT pc_id FROM equipment WHERE pc_id IS NOT NULL)
     ORDER BY last_seen DESC
-  `).all(cutoff);
+  `).all(useAll ? [] : [cutoff]);
 
   const normalizedRows = rows
     .filter((r: any) => !isTestPCEntry(r.pc_id, r.pc_name))
