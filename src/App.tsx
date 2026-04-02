@@ -143,6 +143,7 @@ export default function App() {
   const [taecelSalesData, setTaecelSalesData] = useState<any[]>([]);
   const [pendingPairCodes, setPendingPairCodes] = useState<Array<{pc_id: string; expires_at: string}>>([]);
   const [discoveredPCs, setDiscoveredPCs] = useState<Array<{pc_id: string; pc_name?: string; status: string; last_seen: string; assigned?: boolean}>>([]);
+  const unassignedDiscoveredPCs = useMemo(() => discoveredPCs.filter((pc) => !pc.assigned), [discoveredPCs]);
   const [selectedPcIdForForm, setSelectedPcIdForForm] = useState<string>('');
   const [selectedPcNameForForm, setSelectedPcNameForForm] = useState<string>('');
   const [isSelectPcModalOpen, setIsSelectPcModalOpen] = useState(false);
@@ -440,6 +441,14 @@ export default function App() {
     const interval = setInterval(fetchData, 3000); // Actualiza cada 3 segundos para refresco casi en tiempo real
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (!selectedPcIdForForm && unassignedDiscoveredPCs.length > 0) {
+      const firstUnassigned = unassignedDiscoveredPCs[0];
+      setSelectedPcIdForForm(firstUnassigned.pc_id);
+      setSelectedPcNameForForm(pcNameEdits[firstUnassigned.pc_id] || firstUnassigned.pc_name || firstUnassigned.pc_id);
+    }
+  }, [unassignedDiscoveredPCs, selectedPcIdForForm, pcNameEdits]);
 
   useEffect(() => {
     if (activeRentals.length === 0) return;
@@ -4178,7 +4187,7 @@ const renderWarningModal = () => {
                                 }}
                                 className="w-full bg-indigo-600 text-white py-3 rounded-xl font-black uppercase tracking-widest hover:bg-indigo-700 transition-all"
                               >
-                                Abrir lista de PCs instaladas
+                                Abrir lista de PCs instaladas (refrescar)
                               </button>
                               {selectedPcIdForForm ? (
                                 <div className="p-3 bg-gray-50 rounded-xl border border-gray-200">
@@ -4201,10 +4210,10 @@ const renderWarningModal = () => {
                                 <button onClick={() => setIsSelectPcModalOpen(false)} className="text-gray-500 hover:text-gray-900">Cerrar</button>
                               </div>
                               <div className="p-4 space-y-3 max-h-[70vh] overflow-y-auto">
-                                {discoveredPCs.length === 0 ? (
-                                  <div className="text-sm text-gray-400">No se han detectado PCs no asignadas aún.</div>
+                                {unassignedDiscoveredPCs.length === 0 ? (
+                                  <div className="text-sm text-gray-400">No se han detectado PCs no asignadas aún. Intenta actualizar o revisa que los agentes estén conectados.</div>
                                 ) : (
-                                  discoveredPCs.map((item) => {
+                                  unassignedDiscoveredPCs.map((item) => {
                                     const assigned = item.assigned || false;
                                     const editedName = pcNameEdits[item.pc_id] || item.pc_id;
                                     return (
