@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import crypto from 'crypto';
 import Database from 'better-sqlite3';
 import dotenv from 'dotenv';
@@ -419,6 +420,75 @@ function schedulePcEnforcement() {
 schedulePcEnforcement();
 app.get('/api/taecel/status', (req, res) => {
   res.json({ success: true, status: 'ok', lastCacheTimestamp: Date.now(), lastBackupTimestamp: Date.now() });
+});
+
+const UPDATE_INFO_FILE = path.join(process.cwd(), 'update-info.json');
+
+app.get('/api/pc/update-info', (req, res) => {
+  let updateInfo = {
+    version: process.env.PC_CONTROLLER_LATEST_VERSION || '1.0.0',
+    url: process.env.PC_CONTROLLER_LATEST_URL || 'https://server-pc-fq7x.onrender.com/downloads/GC%20Web%20Controller%20Devices%20Setup%201.0.0.exe',
+    hash: process.env.PC_CONTROLLER_LATEST_HASH || '',
+    notes: 'Sin notas de versión'
+  };
+
+  if (fs.existsSync(UPDATE_INFO_FILE)) {
+    try {
+      const raw = fs.readFileSync(UPDATE_INFO_FILE, 'utf-8');
+      const parsed = JSON.parse(raw);
+      if (parsed.version) updateInfo.version = String(parsed.version);
+      if (parsed.url) updateInfo.url = String(parsed.url);
+      if (parsed.hash) updateInfo.hash = String(parsed.hash);
+      if (parsed.notes) updateInfo.notes = String(parsed.notes);
+    } catch (err) {
+      console.warn('No se pudo leer update-info.json:', err);
+    }
+  }
+
+  res.json({ success: true, data: updateInfo });
+});
+
+app.post('/api/pc/update-info/release', (req, res) => {
+  const { version, url, hash, notes, secret } = req.body;
+
+  const expected = process.env.UPDATE_RELEASE_SECRET || 'admin-secret';
+  if (!secret || secret !== expected) {
+    return res.status(403).json({ success: false, error: 'invalid secret' });
+  }
+
+  if (!version || !url) {
+    return res.status(400).json({ success: false, error: 'version and url are required' });
+  }
+
+  const parsedVersion = String(version).trim();
+  if (!parsedVersion) {
+    return res.status(400).json({ success: false, error: 'invalid version' });
+  }
+
+  const newInfo = {
+    version: parsedVersion,
+    url: String(url).trim(),
+    hash: String(hash || ''),
+    notes: String(notes || '')
+  };
+
+  try {
+    fs.writeFileSync(UPDATE_INFO_FILE, JSON.stringify(newInfo, null, 2), 'utf-8');
+    return res.json({ success: true, data: newInfo });
+  } catch (err) {
+    console.error('No se pudo escribir update-info.json:', err);
+    return res.status(500).json({ success: false, error: 'file write failed' });
+  }
+});
+
+app.post('/api/pc/report-version', (req, res) => {
+  const { pc_id, current_version } = req.body;
+  if (!pc_id || !current_version) return res.status(400).json({ success: false, error: 'pc_id and current_version required' });
+
+  db.prepare('UPDATE pc_agents SET updated_at = ? WHERE pc_id = ?').run(new Date().toISOString(), pc_id);
+  // Opcional: guardar versión en tabla o log para auditoría.
+
+  res.json({ success: true, pc_id, current_version });
 });
 
 app.get('/api/taecel/admin/getProductsCount', (req, res) => {
