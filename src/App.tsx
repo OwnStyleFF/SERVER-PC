@@ -4376,10 +4376,11 @@ const renderWarningModal = () => {
 
                                 console.log('[PC Register] checks', { pcIdVal, assignedCheck, alreadyAssigned, preservedDiscoveredItem: preservedDiscovered.find((n) => n.pc_id === pcIdVal) });
 
-                                if (assignedCheck) {
-                                  showNotification(`PC ${pcIdVal} ya está asignada a inventario. Elige otra.`, 'error');
-                                  return;
+                                // Si la PC está marcada como asignada (posible stale) pero no existe en equipment, no bloqueamos.
+                                if ((assignedCheck || alreadyAssigned) && !alreadyAssigned) {
+                                  console.warn(`[PC Register] estado inconsistent: assignedCheck=true pero no hay equipment row para ${pcIdVal}, se permite continuar`);
                                 }
+
                                 if (alreadyAssigned) {
                                   showNotification(`PC ${pcIdVal} ya está asignada a inventario. Elige otra.`, 'error');
                                   return;
