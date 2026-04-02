@@ -670,17 +670,15 @@ ipcMain.handle('pc-controller-save-settings', async (event, { serverUrl, pcId, p
     await registerAgent();
   }
 
-  if (pcName && pcName.trim()) {
-    try {
-      const response = await axios.post(`${SERVER_URL}/api/pc/update-name`, { pc_id: PC_ID, pc_name: pcName.trim() }, { timeout: AXIOS_TIMEOUT });
-      if (response.data?.success) {
-        pcName = pcName.trim();
-        addLog(`Nombre PC actualizado desde controlador: ${pcName}`);
-      }
-    } catch (err) {
-      const details = err.response?.data || err.message || err;
-      addLog(`Error update-name desde controlador: ${JSON.stringify(details)}`);
+  const pcNameToSet = pcName && pcName.trim() ? pcName.trim() : PC_ID;
+  try {
+    const response = await axios.post(`${SERVER_URL}/api/pc/update-name`, { pc_id: PC_ID, pc_name: pcNameToSet }, { timeout: AXIOS_TIMEOUT });
+    if (response.data?.success) {
+      addLog(`Nombre PC actualizado desde controlador: ${pcNameToSet}`);
     }
+  } catch (err) {
+    const details = err.response?.data || err.message || err;
+    addLog(`Error update-name desde controlador: ${JSON.stringify(details)}`);
   }
 
   await updateAgentPcName();
