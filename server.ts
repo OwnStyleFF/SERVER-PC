@@ -227,7 +227,7 @@ app.get('/api/pc/discovered', (req, res) => {
 
   if (onlyUnregistered) {
     sql += useAll ? 'WHERE ' : 'AND ';
-    sql += 'e.id IS NULL AND a.status = "paired"\n';
+    sql += 'e.id IS NULL AND a.status IN ("registered", "paired")\n';
   }
 
   sql += 'ORDER BY a.last_seen DESC\n';
@@ -246,7 +246,7 @@ app.get('/api/pc/discovered', (req, res) => {
         status: r.status,
         last_seen: r.last_seen,
         created_at: r.created_at,
-        assigned: Boolean(r.equipment_id),
+        assigned: r.status === 'paired' && Boolean(r.equipment_id),
         equipment_name: r.equipment_name || null,
         isOnline
       };
@@ -265,7 +265,7 @@ app.get('/api/pc/unassigned', (req, res) => {
   const rows = db.prepare(`
     SELECT pc_id, pc_name, status, last_seen, created_at
     FROM pc_agents
-    WHERE status = 'paired'
+    WHERE status IN ('registered', 'paired')
       AND (last_seen >= ? OR last_seen IS NULL)
       AND pc_id NOT IN (SELECT pc_id FROM equipment WHERE pc_id IS NOT NULL)
     ORDER BY last_seen DESC
@@ -357,7 +357,7 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
   if (agent.token !== token) return res.status(403).json({ success: false, error: 'invalid token' });
 
   const equipment = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id) as any;
-  const isAssigned = Boolean(equipment);
+  const isAssigned = agent.status === 'paired' && Boolean(equipment);
 
   const now = new Date().toISOString();
   // status puede ser "registered" (PC detectada pero no inventariada) o "paired" (reclamada en inventario)
