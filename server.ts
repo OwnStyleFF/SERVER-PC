@@ -447,7 +447,7 @@ app.get('/api/pc/:id/check', (req, res) => {
 
   const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
   const inEquipment = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
-  const discovered = db.prepare('SELECT a.pc_id, a.pc_name, a.status, a.last_seen, e.id AS equipment_id FROM pc_agents a LEFT JOIN equipment e ON e.pc_id = a.pc_id WHERE a.pc_id = ?').get(pc_id);
+  const discovered = db.prepare('SELECT a.pc_id, a.pc_name, a.status, a.last_seen, e.id AS equipment_id FROM pc_agents a LEFT JOIN equipment e ON e.pc_id = a.pc_id WHERE a.pc_id = ?').get(pc_id) as any;
 
   res.json({
     success: true,
