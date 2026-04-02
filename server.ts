@@ -441,6 +441,27 @@ app.get('/api/pc/:id/status', (req, res) => {
   res.json({ success: true, agent });
 });
 
+app.get('/api/pc/:id/check', (req, res) => {
+  const pc_id = req.params.id;
+  if (!pc_id) return res.status(400).json({ success: false, error: 'pc_id required' });
+
+  const agent = db.prepare('SELECT * FROM pc_agents WHERE pc_id = ?').get(pc_id);
+  const inEquipment = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id);
+  const discovered = db.prepare('SELECT a.pc_id, a.pc_name, a.status, a.last_seen, e.id AS equipment_id FROM pc_agents a LEFT JOIN equipment e ON e.pc_id = a.pc_id WHERE a.pc_id = ?').get(pc_id);
+
+  res.json({
+    success: true,
+    data: {
+      pc_id,
+      agent,
+      inEquipment,
+      discovered,
+      assigned: Boolean(inEquipment),
+      shouldAppearInRentas: Boolean(inEquipment) && discovered?.status === 'paired'
+    }
+  });
+});
+
 function schedulePcEnforcement() {
   setInterval(() => {
     const agents = db.prepare('SELECT a.pc_id, a.status AS agent_status, e.id AS equipment_id FROM pc_agents a LEFT JOIN equipment e ON e.pc_id = a.pc_id WHERE a.status = ?').all('paired');
