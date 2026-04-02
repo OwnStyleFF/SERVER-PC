@@ -178,15 +178,8 @@ app.post('/api/pc/register', (req, res) => {
   db.prepare('UPDATE pc_agents SET token = ?, status = ?, updated_at = ?, last_seen = ?, pc_name = COALESCE(?, pc_name) WHERE pc_id = ?')
     .run(token, 'paired', now, now, pc_name || agent.pc_name, pc_id);
 
-  // Si ya no existe en inventory, créala automáticamente para que el POS la reconozca.
-  const existingEquipment = db.prepare('SELECT id FROM equipment WHERE pc_id = ?').get(pc_id);
-  if (!existingEquipment) {
-    const pcNameValue = String(pc_name || agent.pc_name || pc_id).trim();
-    db.prepare('INSERT INTO equipment (name, type, status, cost, pc_id) VALUES (?, ?, ?, ?, ?)')
-      .run(pcNameValue, 'PC', 'available', 0, pc_id);
-    db.prepare('UPDATE pc_agents SET status = ?, updated_at = ? WHERE pc_id = ?').run('paired', new Date().toISOString(), pc_id);
-  }
-
+  // NO registrar automáticamente en equipo: la asignación de inventario debe hacerse
+  // manualmente desde la UI (tarea de recibir la PC desde la lista de detectadas).
   res.json({ success: true, pc_id, token });
 });
 
