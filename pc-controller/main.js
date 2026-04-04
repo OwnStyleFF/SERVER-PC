@@ -9,11 +9,19 @@ const crypto = require('crypto');
 
 const store = new Store({ name: 'pc-controller-config' });
 
-let SERVER_URL = process.env.PC_SERVER_URL || store.get('serverUrl', 'https://server-pc-fq7x.onrender.com');
+const PREFERRED_SERVERS = [
+  process.env.PC_SERVER_URL,
+  store.get('serverUrl'),
+  'https://server-pc-fq7x.onrender.com',
+  'http://127.0.0.1:4000',
+  'http://localhost:4000'
+].filter(Boolean);
+
+let SERVER_URL = PREFERRED_SERVERS[0];
 let PC_ID = process.env.PC_NAME || store.get('pcId', 'pc-1');
 let AGENT_TOKEN = store.get('agentToken', null);
 
-const FALLBACK_SERVER_URLS = ['http://127.0.0.1:4000', 'http://localhost:4000'];
+const FALLBACK_SERVER_URLS = PREFERRED_SERVERS;
 const HEARTBEAT_INTERVAL_MS = 3000;
 const RECONNECT_DELAY_MS = 2000;
 
@@ -27,17 +35,24 @@ async function isServerReachable(url) {
 }
 
 async function pickBestServerUrl() {
-  if (await isServerReachable(SERVER_URL)) return SERVER_URL;
+  addLog(`Intentando servidor configurado: ${SERVER_URL}`);
+  if (await isServerReachable(SERVER_URL)) {
+    addLog(`Servidor alcanzable: ${SERVER_URL}`);
+    store.set('serverUrl', SERVER_URL);
+    return SERVER_URL;
+  }
 
   for (const candidate of FALLBACK_SERVER_URLS) {
+    addLog(`Probando fallback: ${candidate}`);
     if (await isServerReachable(candidate)) {
       SERVER_URL = candidate;
       store.set('serverUrl', SERVER_URL);
-      addLog(`Servidor principal inalcanzable; usando fallback ${SERVER_URL}`);
+      addLog(`Usando servidor fallback: ${SERVER_URL}`);
       return SERVER_URL;
     }
   }
 
+  addLog('No se encontró servidor accesible en listado de fallback');
   return SERVER_URL;
 }
 

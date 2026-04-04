@@ -49,38 +49,69 @@ export default function App() {
   const DEFAULT_REMOTE_BASE = 'https://server-pc-fq7x.onrender.com';
 
   const apiFetch = async (path: string, options: RequestInit = {}) => {
+    const remoteUrl = `${API_BASE || DEFAULT_REMOTE_BASE}${path}`;
     const localCandidates = [
       `http://localhost:4000${path}`,
+      `http://127.0.0.1:4000${path}`,
       `${window.location.protocol}//${window.location.hostname}:4000${path}`,
-      `${window.location.protocol}//127.0.0.1:4000${path}`
     ];
-    const remoteUrl = `${API_BASE || DEFAULT_REMOTE_BASE}${path}`;
 
-    if (API_BASE) {
-      try {
-        return await fetch(remoteUrl, options);
-      } catch (error) {
-        console.warn('Remote API fetch failed:', error);
-        throw error;
-      }
-    }
+    const errors: string[] = [];
 
-    for (const url of localCandidates) {
+    const attemptFetch = async (url: string) => {
       try {
         const res = await fetch(url, options);
         if (res.ok) {
+          console.debug('[apiFetch] success', url);
           return res;
         }
-      } catch (error) {
-        console.warn(`Local API candidate failed (${url}):`, error);
+        const msg = `HTTP ${res.status}`;
+        errors.push(`${url}: ${msg}`);
+        console.warn('[apiFetch] non-ok', url, msg);
+        return null;
+      } catch (err) {
+        errors.push(`${url}: ${err}`);
+        console.warn('[apiFetch] failed candidate', url, err);
+        return null;
       }
+    };
+
+    // First try remote server (Render), then local fallback.
+    const remoteResult = await attemptFetch(remoteUrl);
+    if (remoteResult) return remoteResult;
+
+    for (const url of localCandidates) {
+      const result = await attemptFetch(url);
+      if (result) return result;
     }
 
+    throw new Error(`apiFetch failed for ${path}. Tried: ${localCandidates.join(', ')}, ${remoteUrl}. Details: ${errors.join(' | ')}`);
+  };
+
+  const fetchPcLiveFrame = async (pcId: string) => {
+    if (!pcId) return;
     try {
-      return await fetch(remoteUrl, options);
-    } catch (error) {
-      console.error('Fallback remote API fetch failed:', error);
-      throw error;
+      const res = await apiFetch(`/api/pc/${pcId}/video/live`);
+      if (!res.ok) {
+        throw new Error(`Request failed ${res.status}`);
+      }
+      const json = await res.json();
+      if (!json.success) {
+        throw new Error(json.error || 'No video data');
+      }
+      if (!json.data || !json.data.image_data) {
+        setPcLiveError('No hay frame disponible. Esperando datos...');
+        setPcLiveFrame('');
+        return;
+      }
+
+      const frame = json.data.image_data as string;
+      setPcLiveFrame(frame.startsWith('data:image') ? frame : `data:image/png;base64,${frame}`);
+      setPcLiveError('');
+    } catch (error: any) {
+      const message = (error?.message) ? error.message : 'Stream fetch error';
+      setPcLiveError(message);
+      setPcLiveFrame('');
     }
   };
 
@@ -173,6 +204,29 @@ export default function App() {
   const [selectedPcNameForForm, setSelectedPcNameForForm] = useState<string>('');
   const [isSelectPcModalOpen, setIsSelectPcModalOpen] = useState(false);
   const [pcNameEdits, setPcNameEdits] = useState<Record<string,string>>({});
+
+  const [pcLiveId, setPcLiveId] = useState<string>('');
+  const [pcLiveFrame, setPcLiveFrame] = useState<string>('');
+  const [pcLiveError, setPcLiveError] = useState<string>('');
+  const [isPcLiveActive, setIsPcLiveActive] = useState(false);
+
+  useEffect(() => {
+    if (!isPcLiveActive || !pcLiveId) {
+      setPcLiveFrame('');
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      fetchPcLiveFrame(pcLiveId);
+    }, 1500);
+
+    fetchPcLiveFrame(pcLiveId);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [isPcLiveActive, pcLiveId]);
+
   const [taecelSalesLoading, setTaecelSalesLoading] = useState(false);
   const [taecelSalesError, setTaecelSalesError] = useState<string | null>(null);
 
@@ -4271,6 +4325,32 @@ const renderWarningModal = () => {
                                     </button>
                                   </div>
                                 </div>
+                                {isPcLiveActive && pcLiveId ? (
+                                  <div className="rounded-xl border border-indigo-200 p-3 bg-indigo-50 mb-3">
+                                    <div className="flex justify-between items-center mb-2">
+                                      <p className="text-xs font-bold">Vista en vivo: {pcLiveId}</p>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setIsPcLiveActive(false);
+                                          setPcLiveId('');
+                                          setPcLiveFrame('');
+                                          setPcLiveError('');
+                                        }}
+                                        className="px-2 py-1 text-[10px] rounded bg-gray-200 hover:bg-gray-300"
+                                      >
+                                        Detener
+                                      </button>
+                                    </div>
+                                    {pcLiveError ? (
+                                      <p className="text-xs text-red-600">{pcLiveError}</p>
+                                    ) : pcLiveFrame ? (
+                                      <img src={pcLiveFrame} alt="Vista en vivo" className="w-full h-48 object-contain rounded" />
+                                    ) : (
+                                      <p className="text-xs text-gray-500">Cargando stream...</p>
+                                    )}
+                                  </div>
+                                ) : null}
                                 {visiblePcList.length === 0 ? (
                                   <div className="text-sm text-gray-400">
                                     {pcListMode === 'unassigned'
@@ -4295,18 +4375,29 @@ const renderWarningModal = () => {
                                             )}
                                           </div>
                                           <div className="flex flex-col items-end gap-2">
-                                            <button
-                                              disabled={assigned}
-                                              onClick={() => {
-                                                if (assigned) return;
-                                                setSelectedPcIdForForm(item.pc_id);
-                                                setSelectedPcNameForForm(editedName);
-                                                setIsSelectPcModalOpen(false);
-                                              }}
-                                              className={`px-3 py-2 rounded-lg font-bold text-xs uppercase ${assigned ? 'bg-gray-300 text-gray-500' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
-                                            >
-                                              Seleccionar
-                                            </button>
+                                            <div className="flex gap-2">
+                                              <button
+                                                disabled={assigned}
+                                                onClick={() => {
+                                                  if (assigned) return;
+                                                  setSelectedPcIdForForm(item.pc_id);
+                                                  setSelectedPcNameForForm(editedName);
+                                                  setIsSelectPcModalOpen(false);
+                                                }}
+                                                className={`px-3 py-2 rounded-lg font-bold text-xs uppercase ${assigned ? 'bg-gray-300 text-gray-500' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+                                              >
+                                                Seleccionar
+                                              </button>
+                                              <button
+                                                onClick={() => {
+                                                  setPcLiveId(item.pc_id);
+                                                  setIsPcLiveActive(true);
+                                                }}
+                                                className="px-3 py-2 rounded-lg font-bold text-xs uppercase bg-indigo-600 text-white hover:bg-indigo-700"
+                                              >
+                                                Ver vivo
+                                              </button>
+                                            </div>
                                             <div className="flex gap-1">
                                               <input
                                                 value={editedName}

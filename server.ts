@@ -3,12 +3,16 @@ import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
+import url from 'url';
 import Database from 'better-sqlite3';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const db = new Database('gcweb.db');
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+const dbPath = path.resolve(process.env.GCWEB_DB_PATH || __dirname, 'gcweb.db');
+console.log('[INFO] Using DB path:', dbPath);
+const db = new Database(dbPath);
 
 // Schema
 const SCHEMA_SQL = `
@@ -140,28 +144,15 @@ ensureRentalColumn('frozen_at', 'DATETIME');
 const app = express();
 const PORT = Number(process.env.PORT || 4000);
 
-// Enable CORS for all routes (frontend localhost:5173, 127.0.0.1:5173 and others)
+// Enable CORS for all routes (frontend self-hosted + 5173/5174 etc.)
 app.use(cors({
-  origin: (origin, callback) => {
-    // allow requests with no origin (e.g. mobile apps, postman)
-    if (!origin) return callback(null, true);
-    const allowedOrigins = [
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'http://localhost:4000',
-      'http://127.0.0.1:4000',
-      '*'
-    ];
-    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   credentials: true,
 }));
+// Use a permissive fallback header for clients that inspect raw responses
+app.options('*', cors());
 app.options('*', cors());
 
 app.use((req, res, next) => {
@@ -178,6 +169,20 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 app.get('/api/health', (req, res) => res.json({ ok: true, env: process.env.NODE_ENV || 'development' }));
+
+app.get('/api/pc/debug', (req, res) => {
+  const agents = db.prepare('SELECT COUNT(*) AS c FROM pc_agents').get();
+  const equipment = db.prepare('SELECT COUNT(*) AS c FROM equipment').get();
+  res.json({ success: true, cwd: process.cwd(), dbPath, agents, equipment });
+});
+
+app.get('/api/pc/debug', (req, res) => {
+  res.json({
+    cwd: process.cwd(),
+    dbPath: require('path').resolve('gcweb.db'),
+    now: new Date().toISOString(),
+  });
+});
 
 app.post('/api/pc/pair', (req, res) => {
   const { pc_id, pc_name } = req.body;
@@ -225,6 +230,16 @@ const normalizePcDisplayName = (pc_id: string, pc_name: string | null) => {
   return rawName;
 };
 
+const parseIntQuery = (value: any, fallback: number) => {
+  if (value === undefined || value === null || value === '') return fallback;
+  const normalized = String(value).trim().replace(/[^0-9.-]/g, '');
+  const numeric = Number(normalized);
+  if (!Number.isFinite(numeric) || numeric < 0) {
+    return fallback;
+  }
+  return numeric;
+};
+
 const isTestPCEntry = (pc_id: string, pc_name?: string | null) => {
   const lowerId = String(pc_id || '').toLowerCase();
   const lowerName = String(pc_name || '').toLowerCase();
@@ -239,13 +254,19 @@ app.get('/api/pc/pending-pair-codes', (req, res) => {
 });
 
 app.get('/api/pc/discovered', (req, res) => {
-  const freshnessMinutes = Number(req.query.freshnessMinutes ?? 60);
-  const onlineThresholdMinutes = Number(req.query.onlineThresholdMinutes ?? 1);
+  const freshnessMinutes = parseIntQuery(req.query.freshnessMinutes ?? 60, 60);
+  const onlineThresholdMinutes = parseIntQuery(req.query.onlineThresholdMinutes ?? 1, 1);
   const onlyUnregistered = req.query.unregistered === 'true';
   const useAll = freshnessMinutes <= 0;
-  const cutoff = new Date(Date.now() - freshnessMinutes * 60 * 1000).toISOString();
+  const cutoffDate = new Date(Date.now() - freshnessMinutes * 60 * 1000);
+  if (!Number.isFinite(cutoffDate.getTime())) {
+    return res.status(400).json({ success: false, error: 'invalid freshnessMinutes' });
+  }
+  const cutoff = cutoffDate.toISOString();
   const nowMs = Date.now();
   const onlineThresholdMs = onlineThresholdMinutes * 60 * 1000;
+
+  console.log('[DEBUG] /api/pc/discovered', { freshnessMinutes, onlyUnregistered, useAll, cutoff });
 
   let sql = `
     SELECT a.pc_id, a.pc_name, a.status, a.last_seen, a.created_at,
@@ -266,6 +287,7 @@ app.get('/api/pc/discovered', (req, res) => {
   sql += 'ORDER BY a.last_seen DESC\n';
 
   const rows = db.prepare(sql).all(useAll ? [] : [cutoff]);
+  console.log('[DEBUG] /api/pc/discovered rows', rows.length, rows);
 
   const enriched = rows
     .filter((r: any) => !isTestPCEntry(r.pc_id, r.pc_name))
@@ -289,10 +311,14 @@ app.get('/api/pc/discovered', (req, res) => {
 });
 
 app.get('/api/pc/unassigned', (req, res) => {
-  const freshnessMinutes = Number(req.query.freshnessMinutes ?? 10);
-  const onlineThresholdMinutes = Number(req.query.onlineThresholdMinutes ?? 1);
+  const freshnessMinutes = parseIntQuery(req.query.freshnessMinutes ?? 10, 10);
+  const onlineThresholdMinutes = parseIntQuery(req.query.onlineThresholdMinutes ?? 1, 1);
   const useAll = freshnessMinutes <= 0;
-  const cutoff = new Date(Date.now() - freshnessMinutes * 60 * 1000).toISOString();
+  const cutoffDate = new Date(Date.now() - freshnessMinutes * 60 * 1000);
+  if (!Number.isFinite(cutoffDate.getTime())) {
+    return res.status(400).json({ success: false, error: 'invalid freshnessMinutes' });
+  }
+  const cutoff = cutoffDate.toISOString();
   const nowMs = Date.now();
   const onlineThresholdMs = onlineThresholdMinutes * 60 * 1000;
 
@@ -329,12 +355,23 @@ app.post('/api/pc/:id/video-frame', (req, res) => {
   res.json({ success: true, pc_id });
 });
 
+app.post('/api/pc/:id/screenshot', (req, res) => {
+  const pc_id = req.params.id;
+  const { image } = req.body;
+  if (!pc_id || !image) return res.status(400).json({ success: false, error: 'pc_id and image required' });
+
+  // Normalize image data and store as last snapshot.
+  const imageData = String(image).startsWith('data:image') ? image.split(',')[1] : image;
+  db.prepare('INSERT INTO pc_snapshots (pc_id, image_data) VALUES (?, ?)').run(pc_id, imageData);
+  res.json({ success: true, pc_id });
+});
+
 app.get('/api/pc/:id/video/live', (req, res) => {
   const pc_id = req.params.id;
   if (!pc_id) return res.status(400).json({ success: false, error: 'pc_id required' });
 
   const frame = db.prepare('SELECT * FROM pc_snapshots WHERE pc_id = ? ORDER BY id DESC LIMIT 1').get(pc_id);
-  if (!frame) return res.status(404).json({ success: false, error: 'not found' });
+  if (!frame) return res.json({ success: true, data: null, message: 'no frame yet' });
   res.json({ success: true, data: frame });
 });
 
@@ -938,6 +975,20 @@ app.get('/api/analytics/summary', (req, res) => {
   res.json({ success: true, data: { totalSales, totalLosses, totalExpenses, totalProducts }});
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on http://0.0.0.0:${PORT}`);
-});
+const startServer = (port: number) => {
+  const srv = app.listen(port, () => {
+    console.log(`Server listening on http://0.0.0.0:${port}`);
+  });
+
+  srv.on('error', (err: any) => {
+    if (err?.code === 'EADDRINUSE') {
+      console.warn(`Port ${port} in use, trying ${port + 1}...`);
+      startServer(port + 1);
+    } else {
+      console.error('Server error:', err);
+      process.exit(1);
+    }
+  });
+};
+
+startServer(PORT);
