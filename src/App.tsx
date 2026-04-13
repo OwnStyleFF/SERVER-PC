@@ -4460,7 +4460,7 @@ const renderWarningModal = () => {
                                 let preservedDiscovered = discoveredPCs;
                                 if (discoveredRes2.ok) {
                                   const discoveredData2 = await discoveredRes2.json();
-                                  preservedDiscovered = (discoveredData2.data || []).map((pc: any) => ({ ...pc, assigned: pc.status === 'paired' && !!pc.equipment_id }));
+                                  preservedDiscovered = (discoveredData2.data || []).map((pc: any) => ({ ...pc, assigned: !!pc.equipment_id }));
                                 }
 
                                 const discoveredEntry = preservedDiscovered.find((n) => n.pc_id === pcIdVal);

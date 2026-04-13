@@ -301,7 +301,7 @@ app.get('/api/pc/discovered', (req, res) => {
         status: r.status,
         last_seen: r.last_seen,
         created_at: r.created_at,
-        assigned: r.status === 'paired' && Boolean(r.equipment_id),
+        assigned: Boolean(r.equipment_id),
         equipment_name: r.equipment_name || null,
         isOnline
       };
@@ -428,11 +428,13 @@ app.post('/api/pc/:id/heartbeat', (req, res) => {
   if (agent.token !== token) return res.status(403).json({ success: false, error: 'invalid token' });
 
   const equipment = db.prepare('SELECT * FROM equipment WHERE pc_id = ?').get(pc_id) as any;
-  const isAssigned = agent.status === 'paired' && Boolean(equipment);
+  // Determine status server-side: 'paired' if in equipment inventory, 'registered' otherwise.
+  // Ignore client-provided status (e.g. 'alive') to prevent corrupting the db state.
+  const isAssigned = Boolean(equipment);
+  const newStatus = equipment ? 'paired' : 'registered';
 
   const now = new Date().toISOString();
-  // status puede ser "registered" (PC detectada pero no inventariada) o "paired" (reclamada en inventario)
-  db.prepare('UPDATE pc_agents SET last_seen = ?, status = ?, updated_at = ? WHERE pc_id = ?').run(now, status || 'registered', now, pc_id);
+  db.prepare('UPDATE pc_agents SET last_seen = ?, status = ?, updated_at = ? WHERE pc_id = ?').run(now, newStatus, now, pc_id);
 
   const command = db.prepare('SELECT * FROM pc_commands WHERE pc_id = ? AND status = ? ORDER BY id ASC LIMIT 1').get(pc_id, 'pending') as any;
 
